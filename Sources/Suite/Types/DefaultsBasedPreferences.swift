@@ -85,3 +85,17 @@ public protocol DefaultsBasedPreferencesKeyProvider: class {
 		return Notification.Name("DefaultsBasedPreferences-\(key)")
 	}
 }
+
+public extension UserDefaults {
+	func hasValueForKey(key: String) -> Bool {
+		return self.object(forKey: key) != nil
+	}
+	
+	func removeValue(forKey key: String) {
+		self.removeObject(forKey: key)
+	}
+	
+	func clearValue(forKey key: String) {
+		self.removeValue(forKey: key)
+	}
+}
