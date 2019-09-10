@@ -3,7 +3,7 @@
 //  Suite
 //
 //  Created by Ben Gottlieb on 9/9/19.
-//  Copyright © 2017 Stand Alone, Inc. All rights reserved.
+//  Copyright © 2019 Stand Alone, Inc. All rights reserved.
 //
 
 import Foundation
