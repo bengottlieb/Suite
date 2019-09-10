@@ -97,7 +97,7 @@ public extension NSManagedObjectContext {
 		return self.insertObject(named: entityName) as? T
 	}
 	
-	func insertObject<T>() -> T? where T: NSManagedObject {
+	func insertObject<T>() -> T! where T: NSManagedObject {
 		let entityName = T.entityName(in: self)
 		return self.insertObject(named: entityName) as? T
 	}
