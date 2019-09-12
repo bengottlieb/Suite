@@ -87,9 +87,9 @@ public extension Date {
 		return formatter.string(from: self)
 	}
 	
-	var isToday: Bool { return self.isSameDayAs(other: Date()) }
-	var isTomorrow: Bool { return self.isSameDayAs(other: Date().byAdding(days: 1)) }
-	var isYesterday: Bool { return self.isSameDayAs(other: Date().byAdding(days: -1)) }
+	var isToday: Bool { return self.isSameDay(as: Date()) }
+	var isTomorrow: Bool { return self.isSameDay(as: Date().byAdding(days: 1)) }
+	var isYesterday: Bool { return self.isSameDay(as: Date().byAdding(days: -1)) }
 	
 	func dateBySettingDate(date: Date?) -> Date {
 		guard let date = date else { return self }
@@ -210,7 +210,7 @@ public extension Date {
 //	func isAfter(date: Date) -> Bool { return self.earlierDate(date) != self && date != self }
 //	func isBefore(date: Date) -> Bool { return self.earlierDate(date) == self && date != self }
 	
-	func isSameDayAs(other: Date) -> Bool {
+	func isSameDay(as other: Date) -> Bool {
 		let cal = NSCalendar.current
 		let myComp = cal.dateComponents([.year, .month, .day], from: self)
 		let otherComp = cal.dateComponents([.year, .month, .day], from: other)
