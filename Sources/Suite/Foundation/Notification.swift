@@ -1,5 +1,5 @@
 //
-//  MobileProvisionFile.swift
+//  Notification.swift
 //  Suite
 //
 //  Created by Ben Gottlieb on 9/9/19.
@@ -7,6 +7,8 @@
 //
 
 import Foundation
+
+
 
 public extension Notification.Name {
 	func watch(_ object: Any, message: Selector) {
