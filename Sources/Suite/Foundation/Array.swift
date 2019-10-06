@@ -15,3 +15,25 @@ public extension Array where Element: Equatable {
 		return self
 	}
 }
+
+public extension Array {
+	func breakIntoChunks(ofSize size: Int) -> [[Element]] {
+		if self.count <= size { return [self] }
+
+		let count = self.count
+		var start = size
+		var results: [[Element]] = [Array(self[0..<size])]
+		
+		while (count - start) >= size {
+			results.append(Array(self[start..<(start + size)]))
+			start += size
+		}
+		
+		
+		if start < count {
+			results.append(Array(self[start..<count]))
+		}
+		
+		return results
+	}
+}
