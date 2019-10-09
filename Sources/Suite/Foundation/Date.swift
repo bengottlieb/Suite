@@ -39,21 +39,25 @@ extension Date {
 		public var shortName: String { return Calendar.current.shortMonthSymbols[self.rawValue - 1] }
 		public var name: String { return Calendar.current.monthSymbols[self.rawValue - 1] }
 	}
+	
+	public var nearestSecond: Date {
+		return Date(timeIntervalSinceReferenceDate: floor(self.timeIntervalSinceReferenceDate))
+	}
 }
 
 public extension TimeInterval {
-	static let secondsPerMinute: TimeInterval = 60.0
-	static let secondsPerHour: TimeInterval = 60.0 * 60.0
-	static let secondsPerDay: TimeInterval = 60.0 * 60.0 * 24.0
+	static let minute: TimeInterval = 60.0
+	static let hour: TimeInterval = 60.0 * 60.0
+	static let day: TimeInterval = 60.0 * 60.0 * 24.0
 	
 	static var saveInterval: TimeInterval = 20.0
 	static var keyPressSearchDelay: TimeInterval = 0.5
 	static var pressAndHoldInterval: TimeInterval = 1.0
 
 	
-	var days: Int { return Int(self / .secondsPerDay) }
-	var hours: Int { return Int(self / .secondsPerHour) }
-	var minutes: Int { return Int(self / .secondsPerMinute) }
+	var days: Int { return Int(self / .day) }
+	var hours: Int { return Int(self / .hour) }
+	var minutes: Int { return Int(self / .minute) }
 	var seconds: Int { return Int(self) }
 }
 
