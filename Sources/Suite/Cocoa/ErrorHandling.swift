@@ -7,7 +7,7 @@
 
 import Foundation
 
-#if canImport(Cocoa)
+#if !canImport(UIKit)
 	import Cocoa
 
 	extension Error {
