@@ -186,6 +186,7 @@ public struct Gestalt {
 			return ProcessInfo.processInfo.arguments.contains("-ui_testing")
 		}
 	
+	
 	#else
 		public static var isTestflightBuild: Bool = false
 		
@@ -200,13 +201,15 @@ public struct Gestalt {
 			return Gestalt.isAppStoreBuild
 		}()
 	
-		public static var serialNumber: String? = {
-			let platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
-			
-			let string = IORegistryEntryCreateCFProperty(platformExpert, kIOPlatformSerialNumberKey as CFString, kCFAllocatorDefault, 0).takeRetainedValue()
-			return string as? String
-		}()
-
+		#if os(OSX)
+			public static var serialNumber: String? = {
+				let platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
+				
+				let string = IORegistryEntryCreateCFProperty(platformExpert, kIOPlatformSerialNumberKey as CFString, kCFAllocatorDefault, 0).takeRetainedValue()
+				return string as? String
+			}()
+		#endif
+	
 	#endif
 	
 	public static var isRunningUnitTests: Bool = {

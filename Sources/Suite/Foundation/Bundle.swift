@@ -20,7 +20,7 @@ extension NSObject {
 	public class var bundle: Bundle? { return Bundle(for: self) }
 }
 
-#if canImport(UIKit)
+#if os(iOS)
 	import UIKit
 
 	extension Bundle {
