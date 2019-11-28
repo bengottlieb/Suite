@@ -14,6 +14,16 @@ public extension Array where Element: Equatable {
 		}
 		return self
 	}
+	
+	@discardableResult mutating func toggle(_ item: Element) -> Self {
+		if self.contains(item) {
+			self.remove(item)
+		} else {
+			self.append(item)
+		}
+		
+		return self
+	}
 }
 
 public extension Array {
