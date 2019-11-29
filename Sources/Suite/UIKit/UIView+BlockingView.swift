@@ -27,20 +27,17 @@ public extension UIView {
 	func blockingView(excluding: [CGRect] = [], tappedClosure closure: (() -> Void)? = nil) -> UIView {
 		if let existing = self.blockingView { return existing }
 		let view = SA_BlockingView(frame: self.bounds)
+			.isUserInteractionEnabled(true)
+			.backgroundColor(.clear)
+			.autoresizingMask([.flexibleWidth, .flexibleHeight])
+			.addAsSubview(of: self)
 
 		if closure != nil {
 			view.tappedClosure = closure
 		}
 		
-		//view.addGestureRecognizer(UITapGestureRecognizer(target: view, action: #selector(SA_BlockingView.tapped)))
 		view.excludedRects = excluding
-		view.isUserInteractionEnabled = true
-		view.backgroundColor = UIColor.clear
-		
-		self.addSubview(view)
-		
-		view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-		
+						
 		return view
 	}
 }
