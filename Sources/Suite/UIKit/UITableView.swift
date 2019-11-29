@@ -4,6 +4,7 @@
 //
 //  Created by Ben Gottlieb on 11/10/19.
 //
+#if canImport(UIKit)
 import UIKit
 
 extension UITableViewCell {
@@ -32,3 +33,4 @@ extension UITableView {
         return self.dequeueReusableCell(withIdentifier: identifier) ?? UITableViewCell(style: .default, reuseIdentifier: identifier)
     }
 }
+#endif

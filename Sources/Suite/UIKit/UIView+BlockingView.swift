@@ -5,6 +5,7 @@
 //  Created by Ben Gottlieb on 11/9/19.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension UIView {
@@ -71,3 +72,4 @@ public class SA_BlockingView: UIView {
 	}
 }
 
+#endif
