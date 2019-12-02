@@ -53,6 +53,12 @@ public extension UIView {
 }
 
 public extension UIView {
+	@discardableResult
+	func add<T: UIView>(subview: T) -> T {
+		self.addSubview(subview)
+		return subview
+	}
+	
 	@discardableResult func addAsSubview(of superview: UIView) -> Self {
 		if let stackView = superview as? UIStackView {
 			stackView.addArrangedSubview(self)

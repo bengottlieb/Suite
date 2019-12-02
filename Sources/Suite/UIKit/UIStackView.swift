@@ -8,6 +8,18 @@
 import UIKit
 
 public extension UIStackView {
+	@discardableResult
+	func setup(inScrollView scrollView: UIScrollView) -> Self {
+		scrollView.add(subview: self)
+		
+		self.translatesAutoresizingMaskIntoConstraints = false
+		self.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
+		self.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+		self.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
+		
+		return self
+	}
+	
 	@discardableResult func axis(_ axis: NSLayoutConstraint.Axis) -> Self {
 		self.axis = axis
 		return self
