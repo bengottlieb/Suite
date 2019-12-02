@@ -50,6 +50,10 @@ public extension UIView {
 			button.titleLabel?.alpha = 1
 		}
 	}
+	
+	func removeAllSubviews() {
+		for view in self.subviews { view.removeFromSuperview() }
+	}
 }
 
 public extension UIView {
