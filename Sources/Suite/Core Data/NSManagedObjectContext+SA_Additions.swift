@@ -33,7 +33,7 @@ public extension NSManagedObjectContext {
 			let count = try self.count(for: request)
 			return count
 		} catch let error {
-			print("Error while counting fetch request for \(entityName): \(error)")
+			elog(error, "Counting fetch request for \(entityName)")
 		}
 		return 0
 	}
@@ -56,7 +56,7 @@ public extension NSManagedObjectContext {
 					context?.parent?.saveContext(wait: true, toDisk: true)
 				}
 			} catch let error {
-				print("⚠️ Error while saving context: \(error)")
+				elog(error, "Saving context")
 				saveError = error
 			}
 			completion?(saveError)
@@ -116,7 +116,7 @@ public extension NSManagedObjectContext {
 				return results
 			}
 		} catch let error {
-			print("⚠️ Error (\(error) executing fetch request: \(request)")
+			elog(error, "Executing fetch request: \(request)")
 		}
 		return []
 	}
@@ -146,7 +146,7 @@ public extension NSManagedObjectContext {
 				return record
 			}
 		} catch let error {
-			print("⚠️ Error (\(error) executing fetch request: \(request)")
+			elog(error, "Executing fetch request: \(request)")
 		}
 		
 		return nil

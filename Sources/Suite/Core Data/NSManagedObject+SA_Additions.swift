@@ -37,9 +37,7 @@ extension NSManagedObject {
 	open func instantiate(in moc: NSManagedObjectContext) -> NSManagedObject? {
 		return moc.object(with: self.objectID)
 	}
-	
-	open func logObject() { print("\(self)") }
-	
+
 	open func refreshInContext(merge: Bool = true) {
 		self.managedObjectContext?.refresh(self, mergeChanges: merge)
 	}

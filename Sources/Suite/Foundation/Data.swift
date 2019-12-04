@@ -15,7 +15,7 @@ public extension Data {
 			try self.write(to: url)
 			return url
 		} catch {
-			print("Error when writing data to \(url): \(error)")
+			elog(error, "Writing data to \(url)")
 			return nil
 		}
 	}

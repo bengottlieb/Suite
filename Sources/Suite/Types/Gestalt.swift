@@ -28,12 +28,6 @@ public struct Gestalt {
 	
 	public static var isAttachedToDebugger: Bool = { return isatty(STDERR_FILENO) != 0 }()
 	
-	public static func isOnMainThread() {
-		if !Thread.isMainThread {
-			print("⚠️ NOT RUNNING ON MAIN THREAD")
-		}
-	}
-
 	public static func ensureMainThread(message: String? = nil) {
 		assert(Thread.isMainThread, "must run on main thread \(message ?? "--")!")
 	}

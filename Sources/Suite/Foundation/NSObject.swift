@@ -14,7 +14,7 @@ public extension NSObject {
 
 	@nonobjc func addAsObserver(for name: NSNotification.Name, selector sel: Selector, object: Any? = nil) {
 		if !self.responds(to: sel) {
-			print("⚠️ Trying to register for a notification (\(name), but \(type(of: self)) doesn't respond to \(sel)")
+			dlog("⚠️ Trying to register for a notification (\(name), but \(type(of: self)) doesn't respond to \(sel)")
 			return
 		}
 		NotificationCenter.default.addObserver(self, selector: sel, name: name, object: object)
