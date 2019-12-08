@@ -22,6 +22,15 @@ extension Encodable {
 		let data = try JSONEncoder().encode(self)
 		UserDefaults.standard.set(data, forKey: key)
 	}
+	
+	public func log(level: Logger.Level = .mild) {
+		guard let data = self.asJSONData, let raw = String(data: data, encoding: .utf8) else {
+			Logger.instance.log("Unabled to encode \(self)")
+			return
+		}
+		
+		Logger.instance.log(raw.cleanedFromJSON, level: level)
+	}
 }
 
 extension Decodable {
@@ -37,5 +46,11 @@ extension Decodable {
 	public static func loadJSON(fromUserDefaults key: String) throws -> Self {
 		let data = UserDefaults.standard.data(forKey: key) ?? Data()
 		return try self.load(fromJSONData: data)
+	}
+}
+
+extension String {
+	var cleanedFromJSON: String {
+		return self.replacingOccurrences(of: "\\", with: "")
 	}
 }
