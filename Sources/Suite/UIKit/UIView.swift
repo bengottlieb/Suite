@@ -51,6 +51,8 @@ public extension UIView {
 		}
 	}
 	
+	var isShowingActivityView: Bool { return self.viewWithTag(UIView.activityIndicatorTag) is UIActivityIndicatorView }
+	
 	func removeAllSubviews() {
 		for view in self.subviews { view.removeFromSuperview() }
 	}
