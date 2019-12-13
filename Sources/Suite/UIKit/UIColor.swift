@@ -8,8 +8,11 @@
 import UIKit
 
 public extension UIColor {
-	convenience init(hexString: String) {
-		var hex = hexString
+	convenience init?(hexString: String?) {
+		guard var hex = hexString else {
+			self.init(white: 0, alpha: 0)
+			return nil
+		}
 		var rgbValue: UInt32 = 0
 		
 		if hex.hasPrefix("#") { hex = String(hex.dropFirst()) }
