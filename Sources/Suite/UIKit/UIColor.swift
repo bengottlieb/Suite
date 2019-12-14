@@ -5,6 +5,7 @@
 //  Created by Ben Gottlieb on 12/2/19.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension UIColor {
@@ -26,3 +27,4 @@ public extension UIColor {
 		self.init(red: CGFloat(red / 255.0), green: CGFloat(green / 255.0), blue: CGFloat(blue / 255.0), alpha: 1.0)
 	}
 }
+#endif

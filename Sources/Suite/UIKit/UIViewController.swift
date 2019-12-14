@@ -5,6 +5,7 @@
 //  Created by Ben Gottlieb on 12/1/19.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension UIViewController {
@@ -17,3 +18,4 @@ public extension UIViewController {
 		 return self
 	}
 }
+#endif

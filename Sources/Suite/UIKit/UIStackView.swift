@@ -5,6 +5,7 @@
 //  Created by ben on 11/29/19.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension UIStackView {
@@ -69,3 +70,4 @@ public extension UIStackView {
 	}
 	
 }
+#endif
