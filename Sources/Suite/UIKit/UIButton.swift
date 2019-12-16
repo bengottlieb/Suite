@@ -55,10 +55,5 @@ public extension UIButton {
 		self.showsTouchWhenHighlighted = shows
 		return self
 	}
-	
-	@discardableResult func add(target: Any?, action: Selector, for controlEvents: UIControl.Event = .touchUpInside) -> Self {
-		self.addTarget(target, action: action, for: controlEvents)
-		return self
-	}
 }
 #endif
