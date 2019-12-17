@@ -10,14 +10,15 @@ import UIKit
 
 public extension UIStackView {
 	@discardableResult
-	func setup(inScrollView scrollView: UIScrollView) -> Self {
+	func setup(inScrollView scrollView: UIScrollView, withMargins margins: CGFloat = 0) -> Self {
 		scrollView.add(subview: self)
 		
 		self.translatesAutoresizingMaskIntoConstraints = false
-		self.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
-		self.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-		self.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
-		
+		self.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -(margins * 2)).isActive = true
+		self.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
+
+		self.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+
 		return self
 	}
 	
