@@ -25,12 +25,19 @@ public extension UIColor {
 			Scanner(string: hex).scanHexInt32(&rgbValue)
 		}
 		
+		let red, green, blue: CGFloat
+		let max: CGFloat = hex.count == 3 ? 15 : 255
 		
-		let red = CGFloat((rgbValue & 0xFF0000) >> 16)
-		let green = CGFloat((rgbValue & 0x00FF00) >> 8)
-		let blue = CGFloat(rgbValue & 0x0000FF)
-		
-		self.init(red: CGFloat(red / 255.0), green: CGFloat(green / 255.0), blue: CGFloat(blue / 255.0), alpha: 1.0)
+		if hex.count == 3 {
+			red = CGFloat((rgbValue & 0x000F00) >> 8)
+			green = CGFloat((rgbValue & 0x0000F0) >> 4)
+			blue = CGFloat(rgbValue & 0x00000F)
+		} else {
+			red = CGFloat((rgbValue & 0xFF0000) >> 16)
+			green = CGFloat((rgbValue & 0x00FF00) >> 8)
+			blue = CGFloat(rgbValue & 0x0000FF)
+		}
+		self.init(red: red / max, green: green / max, blue: blue / max, alpha: 1.0)
 	}
 }
 #endif
