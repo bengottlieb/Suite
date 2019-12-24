@@ -85,3 +85,17 @@ public extension String {
 	}
 }
 
+public extension Array where Element == String {
+	var sequenceString: String {
+		guard !self.isEmpty else { return "" }
+		var result = self.first!
+		if self.count == 1 { return result }
+		
+		for string in self.dropFirst().dropLast() {
+			result += ", " + string
+		}
+		
+		result += " " + NSLocalizedString("and", comment: "and") + " " + self.last!
+		return result
+	}
+}
