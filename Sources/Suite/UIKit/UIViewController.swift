@@ -13,9 +13,12 @@ public extension UIViewController {
 	func turnOffCardModalPresentation() -> Self {
 		 if #available(iOS 13.0, iOSApplicationExtension 13.0, *) {
 			  self.isModalInPresentation = false
-			  self.modalPresentationStyle = .fullScreen
 		 }
 		 return self
+	}
+	
+	var presentedest: UIViewController {
+		return self.presentedViewController?.presentedest ?? self
 	}
 }
 #endif
