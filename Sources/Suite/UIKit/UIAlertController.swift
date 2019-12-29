@@ -5,6 +5,7 @@
 //  Created by ben on 12/16/19.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension UIAlertController {
@@ -14,3 +15,4 @@ public extension UIAlertController {
 		self.addAction(UIAlertAction(title: button, style: .cancel, handler: nil))
 	}
 }
+#endif

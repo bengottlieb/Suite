@@ -52,13 +52,19 @@ public class Reachability {
 		self.reachabilityCallbacks.removeValue(forKey: object.hashValue)
 	}
 	
-	public var alertDisplayController: UIViewController?
-	public func showOfflineWarning(in controller: UIViewController? = nil) {
-		guard self.isOffline, let presenter = controller ?? self.alertDisplayController else { return }
-		let alert = UIAlertController(title: NSLocalizedString("Offline", comment: "Offline"), message: NSLocalizedString("You're not connected to the internet.", comment: "You're not connected to the internet."))
+	#if canImport(UIKit)
+		public var alertDisplayController: UIViewController?
+		public func showOfflineWarning(in controller: UIViewController? = nil) {
+			guard self.isOffline, let presenter = controller ?? self.alertDisplayController else { return }
+			let alert = UIAlertController(title: NSLocalizedString("Offline", comment: "Offline"), message: NSLocalizedString("You're not connected to the internet.", comment: "You're not connected to the internet."))
+			
+			presenter.presentedest.present(alert, animated: true, completion: nil)
+		}
+	#else
+		public func showOfflineWarning() {
 		
-		presenter.presentedest.present(alert, animated: true, completion: nil)
-	}
+		}
+	#endif
 	
 	public var allowsCellularConnection: Bool
 	
