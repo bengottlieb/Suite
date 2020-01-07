@@ -24,6 +24,9 @@ public extension String {
 		}
 	}
 	
+	var abbreviatingWithTildeInPath: String { return String(NSString(string: self).abbreviatingWithTildeInPath) }
+	var expandingTildeInPath: String { return String(NSString(string: self).expandingTildeInPath) }
+
 	static let OK = NSLocalizedString("OK", comment: "OK")
 	static let Cancel = NSLocalizedString("Cancel", comment: "Cancel")
 	

@@ -28,4 +28,29 @@ extension NSObject {
 			return UIImage(named: named, in: self, compatibleWith: compatibleWith)
 		}
 	}
+
 #endif
+
+public extension Bundle {
+	func directory(named: String, filteredFor: String) -> Directory? {
+		return Directory(bundle: self, name: named, extension: filteredFor)
+	}
+	
+	struct Directory {
+		public let urls: [URL]
+		init?(bundle: Bundle, name: String, extension ext: String? = nil) {
+			guard let urls = bundle.urls(forResourcesWithExtension: ext, subdirectory: name) else {
+				self.urls = []
+				return nil
+			}
+			self.urls = urls
+		}
+		
+		public subscript(name: String) -> URL? {
+			for url in self.urls {
+				if url.deletingPathExtension().lastPathComponent.lowercased() == name.lowercased() { return url }
+			}
+			return nil
+		}
+	}
+}

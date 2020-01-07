@@ -102,6 +102,11 @@ public extension UIView {
 		self.transform(CGAffineTransform(rotationAngle: (angle * .pi * 2) / 360))
 	}
 	
+	@discardableResult func isOpaque(_ isOpaque: Bool) -> Self {
+		self.isOpaque = isOpaque
+		return self
+	}
+	
 	@discardableResult func roundCorners(to radius: CGFloat?) -> Self {
 		self.layer.cornerRadius = radius ?? self.bounds.height / 2
 		self.layer.masksToBounds = true
