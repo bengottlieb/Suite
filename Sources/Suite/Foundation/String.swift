@@ -102,3 +102,22 @@ public extension Array where Element == String {
 		return result
 	}
 }
+
+public extension Array where Element == String? {
+	func concatenate(with separator: String, finalSeparator: String? = nil) -> String? {
+		let collapsed = self.compactMap({ $0 })
+		guard let first = collapsed.first else { return nil }
+		
+		if collapsed.count == 1 { return first }
+		
+		var result = first
+		if collapsed.count > 2 {
+			for i in collapsed.indices.dropFirst().dropLast() {
+				result += separator + collapsed[i]
+			}
+		}
+		result += (finalSeparator ?? separator) + collapsed.last!
+		
+		return result
+	}
+}
