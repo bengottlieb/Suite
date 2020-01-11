@@ -20,6 +20,14 @@ public extension UIView {
 		return nil
 	}
 	
+	func firstChild<T: UIView>(of type: T.Type) -> T? {
+		for child in self.subviews {
+			if let found = child as? T { return found }
+			if let view = child.firstChild(of: type) { return view }
+		}
+		return nil
+	}
+	
 	static let activityIndicatorTag = 10246
 	
 	@discardableResult

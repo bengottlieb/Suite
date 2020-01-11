@@ -19,10 +19,10 @@ public extension UIApplication {
 	}
 	
     var currentWindow: UIWindow? {
-		self.currentScene?
-			.windows
-			.first { $0.isKeyWindow }
+		if let window = self.currentScene?.windows.first(where: { $0.isKeyWindow }) { return window }
+		return self.windows.first
     }
+	
 }
 
 #endif
