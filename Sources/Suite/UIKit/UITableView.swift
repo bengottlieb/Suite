@@ -32,5 +32,17 @@ extension UITableView {
     func dequeuePlainCell(identifier: String) -> UITableViewCell {
         return self.dequeueReusableCell(withIdentifier: identifier) ?? UITableViewCell(style: .default, reuseIdentifier: identifier)
     }
+	
+	@discardableResult
+	public func delegate(_ delegate: UITableViewDelegate) -> Self {
+		self.delegate = delegate
+		return self
+	}
+	
+	@discardableResult
+	public func dataSource(_ dataSource: UITableViewDataSource) -> Self {
+		self.dataSource = dataSource
+		return self
+	}
 }
 #endif

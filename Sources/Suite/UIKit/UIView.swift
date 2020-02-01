@@ -79,11 +79,15 @@ public extension UIView {
 		return subview
 	}
 	
-	@discardableResult func addAsSubview(of superview: UIView) -> Self {
+	@discardableResult func addAsSubview(of superview: UIView, fullSize: Bool = false) -> Self {
 		if let stackView = superview as? UIStackView {
 			stackView.addArrangedSubview(self)
 		} else {
 			superview.addSubview(self)
+			if fullSize {
+				self.frame = superview.bounds
+				self.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+			}
 		}
 		return self
 	}
@@ -171,5 +175,9 @@ public extension UIView {
 		return self
 	}
 	
+	@discardableResult func frame(_ rect: CGRect) -> Self {
+		self.frame = rect
+		return self
+	}
 }
 #endif
