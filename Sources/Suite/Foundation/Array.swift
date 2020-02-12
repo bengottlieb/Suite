@@ -27,6 +27,11 @@ public extension Array where Element: Equatable {
 }
 
 public extension Array {
+	subscript(index index: Int?) -> Element? {
+		guard let idx = index, idx < self.count else { return nil }
+		return self[idx]
+	}
+	
 	func breakIntoChunks(ofSize size: Int) -> [[Element]] {
 		if self.count <= size { return [self] }
 
