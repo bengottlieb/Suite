@@ -10,16 +10,28 @@ import UIKit
 
 public extension UIColor {
 	convenience init?(hexString: String?) {
-		guard let values = hexString?.extractedHexValues as? [CGFloat] else {
+		guard let values = hexString?.extractedHexValues else {
 			self.init(white: 0, alpha: 0)
 			return nil
 		}
-		self.init(red: values[0], green: values[1], blue: values[2], alpha: values.count > 3 ? values[3] : 1.0)
+		self.init(red: CGFloat(values[0]), green: CGFloat(values[1]), blue: CGFloat(values[2]), alpha: CGFloat(values.count > 3 ? values[3] : 1.0))
 	}
+	
+    convenience init(red: Int, green: Int, blue: Int, alpha: Double = 1.0) {
+		self.init(red: CGFloat(red.capped(0...255)) / 255.0, green: CGFloat(green.capped(0...255)) / 255.0, blue: CGFloat(blue.capped(0...255)) / 255.0, alpha: CGFloat(alpha))
+    }
+
+    convenience init(hex: Int, alpha: Double = 1.0) {
+        self.init(red: (hex >> 16) & 0xFF, green: (hex >> 8) & 0xFF, blue: hex & 0xFF, alpha: alpha)
+    }
 }
 #else
 import Cocoa
 #endif
+
+public extension Int {
+	
+}
 
 public extension String {
 	var extractedHexValues: [Double]? {

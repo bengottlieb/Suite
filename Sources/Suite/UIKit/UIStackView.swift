@@ -65,6 +65,7 @@ public extension UIStackView {
 		return self
 	}
 	
+	@available(iOS 11.0, *)
 	@discardableResult func customSpacing(_ spacing: CGFloat, after arrangedSubview: UIView) -> Self {
 		self.setCustomSpacing(spacing, after: arrangedSubview)
 		return self
