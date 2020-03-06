@@ -5,6 +5,7 @@
 //  Created by Ben Gottlieb on 2/7/20.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension Error {
@@ -18,3 +19,4 @@ public extension Error {
 		}
 	}
 }
+#endif

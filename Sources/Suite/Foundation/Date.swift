@@ -8,11 +8,21 @@
 
 import Foundation
 
+#if canImport(SwiftUI)
+extension Date.Month: Identifiable {
+	public var id: Int { return self.rawValue }
+}
+
+extension Date.DayOfWeek: Identifiable {
+	public var id: Int { return self.rawValue }
+}
+#endif
+
 
 extension Date {
 	public enum StringLength: Int { case normal, short, veryShort }
 
-	public enum DayOfWeek: Int { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
+	public enum DayOfWeek: Int, CaseIterable { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 		public var nextDay: DayOfWeek { return self.increment(count: 1) }
 		public func increment(count: Int) -> DayOfWeek { return DayOfWeek(rawValue: (self.rawValue + count - 1) % 7 + 1)! }
 		public var abbrev: String { return Calendar.current.veryShortWeekdaySymbols[self.rawValue - 1] }
@@ -32,7 +42,7 @@ extension Date {
 		}
 	}
 	
-	public enum Month: Int { case jan = 1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
+	public enum Month: Int, CaseIterable { case jan = 1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
 		public var nextMonth: Month { return self.increment(by: 1) }
 		public func increment(by: Int) -> Month { return Month(rawValue: (self.rawValue + by - 1) % 12 + 1)! }
 		public var abbrev: String { return Calendar.current.veryShortMonthSymbols[self.rawValue] }

@@ -27,26 +27,33 @@ extension NSManagedObject {
 	}
 }
 
-extension NSManagedObject {
-	open subscript(key: String) -> Any? {
+public extension NSManagedObject {
+	subscript(key: String) -> Any? {
 		get { return self.value(forKey: key) }
 		set { self.setValue(newValue, forKey: key) }
 	}
 	
-	open var moc: NSManagedObjectContext? { return self.managedObjectContext }
-	open func instantiate(in moc: NSManagedObjectContext) -> NSManagedObject? {
-		return moc.object(with: self.objectID)
+	var moc: NSManagedObjectContext? { return self.managedObjectContext }
+	
+	func instantiate(in moc: NSManagedObjectContext?) -> Self? {
+		guard let moc = moc else { return nil }
+		return moc.object(with: self.objectID) as? Self
 	}
-
-	open func refreshInContext(merge: Bool = true) {
+	
+	func instantiate(with other: NSManagedObject?) -> Self? {
+		guard let moc = other?.moc else { return nil }
+		return moc.object(with: self.objectID) as? Self
+	}
+	
+	func refreshInContext(merge: Bool = true) {
 		self.managedObjectContext?.refresh(self, mergeChanges: merge)
 	}
 
-	open func save(wait: Bool = true, toDisk: Bool = true, completion: ((Error?) -> Void)? = nil) {
+	func save(wait: Bool = true, toDisk: Bool = true, completion: ((Error?) -> Void)? = nil) {
 		self.managedObjectContext?.saveContext(wait: wait, toDisk: toDisk, completion: completion)
 	}
 	
-	open func deleteFromContext(andSave: Bool = false) {
+	func deleteFromContext(andSave: Bool = false) {
 		let moc = self.moc
 		type(of: self).willDeleteNotification.notify(self)
 		let didDeleteNotification = type(of: self).didDeleteNotification
@@ -56,7 +63,7 @@ extension NSManagedObject {
 		didDeleteNotification.notify()
 	}
 	
-	open func hasProperty(key: String) -> Bool {
+	func hasProperty(key: String) -> Bool {
 		let entity = self.entity
 		
 		if entity.attributesByName[key] != nil { return true }
@@ -65,12 +72,12 @@ extension NSManagedObject {
 	}
 }
 
-extension NSManagedObject {
-	open var threadsafeToken: ThreadsafeToken {
+public extension NSManagedObject {
+	var threadsafeToken: ThreadsafeToken {
 		return ThreadsafeToken(object: self)
 	}
 	
-	open class ThreadsafeToken: NSObject {
+	class ThreadsafeToken: NSObject {
 		public let objectID: NSManagedObjectID
 		
 		init(object: NSManagedObject) {
@@ -85,8 +92,8 @@ extension Array where Element: NSManagedObject {
 	}
 }
 
-extension NSManagedObjectContext {
-	open func reconstitute<T>(_ token: NSManagedObject.ThreadsafeToken?) -> T? {
+public extension NSManagedObjectContext {
+	func reconstitute<T>(_ token: NSManagedObject.ThreadsafeToken?) -> T? {
 		if let token = token {
 			let objectID = token.objectID
 			if let object = self.object(with: objectID) as? T { return object }
@@ -94,7 +101,7 @@ extension NSManagedObjectContext {
 		return nil
 	}
 	
-	open func reconstitute<T>(record: T?) -> T? {
+	func reconstitute<T>(record: T?) -> T? {
 		if let record = record as? NSManagedObject {
 			let objectID = record.objectID
 			if let object = self.object(with: objectID) as? T { return object }
@@ -102,7 +109,7 @@ extension NSManagedObjectContext {
 		return nil
 	}
 	
-	open func reconstitute<T>(_ tokens: [NSManagedObject.ThreadsafeToken]) -> [T] {
+	func reconstitute<T>(_ tokens: [NSManagedObject.ThreadsafeToken]) -> [T] {
 		var results: [T] = []
 		for token in tokens {
 			if let record: T = self.reconstitute(token) { results.append(record) }
