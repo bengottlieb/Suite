@@ -8,7 +8,20 @@
 
 import Foundation
 
+public protocol Notifier: RawRepresentable { }
 
+public extension Notifier {
+	var notificationName: Notification.Name { return Notification.Name("\(self.rawValue)") }
+	func notify(object: Any? = nil, info: NSDictionary? = nil) {
+		self.notificationName.notify(object, info: info, forceCurrentThread: false)
+	}
+}
+
+public extension NSObject {
+	func addAsObserver<Note: Notifier>(for note: Note, selector sel: Selector, object: Any? = nil) {
+		NotificationCenter.default.addObserver(self, selector: sel, name: note.notificationName, object: object)
+	}
+}
 
 public extension Notification.Name {
 	func watch(_ object: Any, message: Selector) {
