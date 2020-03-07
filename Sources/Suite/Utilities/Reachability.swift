@@ -1,3 +1,4 @@
+#if canImport(SystemConfiguration)
 import SystemConfiguration
 import Foundation
 
@@ -276,3 +277,5 @@ private class ReachabilityWeakifier {
 		self.reachability = reachability
 	}
 }
+#endif
+

@@ -5,6 +5,7 @@
 //  Created by Ben Gottlieb on 2/16/20.
 //
 
+#if canImport(Combine)
 import CoreData
 import Combine
 import SwiftUI
@@ -41,3 +42,4 @@ public extension NSManagedObject {
 			{ newValue in self.setValue(newValue, forKey: field)} )
 	}
 }
+#endif

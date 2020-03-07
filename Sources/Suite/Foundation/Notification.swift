@@ -18,7 +18,7 @@ public extension Notifier {
 }
 
 public extension NSObject {
-	func addAsObserver<Note: Notifier>(for note: Note, selector sel: Selector, object: Any? = nil) {
+	func addAsObserver<Note: Notifier>(of note: Note, selector sel: Selector, object: Any? = nil) {
 		NotificationCenter.default.addObserver(self, selector: sel, name: note.notificationName, object: object)
 	}
 }

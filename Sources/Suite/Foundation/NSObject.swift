@@ -8,11 +8,11 @@
 import Foundation
 
 public extension NSObject {
-	func addAsObserver(for name: String, selector sel: Selector, object: Any? = nil) {
-		self.addAsObserver(for: NSNotification.Name(name), selector: sel, object: object)
+	func addAsObserver(of name: String, selector sel: Selector, object: Any? = nil) {
+		self.addAsObserver(of: NSNotification.Name(name), selector: sel, object: object)
 	}
 
-	@nonobjc func addAsObserver(for name: NSNotification.Name, selector sel: Selector, object: Any? = nil) {
+	@nonobjc func addAsObserver(of name: NSNotification.Name, selector sel: Selector, object: Any? = nil) {
 		if !self.responds(to: sel) {
 			dlog("⚠️ Trying to register for a notification (\(name), but \(type(of: self)) doesn't respond to \(sel)")
 			return
@@ -20,11 +20,11 @@ public extension NSObject {
 		NotificationCenter.default.addObserver(self, selector: sel, name: name, object: object)
 	}
 
-	func removeAsObserver(forString notificationName: String) {
-		self.removeAsObserver(for: NSNotification.Name(notificationName))
+	func removeAsObserver(of notificationName: String) {
+		self.removeAsObserver(of: NSNotification.Name(notificationName))
 	}
 
-	func removeAsObserver(for notificationName: NSNotification.Name? = nil) {
+	func removeAsObserver(of notificationName: NSNotification.Name? = nil) {
 		if let name = notificationName {
 			NotificationCenter.default.removeObserver(self, name: name, object: nil)
 		} else {
