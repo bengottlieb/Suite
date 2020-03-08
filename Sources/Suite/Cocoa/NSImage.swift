@@ -23,19 +23,27 @@ public extension NSImage {
 	}
 	
 	func resizedImage(size: CGSize, trimmed: Bool = true) -> NSImage? {
-		let size: CGSize = self.size
-		var frame = size.rect.within(limit: size.rect, placed: .scaleAspectFit).round()
+		var frame = self.size.rect.within(limit: size.rect, placed: .scaleAspectFit).round()
 		
 		
 		if frame.origin.x > 0 {
+			if (!trimmed) {
+				let bump = size.height * (frame.origin.x / frame.width)
+				frame.origin.y -= bump
+				frame.size.height += bump * 2
+			}
 			frame.origin.x = 0;
-			if (!trimmed) { frame.size.width = size.width; }
+			frame.size.width = size.width;
 		} else {
+			if (!trimmed) {
+				let bump = size.width * (frame.origin.y / frame.height)
+				frame.origin.x -= bump
+				frame.size.width += bump * 2
+			}
 			frame.origin.y = 0;
-			if (!trimmed) { frame.size.height = size.height; }
 		}
 		
-		let result = NSImage(size: frame.size)
+		let result = NSImage(size: size)
 		result.lockFocus()
 		self.draw(in: frame)
 		result.unlockFocus()
