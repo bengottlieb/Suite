@@ -14,3 +14,13 @@ public extension Optional where Wrapped: Comparable {
 		return lh < rh
 	}
 }
+
+public extension Optional {
+	enum UnwrappedOptionalError: Error { case failedToUnwrap }
+	func unwrap() throws -> Wrapped {
+		switch self {
+		case .none: throw UnwrappedOptionalError.failedToUnwrap
+		case .some(let wrapped): return wrapped
+		}
+	}
+}
