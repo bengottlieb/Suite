@@ -6,7 +6,9 @@
 //
 
 #if canImport(SwiftUI)
+#if canImport(Combine)
 import SwiftUI
+import Combine
 
 @available(OSX 10.15, iOS 13.0, *)
 public struct Binder<Object, Output> {
@@ -30,4 +32,5 @@ public struct Binder<Object, Output> {
 	}
 }
 
+#endif
 #endif
