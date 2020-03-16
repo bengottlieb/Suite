@@ -50,5 +50,9 @@ public extension UIViewController {
 	var presentedest: UIViewController {
 		return self.presentedViewController?.presentedest ?? self
 	}
+	
+	var container: UIViewController {
+		return self.parent ?? self.navigationController ?? self.tabBarController ?? self.splitViewController ?? self
+	}
 }
 #endif
