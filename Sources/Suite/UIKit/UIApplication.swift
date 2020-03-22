@@ -19,7 +19,7 @@ public extension UIApplication {
 	}
 	
     var currentWindow: UIWindow? {
-		if let window = self.currentScene?.windows.first(where: { $0.isKeyWindow }) { return window }
+		if let window = self.currentScene?.frontWindow { return window }
 		return self.windows.first
     }
 	
