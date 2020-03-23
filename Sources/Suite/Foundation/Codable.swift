@@ -8,7 +8,20 @@
 
 import Foundation
 
+extension Decodable {
+	public static func load(from dictionary: [String: Any]) throws -> Self {
+		let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+		let decoder = JSONDecoder()
+		return try decoder.decode(Self.self, from: data)
+	}
+}
+
 extension Encodable {
+	public func asJSON() throws -> [String: Any] {
+		guard let data = self.asJSONData else { return [:] }
+		return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] ?? [:]
+	}
+
 	public var asJSONData: Data? {
 		return try? JSONEncoder().encode(self)
 	}
