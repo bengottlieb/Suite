@@ -57,6 +57,10 @@ public extension View {
 		return (self as? ContainedInViewController)?.enclosingViewControllerContainer.viewController
 	}
 	
+	var enclosingRootViewController: UIViewController? {
+		return enclosingViewController ?? UIApplication.shared.currentWindow?.rootViewController
+	}
+	
 	func load(enclosingViewController: UIViewController?) {
 		(self as? ContainedInViewController)?.enclosingViewControllerContainer.load(enclosingViewController) 
 	}
