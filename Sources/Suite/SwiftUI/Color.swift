@@ -29,6 +29,13 @@ public extension Color {
         self.init(red: (hex >> 16) & 0xFF, green: (hex >> 8) & 0xFF, blue: hex & 0xFF, alpha: alpha)
     }
 
+	static var random: Color {
+		Color(red: Int.random(in: 0...255), green: Int.random(in: 0...255), blue: Int.random(in: 0...255))
+	}
+
+	static var randomGray: Color {
+		Color(white: Double.random(in: 0...100.0))
+	}
 }
 
 
