@@ -15,7 +15,7 @@ public var SubscriptionBag = Set<AnyCancellable>()
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension AnyCancellable {
-	func squirrelAway() { self.store(in: &SubscriptionBag) }
+	func sequester() { self.store(in: &SubscriptionBag) }
 }
 
 #endif
