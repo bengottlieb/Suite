@@ -101,9 +101,9 @@ public extension Date {
 		return formatter.string(from: self)
 	}
 	
-	var isToday: Bool { return self.isSameDay(as: Date()) }
-	var isTomorrow: Bool { return self.isSameDay(as: Date().byAdding(days: 1)) }
-	var isYesterday: Bool { return self.isSameDay(as: Date().byAdding(days: -1)) }
+	var isToday: Bool { self.isSameDay(as: Date()) }
+	var isTomorrow: Bool { self.isSameDay(as: Date().byAdding(days: 1)) }
+	var isYesterday: Bool { self.isSameDay(as: Date().byAdding(days: -1)) }
 	
 	func dateBySettingDate(date: Date?) -> Date {
 		guard let date = date else { return self }
@@ -131,19 +131,16 @@ public extension Date {
 		return calendar.date(from: components) ?? self
 	}
 	
-	var dateOnly: Date { return self.midnight }			/// returns midnight on the day in question
-	var timeOnly: Date { return self }					/// just returns the current date, since we're only interested in the time
+	var dateOnly: Date { self.midnight }			/// returns midnight on the day in question
+	var timeOnly: Date { self }						/// just returns the current date, since we're only interested in the time
 	
-	var midnight: Date { return self.byChanging(nanosecond: 0, second: 0, minute: 0, hour: 0) }
-	var lastSecond: Date { return self.byChanging(nanosecond: 0, second: 59, minute: 59, hour: 23) }
-
-	var year: Int { return self.components(which: .year).year! }
-	var month: Month { return Month(rawValue: self.components(which: .month).month!) ?? .jan }
-	var day: Int { return self.components(which: .day).day ?? 1 }
-	var hour: Int { return self.components(which: .hour).hour ?? 0 }
-	var minute: Int { return self.components(which: .minute).minute ?? 0 }
-	var second: Int { return self.components(which: .second).second ?? 0 }
-	var dayOfWeek: DayOfWeek { return DayOfWeek(rawValue: self.components(which: .weekday).weekday!) ?? .sunday }
+	var year: Int { self.components(which: .year).year! }
+	var month: Month { Month(rawValue: self.components(which: .month).month!) ?? .jan }
+	var day: Int { self.components(which: .day).day ?? 1 }
+	var hour: Int { self.components(which: .hour).hour ?? 0 }
+	var minute: Int { self.components(which: .minute).minute ?? 0 }
+	var second: Int { self.components(which: .second).second ?? 0 }
+	var dayOfWeek: DayOfWeek { DayOfWeek(rawValue: self.components(which: .weekday).weekday!) ?? .sunday }
 	func dayOfWeekString(length: StringLength = .short) -> String {
 		let day = self.dayOfWeek
 		
@@ -154,7 +151,7 @@ public extension Date {
 		}
 	}
 	
-	var numberOfDaysInMonth: Int { return Date.numberOfDays(in: self.month, year: self.year) }
+	var numberOfDaysInMonth: Int { Date.numberOfDays(in: self.month, year: self.year) }
 	
 	static func numberOfDays(in month: Month, year: Int) -> Int {
 		let shortMonths: [Month] = [.apr, .jun, .sep, .nov]
@@ -163,7 +160,7 @@ public extension Date {
 		return 31
 	}
 	
-	var firstDayOfWeekInMonth: DayOfWeek { return self.firstDayInMonth.dayOfWeek }
+	var firstDayOfWeekInMonth: DayOfWeek { self.firstDayInMonth.dayOfWeek }
 	
 	var firstDayInMonth: Date {
 		let cal = Calendar.current
@@ -219,8 +216,11 @@ public extension Date {
 		return NSCalendar.current.date(byAdding: components, to: self, wrappingComponents: true) ?? self
 	}
 	
-	var noon: Date { return self.byChanging(second: 0, minute: 0, hour: 12) }
-	
+	var noon: Date { self.hour(12) }
+	func hour(_ hour: Int) -> Date { self.byChanging(nanosecond: 0, second: 0, minute: 0, hour: hour) }
+	var midnight: Date { self.hour(0) }
+	var lastSecond: Date { self.byChanging(nanosecond: 0, second: 59, minute: 59, hour: 23) }
+
 //	func isAfter(date: Date) -> Bool { return self.earlierDate(date) != self && date != self }
 //	func isBefore(date: Date) -> Bool { return self.earlierDate(date) == self && date != self }
 	
