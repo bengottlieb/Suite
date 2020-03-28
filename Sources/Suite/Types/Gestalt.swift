@@ -37,7 +37,20 @@ public struct Gestalt {
 		return extensionDictionary is NSDictionary
 	}()
 	
+	#if os(OSX)
+		public static var isOnMac: Bool { return true }
+	#endif
+	
+	#if os(watchOS)
+		public static var isOnMac: Bool { return false }
+	#endif
+	
 	#if os(iOS)
+		#if targetEnvironment(macCatalyst)
+			public static var isOnMac: Bool { return true }
+		#else
+			public static var isOnMac: Bool { return false }
+		#endif
 		public static var isOnIPad: Bool = { return UIDevice.current.userInterfaceIdiom == .pad }()
 		public static var isOnIPhone: Bool = { return UIDevice.current.userInterfaceIdiom == .phone }()
         public static var isTestflightBuild: Bool = {
