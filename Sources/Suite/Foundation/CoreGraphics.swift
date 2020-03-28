@@ -209,10 +209,12 @@ public extension CGRect {
 			}
 			
 		case .center:
-			newRect.origin.x += (parent.width - newRect.width) / 2
-			newRect.origin.y += (parent.height - newRect.height) / 2
-			newRect.size.height = min(limit.height, self.height)
-			newRect.size.width = min(limit.width, self.width)
+			let insetX = (parent.width - newRect.width) / 2
+			let insetY = (parent.height - newRect.height) / 2
+			newRect.origin.x += insetX
+			newRect.origin.y += insetY
+			newRect.size.height = min(limit.height - insetY * 2, self.height)
+			newRect.size.width = min(limit.width - insetX * 2, self.width)
 
 		case .top:
 			newRect.origin.x += (parent.width - newRect.width) / 2
