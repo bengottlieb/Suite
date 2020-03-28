@@ -182,6 +182,13 @@ public extension Date {
 		return date ?? self
 	}
 	
+	var hourMinuteString: String {
+		let formatter = DateFormatter()
+		formatter.dateStyle = .none
+		formatter.timeStyle = .short
+		return formatter.string(from: self)
+	}
+	
 	func byAdding(seconds: Int? = nil, minutes: Int? = nil, hours: Int? = nil, days: Int? = nil, months: Int? = nil, years: Int? = nil) -> Date {
 		
 		let calendar = Calendar.current
@@ -224,7 +231,18 @@ public extension Date {
 	func hour(_ hour: Int) -> Date { self.byChanging(nanosecond: 0, second: 0, minute: 0, hour: hour) }
 	var midnight: Date { self.hour(0) }
 	var lastSecond: Date { self.byChanging(nanosecond: 0, second: 59, minute: 59, hour: 23) }
-
+	
+	func allDays(until date: Date) -> [Date] {
+		if date < self { return [] }
+		var traveller = self
+		var results: [Date] = []
+		
+		while traveller < date {
+			results.append(traveller)
+			traveller = traveller.nextDay
+		}
+		return results
+	}
 //	func isAfter(date: Date) -> Bool { return self.earlierDate(date) != self && date != self }
 //	func isBefore(date: Date) -> Bool { return self.earlierDate(date) == self && date != self }
 	
