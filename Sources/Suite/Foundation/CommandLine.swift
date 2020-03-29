@@ -22,7 +22,7 @@ public extension CommandLine {
 		let punct = CharacterSet.punctuationCharacters
 		for arg in self.arguments {
 			let comps = arg.components(separatedBy: "=")
-			if comps.count < 2 { return nil }
+			if comps.count < 2 { continue }
 			
 			if comps[0].trimmingCharacters(in: punct) == key { return Array(comps.dropFirst()).joined(separator: "=").trimmingCharacters(in: CharacterSet(charactersIn: "\"")) }
 		}
