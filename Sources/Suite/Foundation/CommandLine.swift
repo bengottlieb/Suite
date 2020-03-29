@@ -10,12 +10,12 @@ import Foundation
 public extension CommandLine {
 	static func int(for key: String) -> Int? {
 		guard let raw = self.string(for: key) else { return nil }
-		return Int(raw)
+		return Int(raw.numbersOnly)
 	}
 
 	static func uint64(for key: String) -> UInt64? {
 		guard let raw = self.string(for: key) else { return nil }
-		return UInt64(raw)
+		return UInt64(raw.numbersOnly)
 	}
 
 	static func string(for key: String) -> String? {

@@ -40,6 +40,12 @@ public extension String {
 	func index(_ index: Int) -> String.Index { return self.index(self.startIndex, offsetBy: min(index, self.count)) }
 	var fullRange: Range<String.Index> { return self.range(range: NSRange(location: 0, length: self.count)) }
 	
+	var numbersOnly: String {
+		self.reduce("") { result, chr in
+			"0123456789".contains(chr) ? result + String(chr) : result
+		}
+	}
+	
 	var isValidEmail: Bool {
 		let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"
 		
