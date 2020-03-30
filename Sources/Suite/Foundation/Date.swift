@@ -26,7 +26,7 @@ extension Date: Identifiable {
 extension Date {
 	public enum StringLength: Int { case normal, short, veryShort }
 
-	public enum DayOfWeek: Int, CaseIterable, Codable { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
+	public enum DayOfWeek: Int, CaseIterable, Codable, Comparable { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 		public var nextDay: DayOfWeek { return self.increment(count: 1) }
 		public func increment(count: Int) -> DayOfWeek { return DayOfWeek(rawValue: (self.rawValue + count - 1) % 7 + 1)! }
 		public var abbrev: String { return Calendar.current.veryShortWeekdaySymbols[self.rawValue - 1] }
@@ -44,6 +44,7 @@ extension Date {
 			}
 			return days
 		}
+		public static func <(lhs: DayOfWeek, rhs: DayOfWeek) -> Bool { return lhs.rawValue < rhs.rawValue }
 	}
 	
 	public enum Month: Int, CaseIterable, Codable { case jan = 1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
@@ -194,7 +195,7 @@ public extension Date {
 		let calendar = Calendar.current
 		let components = DateComponents(calendar: calendar, year: years, month: months, day: days, hour: hours, minute: minutes, second: seconds)
 		
-		return calendar.date(byAdding: components, to: self, wrappingComponents: false) ?? self
+		return calendar.date(byAdding: components, to: self, wrappingComponents: true) ?? self
 	}
 	
 	func byChanging(nanosecond: Int? = nil, second: Int? = nil, minute: Int? = nil, hour: Int? = nil, day: Int? = nil, month: Int? = nil, year: Int? = nil) -> Date {

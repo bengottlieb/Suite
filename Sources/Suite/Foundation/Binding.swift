@@ -47,6 +47,10 @@ public extension Binding where Value: Equatable {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension Binding {
+	init(readonly: Value) {
+		self.init(get: { return readonly }, set: { _ in })
+	}
+	
 	init<T>(isNotNil source: Binding<T?>, defaultValue: T) where Value == Bool {
 		self.init(get: { source.wrappedValue != nil }, set: { source.wrappedValue = $0 ? defaultValue : nil })
 	}
