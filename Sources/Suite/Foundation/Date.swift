@@ -195,7 +195,7 @@ public extension Date {
 		let calendar = Calendar.current
 		let components = DateComponents(calendar: calendar, year: years, month: months, day: days, hour: hours, minute: minutes, second: seconds)
 		
-		return calendar.date(byAdding: components, to: self, wrappingComponents: true) ?? self
+		return calendar.date(byAdding: components, to: self, wrappingComponents: false) ?? self
 	}
 	
 	func byChanging(nanosecond: Int? = nil, second: Int? = nil, minute: Int? = nil, hour: Int? = nil, day: Int? = nil, month: Int? = nil, year: Int? = nil) -> Date {
@@ -218,14 +218,14 @@ public extension Date {
 		var components = DateComponents()
 		components.day = 1
 		
-		return NSCalendar.current.date(byAdding: components, to: self, wrappingComponents: true) ?? self
+		return NSCalendar.current.date(byAdding: components, to: self, wrappingComponents: false) ?? self
 	}
 	
 	var previousDay: Date {
 		var components = DateComponents()
 		components.day = -1
 		
-		return NSCalendar.current.date(byAdding: components, to: self, wrappingComponents: true) ?? self
+		return NSCalendar.current.date(byAdding: components, to: self, wrappingComponents: false) ?? self
 	}
 	
 	var noon: Date { self.hour(12) }
