@@ -29,7 +29,11 @@ extension Date {
 	public enum DayOfWeek: Int, CaseIterable, Codable, Comparable { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 		public var nextDay: DayOfWeek { return self.increment(count: 1) }
 		public func increment(count: Int) -> DayOfWeek { return DayOfWeek(rawValue: (self.rawValue + count - 1) % 7 + 1)! }
-		public var abbrev: String { return Calendar.current.veryShortWeekdaySymbols[self.rawValue - 1] }
+		public var abbreviation: String { return Calendar.current.veryShortWeekdaySymbols[self.rawValue - 1] }
+		public var veryShortName: String {
+			let str = Calendar.current.shortWeekdaySymbols[self.rawValue - 1]
+			return str.count < 3 ? str : String(str.dropLast(str.count - 2))
+		}
 		public var shortName: String { return Calendar.current.shortWeekdaySymbols[self.rawValue - 1] }
 		public var name: String { return Calendar.current.weekdaySymbols[self.rawValue - 1] }
 		public var isWeekendDay: Bool { return self == .saturday || self == .sunday }
@@ -152,7 +156,7 @@ public extension Date {
 		switch length {
 		case .normal: return day.name
 		case .short: return day.shortName
-		case .veryShort: return day.abbrev
+		case .veryShort: return day.abbreviation
 		}
 	}
 	
@@ -356,6 +360,24 @@ public extension Date {
 		return NSLocalizedString("now", comment: "now")
 	}
 
+	func previous(_ dayOfWeek: Date.DayOfWeek) -> Date {
+		var date = self
+		
+		while date.dayOfWeek != dayOfWeek { date = date.previousDay }
+		return date
+	}
+
+	func next(_ dayOfWeek: Date.DayOfWeek) -> Date {
+		var date = self
+		
+		while date.dayOfWeek != dayOfWeek { date = date.nextDay }
+		return date
+	}
+
+	func thisWeek(_ dayOfWeek: Date.DayOfWeek) -> Date {
+		if dayOfWeek < self.dayOfWeek { return self.previous(dayOfWeek) }
+		return self.next(dayOfWeek)
+	}
 }
 
 public extension Int {
