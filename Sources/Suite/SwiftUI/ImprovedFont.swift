@@ -5,7 +5,7 @@
 //  Created by Ben Gottlieb on 3/31/20.
 //
 
-#if canImport(SwiftUI)
+#if canImport(Combine)
 import SwiftUI
 
 @available(OSX 10.15, iOS 13.0, *)
