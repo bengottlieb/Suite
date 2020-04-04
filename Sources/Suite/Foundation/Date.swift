@@ -160,6 +160,16 @@ public extension Date {
 		}
 	}
 	
+	func sameTime(on day: Date) -> Date {
+		let cal = Calendar.current
+		let newComponents = cal.dateComponents(in: TimeZone.current, from: day)
+		var myComponents = cal.dateComponents(in: TimeZone.current, from: self)
+		myComponents.month = newComponents.month
+		myComponents.day = newComponents.day
+		myComponents.year = newComponents.year
+		return Calendar.current.date(from: myComponents) ?? self
+	}
+	
 	var numberOfDaysInMonth: Int { Date.numberOfDays(in: self.month, year: self.year) }
 	
 	static func numberOfDays(in month: Month, year: Int) -> Int {
@@ -375,6 +385,11 @@ public extension Date {
 	}
 
 	func thisWeek(_ dayOfWeek: Date.DayOfWeek) -> Date {
+		if dayOfWeek < self.dayOfWeek { return self.previous(dayOfWeek) }
+		return self.next(dayOfWeek)
+	}
+
+	func upcoming(_ dayOfWeek: Date.DayOfWeek) -> Date {
 		if dayOfWeek < self.dayOfWeek { return self.previous(dayOfWeek) }
 		return self.next(dayOfWeek)
 	}
