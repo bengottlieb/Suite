@@ -405,3 +405,16 @@ public extension Int {
 	}
 	
 }
+
+public extension Array where Element == Date {
+	func contains(day: Date) -> Bool {
+		return self.firstIndex(ofDay: day) != nil
+	}
+	
+	func firstIndex(ofDay day: Date) -> Int? {
+		for i in self.indices {
+			if self[i].isSameDay(as: day) { return i }
+		}
+		return nil
+	}
+}
