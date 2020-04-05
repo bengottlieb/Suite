@@ -5,12 +5,12 @@
 //  Created by ben on 3/22/20.
 //
 
-import UIKit
-import SwiftUI
-
+#if canImport(UIKit)
 #if canImport(Combine)
 #if canImport(SwiftUI)
 
+import UIKit
+import SwiftUI
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public class EnclosingViewControllerContainer: CustomStringConvertible {
@@ -69,5 +69,6 @@ public extension View {
 
 
 
+#endif
 #endif
 #endif

@@ -6,6 +6,7 @@
 //
 
 #if canImport(Combine)
+#if canImport(UIKit)
 
 import SwiftUI
 import SafariServices
@@ -26,4 +27,5 @@ public extension View {
 	}
 }
 
+#endif
 #endif
