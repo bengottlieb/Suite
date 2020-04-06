@@ -6,6 +6,7 @@
 //
 
 #if canImport(SwiftUI)
+#if canImport(Combine)
 
 import SwiftUI
 
@@ -15,4 +16,5 @@ public extension View {
         frame(width: size.width, height: size.height)
     }
 }
+#endif
 #endif

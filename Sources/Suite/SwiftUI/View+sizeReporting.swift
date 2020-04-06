@@ -6,6 +6,7 @@
 //
 
 #if canImport(SwiftUI)
+#if canImport(Combine)
 
 import SwiftUI
 
@@ -30,4 +31,5 @@ public extension View {		// Tracks the size available for the view
     }
 }
 
+#endif
 #endif
