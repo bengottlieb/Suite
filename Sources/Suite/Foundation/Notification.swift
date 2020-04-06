@@ -8,6 +8,16 @@
 
 import Foundation
 
+#if canImport(Combine)
+import Combine
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+public extension Notification.Name {
+	func publisher(object: AnyObject? = nil) -> NotificationCenter.Publisher {
+		NotificationCenter.default.publisher(for: self, object: object)
+	}
+}
+#endif
+
 public protocol Notifier: RawRepresentable { }
 
 public extension Notifier {
