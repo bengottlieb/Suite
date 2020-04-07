@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  NSManagedObject+Combine.swift
 //  
 //
 //  Created by Ben Gottlieb on 2/16/20.

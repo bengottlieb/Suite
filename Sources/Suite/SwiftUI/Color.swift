@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Color.swift
 //  
 //
 //  Created by Ben Gottlieb on 3/5/20.
@@ -8,6 +8,7 @@
 #if canImport(Combine)
 
 import SwiftUI
+import Studio
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension Color {

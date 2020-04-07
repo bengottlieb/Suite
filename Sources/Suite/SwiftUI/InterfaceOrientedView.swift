@@ -6,8 +6,10 @@
 //
 
 #if canImport(Combine)
+#if canImport(UIKit)
 import SwiftUI
 import Combine
+import UIKit
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public class OrientationWatcher: ObservableObject, CustomStringConvertible {
@@ -49,4 +51,5 @@ public struct InterfaceOrientedView<Contents: View>: View {
 	}
 }
 
+#endif
 #endif
