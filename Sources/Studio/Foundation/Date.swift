@@ -101,7 +101,7 @@ public func !≈(lhs: Date, rhs: Date) -> Bool {
 
 public extension Date {
 	
-	func localTimeString(dateStyle: DateFormatter.Style = .short, timeStyle: DateFormatter.Style = .short) -> String {
+	func localTimeString(date dateStyle: DateFormatter.Style = .short, time timeStyle: DateFormatter.Style = .short) -> String {
 		let formatter = DateFormatter()
 		
 		formatter.dateStyle = dateStyle
