@@ -100,8 +100,14 @@ public func !≈(lhs: Date, rhs: Date) -> Bool {
 }
 
 public extension Date {
+	func isSameWeek(as other: Date) -> Bool {
+		let calendar = Calendar.current
+		let myWeek = calendar.component(.weekOfYear, from: self)
+		let otherWeek = calendar.component(.weekOfYear, from: other)
+		return myWeek == otherWeek
+	}
 	
-	func localTimeString(dateStyle: DateFormatter.Style = .short, timeStyle: DateFormatter.Style = .short) -> String {
+	func localTimeString(date dateStyle: DateFormatter.Style = .short, time timeStyle: DateFormatter.Style = .short) -> String {
 		let formatter = DateFormatter()
 		
 		formatter.dateStyle = dateStyle
@@ -160,10 +166,10 @@ public extension Date {
 		}
 	}
 	
-	func sameTime(on day: Date) -> Date {
+	func movedToTime(_ day: Date) -> Date {
 		let cal = Calendar.current
-		let newComponents = cal.dateComponents(in: TimeZone.current, from: day)
-		var myComponents = cal.dateComponents(in: TimeZone.current, from: self)
+		var myComponents = cal.dateComponents(in: TimeZone.current, from: day)
+		let newComponents = cal.dateComponents(in: TimeZone.current, from: self)
 		myComponents.month = newComponents.month
 		myComponents.day = newComponents.day
 		myComponents.year = newComponents.year
