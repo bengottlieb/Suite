@@ -106,7 +106,14 @@ public extension Date {
 		let otherWeek = calendar.component(.weekOfYear, from: other)
 		return myWeek == otherWeek
 	}
-	
+
+	func isSameMonth(as other: Date) -> Bool {
+		let calendar = Calendar.current
+		let myComponents = calendar.dateComponents([.month, .year], from: self)
+		let otherComponents = calendar.dateComponents([.month, .year], from: other)
+		return myComponents.month == otherComponents.month && myComponents.year == otherComponents.year
+	}
+
 	func localTimeString(date dateStyle: DateFormatter.Style = .short, time timeStyle: DateFormatter.Style = .short) -> String {
 		let formatter = DateFormatter()
 		
