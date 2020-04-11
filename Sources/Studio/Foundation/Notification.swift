@@ -22,7 +22,7 @@ public protocol Notifier: RawRepresentable { }
 
 public extension Notifier {
 	var notificationName: Notification.Name { return Notification.Name("\(self.rawValue)") }
-	func notify(object: Any? = nil, info: NSDictionary? = nil) {
+	func notify(object: Any? = nil, info: [String: Any]? = nil) {
 		self.notificationName.notify(object, info: info, forceCurrentThread: false)
 	}
 }
@@ -42,7 +42,7 @@ public extension Notification.Name {
 		NotificationCenter.default.removeObserver(observer, name: self, object: object)
 	}
 	
-	func notify(_ object: Any? = nil, info: NSDictionary? = nil, forceCurrentThread: Bool = false) {
+	func notify(_ object: Any? = nil, info: [String: Any]? = nil, forceCurrentThread: Bool = false) {
 		if forceCurrentThread {
 			Notification.post(name: self, object: object, userInfo: info)
 		} else {
@@ -52,19 +52,19 @@ public extension Notification.Name {
 }
 
 public extension Notification {
-	static func post(name: String, object: Any? = nil, userInfo: NSDictionary? = nil) {
+	static func post(name: String, object: Any? = nil, userInfo: [String: Any]? = nil) {
 		self.post(name: Notification.Name(rawValue: name), object: object, userInfo: userInfo)
 	}
 	
-	static func post(name: Notification.Name, object: Any? = nil, userInfo: NSDictionary? = nil) {
-		NotificationCenter.default.post(name: name, object: object, userInfo: userInfo as? [String: Any])
+	static func post(name: Notification.Name, object: Any? = nil, userInfo: [String: Any]? = nil) {
+		NotificationCenter.default.post(name: name, object: object, userInfo: userInfo)
 	}
 	
-	static func postOnMainThread(name: String, object: Any? = nil, userInfo: NSDictionary? = nil) {
+	static func postOnMainThread(name: String, object: Any? = nil, userInfo: [String: Any]? = nil) {
 		self.postOnMainThread(name: Notification.Name(rawValue: name), object: object, userInfo: userInfo)
 	}
 
-	static func postOnMainThread(name: Notification.Name, object: Any? = nil, userInfo: NSDictionary? = nil) {
+	static func postOnMainThread(name: Notification.Name, object: Any? = nil, userInfo: [String: Any]? = nil) {
 		DispatchQueue.main.async {
 			self.post(name: name, object: object, userInfo: userInfo)
 		}
