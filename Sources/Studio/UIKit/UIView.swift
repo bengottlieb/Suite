@@ -179,5 +179,11 @@ public extension UIView {
 		self.frame = rect
 		return self
 	}
+
+	@discardableResult func border(_ width: CGFloat, color: UIColor) -> Self {
+		self.layer.borderColor = color.cgColor
+		self.layer.borderWidth = width
+		return self
+	}
 }
 #endif
