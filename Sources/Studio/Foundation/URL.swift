@@ -15,4 +15,10 @@ public extension URL {
 	init(withPathRelativeToHome path: String) {
 		self.init(fileURLWithPath: path.expandingTildeInPath)
 	}
+	
+	var existsOnDisk: Bool {
+		if !self.isFileURL { return false }
+		
+		return FileManager.default.fileExists(at: self)
+	}
 }
