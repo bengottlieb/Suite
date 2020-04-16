@@ -38,6 +38,8 @@ public extension UIViewController {
 		if Bundle(for: self).url(forResource: filename, withExtension: "nib") !=  nil { return filename }
 		return nil
 	}
+
+	var isInDarkMode: Bool { return self.traitCollection.isInDarkMode }
 	
 	@discardableResult
 	func turnOffCardModalPresentation() -> Self {

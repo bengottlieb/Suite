@@ -28,6 +28,8 @@ public extension UIView {
 		return nil
 	}
 	
+	var isInDarkMode: Bool { self.viewController?.isInDarkMode == true }
+	
 	static let activityIndicatorTag = 10246
 	
 	@discardableResult

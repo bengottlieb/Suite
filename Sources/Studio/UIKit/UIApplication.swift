@@ -17,12 +17,19 @@ public extension UIApplication {
 			.compactMap { $0 as? UIWindowScene }
 			.first
 	}
-	
+}
+
+public extension UIApplication {
     var currentWindow: UIWindow? {
-		if let window = self.currentScene?.frontWindow { return window }
+		if #available(iOS 13.0, *) {
+			if let window = self.currentScene?.frontWindow { return window }
+		}
+		
+		if let window = self.delegate?.window { return window }
 		return self.windows.first
     }
-	
+
 }
 
 #endif
+

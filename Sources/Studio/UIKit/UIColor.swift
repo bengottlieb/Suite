@@ -54,6 +54,38 @@ public extension UIColor {
 		
 		return r << 16 + g << 8 + b
 	}
+	
+	static var defaultText: UIColor {
+		if #available(iOS 13.0, *) {
+			return UIColor.label
+		} else {
+			return UIColor.black
+		}
+	}
+	
+	static var secondaryText: UIColor {
+		if #available(iOS 13.0, *) {
+			return UIColor.secondaryLabel
+		} else {
+			return UIColor.darkGray
+		}
+	}
+	
+	static var tertiaryText: UIColor {
+		if #available(iOS 13.0, *) {
+			return UIColor.tertiaryLabel
+		} else {
+			return UIColor.lightGray
+		}
+	}
+	
+	static var defaultBackground: UIColor {
+		if #available(iOS 13.0, *) {
+			return UIColor.systemBackground
+		} else {
+			return UIColor.white
+		}
+	}
 }
 #else
 	import Cocoa
