@@ -34,6 +34,12 @@ public extension String {
 	subscript(i: Int) -> String { return String(self[self.index(i)]) }
 //	subscript(i: Int) -> Int { return Int(UnicodeScalar(self.characters[self.index(i)]).value) }
 	subscript(range: Range<Int>) -> String { return String(self[self.index(range.lowerBound)..<self.index(range.upperBound)]) }
+	
+	subscript(range: ClosedRange<Int>) -> String { return String(self[self.index(range.lowerBound)..<self.index(range.upperBound)]) }
+	
+	subscript(range: PartialRangeUpTo<Int>) -> String { return String(self[self.startIndex..<self.index(range.upperBound)]) }
+
+	subscript(range: PartialRangeFrom<Int>) -> String { return String(self[self.index(range.lowerBound)..<self.endIndex]) }
 
 	func range(range: Range<Int>) -> Range<String.Index> { return self.index(range.lowerBound) ..< self.index(range.upperBound) }
 	func range(range: NSRange) -> Range<String.Index> { return self.index(range.location) ..< self.index(range.location + range.length) }
