@@ -35,7 +35,7 @@ public extension String {
 //	subscript(i: Int) -> Int { return Int(UnicodeScalar(self.characters[self.index(i)]).value) }
 	subscript(range: Range<Int>) -> String { return String(self[self.index(range.lowerBound)..<self.index(range.upperBound)]) }
 	
-	subscript(range: ClosedRange<Int>) -> String { return String(self[self.index(range.lowerBound)..<self.index(range.upperBound)]) }
+	subscript(range: ClosedRange<Int>) -> String { return String(self[self.index(range.lowerBound)...self.index(range.upperBound)]) }
 	
 	subscript(range: PartialRangeUpTo<Int>) -> String { return String(self[self.startIndex..<self.index(range.upperBound)]) }
 
