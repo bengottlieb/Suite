@@ -27,13 +27,19 @@ public protocol DefaultsBasedPreferencesKeyProvider: class {
 		super.init()
 		
 		let defaults = self.defaults
-		for child in Mirror(reflecting: self).children {
-			guard let key = child.label else { continue }
-			
-			if let value = defaults.object(forKey: self.name(forKey: key)) {
-				self.setValue(value, forKey: key)
+		var mirror = Mirror(reflecting: self)
+		
+		while true {
+			for child in mirror.children {
+				guard let key = child.label else { continue }
+				
+				if let value = defaults.object(forKey: self.name(forKey: key)) {
+					self.setValue(value, forKey: key)
+				}
+				self.addObserver(self, forKeyPath: key, options: .new, context: nil)
 			}
-			self.addObserver(self, forKeyPath: key, options: .new, context: nil)
+			guard let sup = mirror.superclassMirror else { break }
+			mirror = sup
 		}
 	}
 	
@@ -62,20 +68,25 @@ public protocol DefaultsBasedPreferencesKeyProvider: class {
 	open var defaults: UserDefaults { return UserDefaults.standard }
 	
 	open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-		
-		for child in Mirror(reflecting: self).children {
-			guard let key = child.label else { continue }
-			
-			if key == keyPath {
-				let defaultsKey = self.name(forKey: key)
-				if let value = change?[.newKey], !(value is NSNull) {
-					self.defaults.set(value, forKey: defaultsKey)
-				} else {
-					self.defaults.removeValue(forKey: defaultsKey)
+		var mirror = Mirror(reflecting: self)
+		while true {
+			for child in mirror.children {
+				guard let key = child.label else { continue }
+				
+				if key == keyPath {
+					let defaultsKey = self.name(forKey: key)
+					if let value = change?[.newKey], !(value is NSNull) {
+						self.defaults.set(value, forKey: defaultsKey)
+					} else {
+						self.defaults.removeValue(forKey: defaultsKey)
+					}
+					Notification.postOnMainThread(name: self.notificationName(forKey: key))
+					return
 				}
-				Notification.postOnMainThread(name: self.notificationName(forKey: key))
-				return
 			}
+
+			guard let sup = mirror.superclassMirror else { break }
+			mirror = sup
 		}
 		
 		super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
