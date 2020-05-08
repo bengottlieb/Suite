@@ -5,7 +5,7 @@
 //  Created by ben on 5/3/20.
 //
 
-#if canImport(AppKit)
+#if canImport(AppKit) && !targetEnvironment(macCatalyst)
 
 import AppKit
 
