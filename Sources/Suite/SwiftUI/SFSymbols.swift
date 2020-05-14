@@ -9,6 +9,7 @@
 #if canImport(Combine)
 import SwiftUI
 
+@available(OSX 10.15, iOS 13.0, *)
 public extension Image {
 	init(_ sfsymbol: SFSymbolName) {
 		self.init(systemName: sfsymbol.rawValue)
