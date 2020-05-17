@@ -6,17 +6,8 @@
 //
 //  Thanks to CoreSwiftUI for this! // https://github.com/CodeSlicing/pure-swift-ui
 
-#if canImport(Combine)
-import SwiftUI
-
 @available(OSX 10.15, iOS 13.0, *)
-public extension Image {
-	init(_ sfsymbol: SFSymbolName) {
-		self.init(systemName: sfsymbol.rawValue)
-	}
-}
-
-public enum SFSymbolName: String {
+public enum SFSymbol: String {
 	case numeric_0_circle = "0.circle"
 	case numeric_0_circle_fill = "0.circle.fill"
 	case numeric_0_square = "0.square"
@@ -1811,5 +1802,3 @@ public enum SFSymbolName: String {
 	case _xmark_icloud_fill = "xmark.icloud.fill"
 	
 }
-#endif
-

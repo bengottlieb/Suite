@@ -7,6 +7,7 @@
 
 #if canImport(Combine)
 import SwiftUI
+import Studio
 
 @available(OSX 10.15, iOS 13.0, *)
 public extension Image {
@@ -15,6 +16,10 @@ public extension Image {
 			.resizable()
 			.aspectRatio(contentMode: mode)
 			.frame(size: size)
+	}
+
+	init(_ sfsymbol: SFSymbol) {
+		self.init(systemName: sfsymbol.rawValue)
 	}
 }
 

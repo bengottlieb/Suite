@@ -18,6 +18,12 @@ public enum ImageFormat: String { case PNG = "png", JPEG = "jpeg"
 }
 
 
+@available(iOS 13.0, *)
+public extension UIImage {
+	convenience init?(_ sfsymbol: SFSymbol) {
+		self.init(systemName: sfsymbol.rawValue)
+	}
+}
 
 public extension UIImage {
 	enum ImageStoreError: Error { case nonLocalURL, unableToConverToData }
