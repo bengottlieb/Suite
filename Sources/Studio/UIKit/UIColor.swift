@@ -39,6 +39,10 @@ public extension UIColor {
 		
 		return String(format: "%02x%02x%02x", arguments: [r, g, b])
 	}
+	
+	func alpha(_ alpha: CGFloat) -> UIColor {
+		self.withAlphaComponent(alpha)
+	}
 
 	var hex: Int {
 		var red: CGFloat = 0
