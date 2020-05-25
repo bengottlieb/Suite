@@ -17,12 +17,12 @@ public extension UIColor {
 		self.init(red: CGFloat(values[0]), green: CGFloat(values[1]), blue: CGFloat(values[2]), alpha: CGFloat(values.count > 3 ? values[3] : 1.0))
 	}
 	
-	convenience init(red: Int, green: Int, blue: Int, alpha: Double = 1.0) {
-		self.init(red: CGFloat(red.capped(0...255)) / 255.0, green: CGFloat(green.capped(0...255)) / 255.0, blue: CGFloat(blue.capped(0...255)) / 255.0, alpha: CGFloat(alpha))
+	convenience init(r: Int, g: Int, b: Int, a: Double = 1.0) {
+		self.init(red: CGFloat(r.capped(0...255)) / 255.0, green: CGFloat(g.capped(0...255)) / 255.0, blue: CGFloat(b.capped(0...255)) / 255.0, alpha: CGFloat(a))
 	}
 	
 	convenience init(hex: Int, alpha: Double = 1.0) {
-		self.init(red: (hex >> 16) & 0xFF, green: (hex >> 8) & 0xFF, blue: hex & 0xFF, alpha: alpha)
+		self.init(r: (hex >> 16) & 0xFF, g: (hex >> 8) & 0xFF, b: hex & 0xFF, a: alpha)
 	}
 	
 	var hexString: String {
