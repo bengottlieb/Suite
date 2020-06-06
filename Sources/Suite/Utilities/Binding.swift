@@ -13,12 +13,14 @@ import Combine
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension Binding {
-	static func empty<Value>(value: Value) -> Binding<Value> {
-		return Binding<Value>(get: { return value }) { _ in }
+	static func mock<Value>(value: Value) -> Binding<Value> {
+		var value = value
+		return Binding<Value>(get: { return value }) { value = $0 }
 	}
 
-	static func empty<Value>(value: Value? = nil) -> Binding<Value?> {
-		return Binding<Value?>(get: { return value }) { _ in }
+	static func mock<Value>(value: Value?) -> Binding<Value?> {
+		var value = value
+		return Binding<Value?>(get: { return value }) { value = $0 }
 	}
 }
 
