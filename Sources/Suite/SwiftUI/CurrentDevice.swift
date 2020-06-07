@@ -6,6 +6,7 @@
 //
 
 #if canImport(Combine)
+#if os(iOS)
 import UIKit
 import SwiftUI
 import Studio
@@ -34,4 +35,5 @@ public class CurrentDevice: ObservableObject {
 		}
 	}
 }
+#endif
 #endif

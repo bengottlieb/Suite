@@ -6,6 +6,7 @@
 //
 
 #if canImport(Combine)
+#if canImport(UIKit)
 import SwiftUI
 import Studio
 
@@ -24,4 +25,5 @@ public extension Image {
 }
 
 
+#endif
 #endif

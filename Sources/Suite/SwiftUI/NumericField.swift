@@ -9,7 +9,7 @@
 #if canImport(Combine)
 
 import SwiftUI
-import UIKit
+import CoreGraphics
 
 public protocol NumericFieldNumber { }
 
