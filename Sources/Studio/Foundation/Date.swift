@@ -100,6 +100,15 @@ public func !≈(lhs: Date, rhs: Date) -> Bool {
 }
 
 public extension Date {
+	init?(calendar: Calendar = .current, timeZone: TimeZone = .current, year: Int? = nil, month: Int? = nil, day: Int? = nil, hour: Int? = nil, minute: Int? = nil, second: Int = 0, nanosecond: Int = 0) {
+		let components = DateComponents(calendar: calendar, timeZone: timeZone, era: nil, year: year, month: month, day: day, hour: hour, minute: minute, second: second, nanosecond: nanosecond, weekday: nil, weekdayOrdinal: nil, quarter: nil, weekOfMonth: nil, weekOfYear: nil, yearForWeekOfYear: nil)
+		
+		if let date = components.date {
+			self = date
+		} else {
+			return nil
+		}
+	}
 	func isSameWeek(as other: Date) -> Bool {
 		let calendar = Calendar.current
 		let myWeek = calendar.component(.weekOfYear, from: self)
