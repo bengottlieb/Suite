@@ -21,4 +21,16 @@ public extension URL {
 		
 		return FileManager.default.fileExists(at: self)
 	}
+	
+	var queryDictionary: [String: String] {
+		let pairs = self.query?.components(separatedBy: "&") ?? []
+		var dict: [String: String] = [:]
+		
+		for keyPair in pairs {
+			let split = keyPair.components(separatedBy: "=")
+			guard split.count == 2 else { continue }
+			dict[split[0]] = split[1]
+		}
+		return dict
+	}
 }
