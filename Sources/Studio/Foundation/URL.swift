@@ -11,6 +11,8 @@ public extension URL {
 	var relativePathToHome: String? {
 		return self.path.abbreviatingWithTildeInPath
 	}
+
+	static let blank: URL = URL(string: "about:blank")!
 	
 	init(withPathRelativeToHome path: String) {
 		self.init(fileURLWithPath: path.expandingTildeInPath)

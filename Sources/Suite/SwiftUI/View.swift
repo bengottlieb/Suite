@@ -24,6 +24,8 @@ public extension View {
 
 #if canImport(UIKit)
 import UIKit
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension View {
 	func resignFirstResponder() {
 		UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
