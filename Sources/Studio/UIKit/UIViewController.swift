@@ -58,4 +58,18 @@ public extension UIViewController {
 		return self.parent ?? self.navigationController ?? self.tabBarController ?? self.splitViewController ?? self
 	}
 }
+
+public extension UIViewController {
+	func share(something: Any?, fromItem barButtonItem: UIBarButtonItem? = nil, fromView: UIView? = nil) {
+		guard let item = something else { return }
+		let activityVC = UIActivityViewController(activityItems: [item], applicationActivities: nil)
+		if let barButtonItem = barButtonItem {
+			activityVC.popoverPresentationController?.barButtonItem = barButtonItem
+		} else if let view = view {
+			activityVC.popoverPresentationController?.sourceView = view
+			activityVC.popoverPresentationController?.sourceRect = view.bounds
+		}
+		self.present(activityVC, animated: true, completion: nil)
+	}
+}
 #endif
