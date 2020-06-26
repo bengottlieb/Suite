@@ -8,6 +8,10 @@
 import Foundation
 
 public extension Data {
+	var rawJSON: Any? {
+		try? JSONSerialization.jsonObject(with: self, options: [])
+	}
+
 	@discardableResult
 	func debug_save(to name: String) -> URL! {
 		let url = FileManager.documentsDirectory.appendingPathComponent(name + ".dat")
