@@ -7,6 +7,10 @@
 
 import Foundation
 
+extension URL: Identifiable {
+	public var id: String { self.absoluteString }
+}
+
 public extension URL {
 	var relativePathToHome: String? {
 		return self.path.abbreviatingWithTildeInPath

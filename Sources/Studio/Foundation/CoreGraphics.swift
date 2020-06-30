@@ -54,6 +54,8 @@ public func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
 }
 
 public extension CGSize {
+	var dimString: String { "\(Int(width)) x \(Int(height))" }
+
 	enum AspectRatioType: Int { case portrait, landscape, square }
 	func scaled(within limit: CGSize) -> CGSize {
 		let myAspectRatio = self.width / self.height

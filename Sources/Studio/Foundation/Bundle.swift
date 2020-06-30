@@ -32,7 +32,7 @@ extension NSObject {
 #endif
 
 public extension Bundle {
-	func directory(named: String, filteredFor: String) -> Directory? {
+	func directory(named: String, filteredFor: String? = nil) -> Directory? {
 		return Directory(bundle: self, name: named, extension: filteredFor)
 	}
 	
