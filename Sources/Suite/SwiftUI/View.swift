@@ -30,6 +30,14 @@ public extension View {
 	func resignFirstResponder() {
 		UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 	}
+
+	@ViewBuilder func `if`<T>(_ condition: Bool, _ transform: (Self) -> T) -> some View where T : View {
+		if condition {
+			transform(self)
+		} else {
+			self
+		}
+	}
 }
 #endif
 
