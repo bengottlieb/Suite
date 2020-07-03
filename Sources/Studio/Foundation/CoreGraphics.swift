@@ -20,6 +20,8 @@ import Foundation
 public func roundcgf(value: CGFloat) -> CGFloat { return CGFloat(floorf(Float(value))) }
 
 public extension CGPoint {
+	var size: CGSize { CGSize(width: x, height: y )}
+
 	func centeredRect(size: CGSize) -> CGRect {
 		return CGRect(x: self.x - size.width / 2, y: self.y - size.height / 2, width: size.width, height: size.height)
 	}
@@ -83,6 +85,8 @@ public extension CGSize {
 		default: return .landscape
 		}
 	}
+	
+	var point: CGPoint { CGPoint(x: width, y: height )}
 	
 	func scaled(by factor: CGFloat) -> CGSize {
 		return CGSize(width: self.width * factor, height: self.height * factor)
