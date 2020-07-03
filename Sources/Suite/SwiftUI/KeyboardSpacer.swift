@@ -5,6 +5,9 @@
 //  Created by Ben Gottlieb on 7/1/20.
 //
 
+#if canImport(SwiftUI)
+#if canImport(Combine)
+
 import SwiftUI
 import Combine
 
@@ -67,3 +70,6 @@ struct SwiftUIView_Previews: PreviewProvider {
 		}
 	}
 }
+
+#endif
+#endif

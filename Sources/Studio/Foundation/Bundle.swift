@@ -43,7 +43,7 @@ public extension Bundle {
 				self.urls = []
 				return nil
 			}
-			self.urls = urls
+			self.urls = urls.sorted(by: { $0.absoluteString.caseInsensitiveCompare($1.absoluteString) == .orderedAscending })
 		}
 		
 		public subscript(name: String) -> URL? {
