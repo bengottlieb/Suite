@@ -22,6 +22,13 @@ public extension Binding {
 		var value = value
 		return Binding<Value?>(get: { return value }) { value = $0 }
 	}
+	
+	func whenChanged(_ completion: @escaping (Value) -> Void) -> Binding<Value> {
+		Binding<Value>(get: { self.wrappedValue }, set: { newValue in
+			self.wrappedValue = newValue
+			completion(newValue)
+		})
+	}
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
