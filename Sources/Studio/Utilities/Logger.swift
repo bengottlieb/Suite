@@ -9,6 +9,7 @@ import Foundation
 import CoreData
 
 public func log(_ msg: @autoclosure () -> String, _ level: Logger.Level = .quiet) { Logger.instance.log(msg(), level: level) }
+public func log(_ special: Logger.Special) { Logger.instance.log(special) }
 public func dlog(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
 public func elog(_ error: Error, _ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(error: error, msg(), level: .quiet) }
 public func dlog(_ something: Any, _ level: Logger.Level = .mild) { Logger.instance.log("\(something)", level: level) }
@@ -16,6 +17,12 @@ public func dlog(_ something: Any, _ level: Logger.Level = .mild) { Logger.insta
 public class Logger {
 	static public let instance = Logger()
 	
+	private init() { }
+	
+	public var showTimestamps = true { didSet { self.timestampStart = Date() }}
+	public var timestampStart = Date()
+	
+	public enum Special { case `break` }
 	public enum Level: Int, Comparable {
 		case off, quiet, mild, loud, verbose
 		public static func <(lhs: Level, rhs: Level) -> Bool { return lhs.rawValue < rhs.rawValue }
@@ -27,9 +34,18 @@ public class Logger {
 		return .quiet
 	}()
 	
+	public func log(_ special: Special) {
+		switch special {
+		case .break: print("\n")
+		}
+	}
+	
 	public func log(_ msg: @autoclosure () -> String, level: Level = .mild) {
 		if level > self.level { return }
-		print(msg())
+		var message = msg()
+		
+		if showTimestamps { message = String(format: "%.04f - ", Date().timeIntervalSince(timestampStart)) + message }
+		print(message)
 	}
 	
 	public func log(error: Error, _ msg: @autoclosure () -> String, level: Level = .mild) {
