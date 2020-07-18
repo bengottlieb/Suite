@@ -26,7 +26,7 @@ public class OrientationWatcher: ObservableObject, CustomStringConvertible {
 				if let newOrientation = UIApplication.shared.currentScene?.interfaceOrientation, newOrientation != self.orientation {
 					self.orientation = newOrientation
 				}
-			}.sequester().unsequester()
+			}.sequester()
 	}
 	
 	@Published public var orientation: UIInterfaceOrientation

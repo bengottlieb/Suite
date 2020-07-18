@@ -81,7 +81,7 @@ public extension TimeInterval {
 	
 	func durationString(includingNanoseconds: Bool) -> String {
 		let format = includingNanoseconds ? "%02d:%02d.%03d" : "%02d:%02d"
-		return String(format: format, minutes, seconds, Int(self * 1000) % 1000)
+		return String(format: format, minutes % 60, seconds % 60, Int(self * 1000) % 1000)
 	}
 }
 
