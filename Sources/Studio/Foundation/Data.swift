@@ -8,6 +8,42 @@
 import Foundation
 
 public extension Data {
+	init?(hexString hex: String) {
+		// Convert 0 ... 9, a ... f, A ...F to their decimal value,
+		// return nil for all other input characters
+		func decodeNibble(_ u: UInt16) -> UInt8? {
+			switch(u) {
+			case 0x30 ... 0x39: return UInt8(u - 0x30)
+			case 0x41 ... 0x46: return UInt8(u - 0x41 + 10)
+			case 0x61 ... 0x66: return UInt8(u - 0x61 + 10)
+			default: return nil
+			}
+		}
+		
+		let utf16 = hex.utf16
+		var count = 0
+		var byteArray = Array<UInt8>(repeating: 0, count: hex.count / 2)
+
+		var i = utf16.startIndex
+		let endIndex = utf16.endIndex
+		
+		while i != endIndex {
+			guard
+				let hi = decodeNibble(utf16[i]),
+				let nextNibble = utf16.index(i, offsetBy: 1, limitedBy: endIndex),
+				nextNibble < endIndex,
+				let lo = decodeNibble(utf16[nextNibble])
+			else {
+				return nil
+			}
+			byteArray[count] = hi << 4 + lo
+			count += 1
+			guard let next = utf16.index(i, offsetBy: 2, limitedBy: endIndex) else { break }
+			i = next
+		}
+		self.init(bytes: byteArray, count: count)
+	}
+	
 	var rawJSON: Any? {
 		try? JSONSerialization.jsonObject(with: self, options: [])
 	}
@@ -23,4 +59,7 @@ public extension Data {
 			return nil
 		}
 	}
+	
+	
+	var hexString: String { map { String(format: "%02.2hhx", $0) }.joined() }
 }
