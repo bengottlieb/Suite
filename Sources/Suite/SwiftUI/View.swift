@@ -38,6 +38,14 @@ public extension View {
 			self
 		}
 	}
+
+	@ViewBuilder func iflet<T, V>(_ optional: V?, _ transform: (Self, V) -> T) -> some View where T : View {
+		if let v = optional {
+			transform(self, v)
+		} else {
+			self
+		}
+	}
 }
 #endif
 
