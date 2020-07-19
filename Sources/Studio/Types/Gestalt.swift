@@ -40,7 +40,7 @@ public struct Gestalt {
 	#if os(OSX)
 		public static var isOnMac: Bool { return true }
 		
-		public var rawDeviceType: String {
+		public static var rawDeviceType: String {
 			let service: io_service_t = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
 			let cfstr = "model" as CFString
 			if let model = IORegistryEntryCreateCFProperty(service, cfstr, kCFAllocatorDefault, 0).takeUnretainedValue() as? Data {
@@ -50,6 +50,7 @@ public struct Gestalt {
 			}
 			return ""
 	}
+	static public var deviceName: String { rawDeviceType }
 	#endif
 	
 	#if os(watchOS)
@@ -57,6 +58,7 @@ public struct Gestalt {
 	#endif
 	
 	#if os(iOS)
+		static public var deviceName: String { UIDevice.current.name }
 		#if targetEnvironment(macCatalyst)
 			public static var isOnMac: Bool { return true }
 		#else

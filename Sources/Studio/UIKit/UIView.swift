@@ -137,6 +137,11 @@ public extension UIView {
 		return self
 	}
 	
+	@discardableResult func translatesAutoresizingMaskIntoConstraints(_ translate: Bool) -> Self {
+		translatesAutoresizingMaskIntoConstraints = translate
+		return self
+	}
+	
 	@discardableResult func backgroundColor(_ backgroundColor: UIColor?) -> Self {
 		self.backgroundColor = backgroundColor
 		return self
