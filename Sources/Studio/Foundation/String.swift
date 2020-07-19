@@ -52,6 +52,20 @@ public extension String {
 		}
 	}
 	
+	var fileExtension: String? {
+		guard let ext = self.components(separatedBy: ".").last else { return nil }
+		
+		if ext.count < 10 { return ext }
+		return nil
+	}
+	
+	var deletingFileExtension: String {
+		guard let ext = self.fileExtension else { return self }
+		
+		let index = self.index(self.startIndex, offsetBy: self.count - ext.count)
+		return String(self[...index])
+	}
+	
 	var isValidEmail: Bool {
 		let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"
 		

@@ -15,14 +15,14 @@ import Studio
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension NSManagedObjectContext {
-	func publisher<Entity: NSManagedObject>(for request: NSFetchRequest<Entity>) -> AnyPublisher<[Entity], Error> {
+	func publisher<Entity: NSManagedObject>(for request: NSFetchRequest<Entity>) -> AnyPublisher<[Entity], Never> {
 		RequestPublisher(request: request, context: self)
 			.eraseToAnyPublisher()
 	}
 	
 	class RequestPublisher<Entity: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate, Publisher {
 		public typealias Output = [Entity]
-		public typealias Failure = Error
+		public typealias Failure = Never
 		
 		private let request: NSFetchRequest<Entity>
 		private let context: NSManagedObjectContext
@@ -55,7 +55,7 @@ public extension NSManagedObjectContext {
 					let result = controller.fetchedObjects ?? []
 					subject.send(result)
 				} catch {
-					subject.send(completion: .failure(error))
+					_ = print("Got an error when fetching: \(error)")
 				}
 				resultController = controller
 			}

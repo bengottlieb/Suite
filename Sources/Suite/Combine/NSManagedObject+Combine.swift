@@ -31,6 +31,11 @@ extension Int: CoreDataFieldType {
 }
 
 @available(OSX 15.0, iOS 13.0, *)
+extension NSManagedObject: Identifiable {
+	public var id: URL { self.objectID.uriRepresentation() }
+}
+
+@available(OSX 15.0, iOS 13.0, *)
 public extension NSManagedObject {
 	func binding<T: CoreDataFieldType>(for field: String, defaultValue: T = T.defaultValue) -> Binding<T> {
 		return Binding<T>(get: { return self.value(forKey: field) as? T ?? defaultValue }, set:

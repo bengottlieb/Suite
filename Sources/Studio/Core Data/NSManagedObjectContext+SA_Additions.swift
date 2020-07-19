@@ -19,10 +19,15 @@ public extension NSManagedObjectContext {
 			}
 		}
 	}
+	
 	func insertEntity(named name: String) -> NSManagedObject {
 		let result = NSEntityDescription.insertNewObject(forEntityName: name, into: self) as NSManagedObject
 		type(of: result).didInsertNotification.notify(self)
 		return result
+	}
+	
+	@objc func registerForExternalChangeUpdates() {
+		self.addAsObserver(of: .NSManagedObjectContextDidSave, selector: #selector(mergeChanges(fromContextDidSave:)))
 	}
 	
 	func count(of entityName: String, matching predicate: NSPredicate? = nil) -> Int {
