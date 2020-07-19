@@ -62,7 +62,7 @@ public extension String {
 	var deletingFileExtension: String {
 		guard let ext = self.fileExtension else { return self }
 		
-		let index = self.index(self.startIndex, offsetBy: self.count - ext.count)
+		let index = self.index(self.endIndex, offsetBy: -(ext.count + 2))
 		return String(self[...index])
 	}
 	
