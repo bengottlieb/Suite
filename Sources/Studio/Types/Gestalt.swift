@@ -37,6 +37,8 @@ public struct Gestalt {
 		return extensionDictionary is NSDictionary
 	}()
 	
+	public static var runningInPreview: Bool { ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" }
+	
 	#if os(OSX)
 		public static var isOnMac: Bool { return true }
 		
