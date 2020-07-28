@@ -23,7 +23,7 @@ public extension Binding {
 		return Binding<Value?>(get: { return value }) { value = $0 }
 	}
 	
-	func whenChanged(_ completion: @escaping (Value) -> Void) -> Binding<Value> {
+	func onChange(_ completion: @escaping (Value) -> Void) -> Binding<Value> {
 		Binding<Value>(get: { self.wrappedValue }, set: { newValue in
 			self.wrappedValue = newValue
 			completion(newValue)

@@ -5,12 +5,11 @@
 //  Created by Ben Gottlieb on 7/16/20.
 //
 
+#if canImport(Combine)
 import Foundation
 import CoreData
-import Combine
 import Studio
-
-#if canImport(Combine)
+import Combine
 
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
