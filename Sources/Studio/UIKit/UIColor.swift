@@ -9,6 +9,14 @@
 import UIKit
 
 public extension UIColor {
+	static func random() -> UIColor {
+		let h = CGFloat.random(in: 0...1)
+		let s = CGFloat.random(in: 0...1)
+		let v = CGFloat.random(in: 0...1)
+		
+		return UIColor(hue: h, saturation: s, brightness: v, alpha: 1)
+	}
+	
 	convenience init?(hex hexString: String?) {
 		guard let values = hexString?.extractedHexValues else {
 			self.init(white: 0, alpha: 0)
@@ -88,6 +96,13 @@ public extension UIColor {
 			return UIColor.systemBackground
 		} else {
 			return UIColor.white
+		}
+	}
+	
+	func swatch(of size: CGSize = CGSize(width: 100, height: 100)) -> UIImage {
+		UIGraphicsImageRenderer(size: size).image { ctx in
+			self.setFill()
+			UIRectFill(size.rect)
 		}
 	}
 }
