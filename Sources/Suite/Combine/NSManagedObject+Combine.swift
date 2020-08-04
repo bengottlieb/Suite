@@ -30,10 +30,10 @@ extension Int: CoreDataFieldType {
 	public static var defaultValue: Int { return 0 }
 }
 
-@available(OSX 15.0, iOS 13.0, *)
-extension NSManagedObject: Identifiable {
-	public var id: URL { self.objectID.uriRepresentation() }
-}
+//@available(OSX 15.0, iOS 13.0, *)
+//extension NSManagedObject: Identifiable {
+//	public var id: URL { self.objectID.uriRepresentation() }
+//}
 
 @available(OSX 15.0, iOS 13.0, *)
 public extension NSManagedObject {
