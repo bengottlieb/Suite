@@ -61,7 +61,7 @@ public struct KeyboardSpacer: View {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
-struct SwiftUIView_Previews: PreviewProvider {
+struct KeyboardObserver_Previews: PreviewProvider {
 	static var previews: some View {
 		VStack() {
 			Spacer()
