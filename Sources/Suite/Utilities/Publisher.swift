@@ -8,7 +8,7 @@
 #if canImport(Combine)
 import Combine
 
-@available(iOS 13.0, *)
+@available(iOS 13.0, OSX 10.15, *)
 public extension ObservableObjectPublisher {
 	func sendOnMainThread() {
 		if Thread.isMainThread {

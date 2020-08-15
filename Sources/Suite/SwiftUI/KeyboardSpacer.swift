@@ -7,6 +7,7 @@
 
 #if canImport(SwiftUI)
 #if canImport(Combine)
+#if canImport(UIKit)
 
 import SwiftUI
 import Combine
@@ -71,5 +72,6 @@ struct KeyboardObserver_Previews: PreviewProvider {
 	}
 }
 
+#endif
 #endif
 #endif
