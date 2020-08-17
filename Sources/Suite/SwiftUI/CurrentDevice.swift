@@ -30,6 +30,7 @@ public class CurrentDevice: ObservableObject {
 	
 	@objc func orientationChanged() {
 		DispatchQueue.main.async {
+			if UIDevice.current.orientation == .unknown { return }
 			self.isLandscape = UIDevice.current.orientation.isLandscape
 			self.screenSize = UIScreen.main.bounds.size
 		}
