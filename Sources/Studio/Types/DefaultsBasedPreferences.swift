@@ -66,23 +66,28 @@ public protocol DefaultsBasedPreferencesKeyProvider: class {
 	}
 	
 	open var defaults: UserDefaults { return UserDefaults.standard }
+	weak var saveTimer: Timer?
 	
 	open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
 		var mirror = Mirror(reflecting: self)
 		while true {
 			for child in mirror.children {
-				guard let key = child.label else { continue }
+				guard let key = child.label, key == keyPath else { continue }
 				
-				if key == keyPath {
-					let defaultsKey = self.name(forKey: key)
-					if let value = change?[.newKey], !(value is NSNull) {
-						self.defaults.set(value, forKey: defaultsKey)
-					} else {
-						self.defaults.removeValue(forKey: defaultsKey)
-					}
-					Notification.postOnMainThread(name: self.notificationName(forKey: key))
-					return
+				let defaultsKey = self.name(forKey: key)
+				if let value = change?[.newKey], !(value is NSNull) {
+					self.defaults.set(value, forKey: defaultsKey)
+				} else {
+					self.defaults.removeValue(forKey: defaultsKey)
 				}
+				DispatchQueue.main.async {
+					self.saveTimer?.invalidate()
+					self.saveTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { _ in
+						self.defaults.synchronize()
+					}
+				}
+				Notification.postOnMainThread(name: self.notificationName(forKey: key))
+				return
 			}
 
 			guard let sup = mirror.superclassMirror else { break }
