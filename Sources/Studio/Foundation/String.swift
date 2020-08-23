@@ -31,20 +31,15 @@ public extension String {
 	static let Cancel = NSLocalizedString("Cancel", comment: "Cancel")
 	
 	subscript(i: Int) -> Character { return self[self.index(i)] }
-	subscript(i: Int) -> String { return String(self[self.index(i)]) }
-//	subscript(i: Int) -> Int { return Int(UnicodeScalar(self.characters[self.index(i)]).value) }
 	subscript(range: Range<Int>) -> String { return String(self[self.index(range.lowerBound)..<self.index(range.upperBound)]) }
-	
 	subscript(range: ClosedRange<Int>) -> String { return String(self[self.index(range.lowerBound)...self.index(range.upperBound)]) }
-	
 	subscript(range: PartialRangeUpTo<Int>) -> String { return String(self[self.startIndex..<self.index(range.upperBound)]) }
-
 	subscript(range: PartialRangeFrom<Int>) -> String { return String(self[self.index(range.lowerBound)..<self.endIndex]) }
 
-	func range(range: Range<Int>) -> Range<String.Index> { return self.index(range.lowerBound) ..< self.index(range.upperBound) }
-	func range(range: NSRange) -> Range<String.Index> { return self.index(range.location) ..< self.index(range.location + range.length) }
+	func range(_ range: Range<Int>) -> Range<String.Index> { return self.index(range.lowerBound) ..< self.index(range.upperBound) }
+	func range(_ range: NSRange) -> Range<String.Index> { return self.index(range.location) ..< self.index(range.location + range.length) }
 	func index(_ index: Int) -> String.Index { return self.index(self.startIndex, offsetBy: min(index, self.count)) }
-	var fullRange: Range<String.Index> { return self.range(range: NSRange(location: 0, length: self.count)) }
+	var fullRange: Range<String.Index> { return self.range(NSRange(location: 0, length: self.count)) }
 	
 	var numbersOnly: String {
 		self.reduce("") { result, chr in
@@ -52,15 +47,15 @@ public extension String {
 		}
 	}
 	
-	var fileExtension: String? {
+	var pathExtension: String? {
 		guard let ext = self.components(separatedBy: ".").last else { return nil }
 		
-		if ext.count < 10 { return ext }
+		if ext.count < 10, !ext.isEmpty { return ext }
 		return nil
 	}
 	
 	var deletingFileExtension: String {
-		guard let ext = self.fileExtension else { return self }
+		guard let ext = self.pathExtension else { return self }
 		
 		let index = self.index(self.endIndex, offsetBy: -(ext.count + 2))
 		return String(self[...index])
@@ -79,7 +74,7 @@ public extension String {
 		
 		for scalar in self.unicodeScalars {
 			if !set.contains(scalar) {
-				result += self[count]
+				result += String(self[count])
 			}
 			count += 1
 		}

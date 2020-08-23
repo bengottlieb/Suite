@@ -1,0 +1,121 @@
+//
+//  SlideUpSheet.swift
+//  Internal
+//
+//  Created by Ben Gottlieb on 7/20/20.
+//  Copyright © 2020 Stand Alone, Inc. All rights reserved.
+//
+
+import SwiftUI
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+public struct SlideUpSheet<Content: View>: View {
+	public enum DragStyle { case handle, noHandle, noDrag }
+	let dragStyle: DragStyle
+	let blockBackground: Bool
+	@Binding var show: Bool
+	@State var dragOffset = CGSize.zero
+	@State var backgroundAlpha = 0.0
+	@ObservedObject var device = CurrentDevice.instance
+	let content: Content
+	let radius: CGFloat
+	
+
+	public init(show: Binding<Bool>, dragStyle: DragStyle = .handle, blockBackground: Bool = true, @ViewBuilder content: () -> Content) {
+		_show = show
+		self.dragStyle = dragStyle
+		self.blockBackground = blockBackground
+		self.content = content()
+		self.radius = 10
+	}
+
+	public var body: some View {
+		ZStack() {
+			if blockBackground {
+				Rectangle()
+					.fill(Color.black.opacity(0.4))
+					.onTapGesture {
+						withAnimation() { self.show.toggle() }
+					}
+					.opacity(show ? backgroundAlpha : 0.0)
+					.edgesIgnoringSafeArea(.all)
+			}
+			
+			ZStack() {
+				
+				VStack() {
+					Spacer()
+					ZStack() {
+						RoundedRectangle(cornerRadius: radius)
+							.fill(Color(UIColor.secondarySystemBackground))
+
+						RoundedRectangle(cornerRadius: radius)
+							.stroke(Color.black)
+
+						VStack(spacing: 0) {
+								if dragStyle == .handle {
+									HStack() {
+										Spacer()
+										RoundedRectangle(cornerRadius: 3)
+											.fill(Color.gray)
+											.frame(width: 40, height: 5)
+											.padding()
+										Spacer()
+									}
+								} else {
+									Rectangle()
+										.fill(Color.clear)
+										.frame(height: 14)
+								}
+							
+							Rectangle()
+								.fill(Color.clear)
+								.frame(maxHeight: 1)
+							
+							content
+						}
+						.padding([.bottom, .leading, .trailing])
+						.layoutPriority(1)
+					}
+				}
+			}
+			.clipped()
+			.shadow(color: .black, radius: 5, x: 3, y: 3)
+			.padding()
+			.offset(y: show ? dragOffset.height : device.screenSize.height)
+			.animation(.default)
+			.transition(.slide)
+			.gesture(
+				DragGesture()
+					.onChanged{ value in
+						self.dragOffset.height = max(value.translation.height, 0)
+					}
+					.onEnded { value in
+						if self.dragOffset.height > 100, self.dragStyle != .noDrag {
+							self.show = false
+							self.dragOffset = .zero
+						} else {
+							self.dragOffset = .zero
+						}
+					}
+			)
+		}
+
+	}
+}
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+struct SlideUpSheet_Previews: PreviewProvider {
+	static var previews: some View {
+		SlideUpSheet(show: .constant(true)) {
+			VStack() {
+				ForEach(0..<10) { _ in
+					Text("Hello")
+				}
+			}
+			
+		}
+		.preferredColorScheme(/*@START_MENU_TOKEN@*/.dark/*@END_MENU_TOKEN@*/)
+		
+	}
+}
