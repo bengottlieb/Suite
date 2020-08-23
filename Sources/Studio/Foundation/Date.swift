@@ -198,13 +198,12 @@ public extension Date {
 		return Calendar.current.date(from: myComponents) ?? self
 	}
 	
-	var numberOfDaysInMonth: Int { Date.numberOfDays(in: self.month, year: self.year) }
+	var numberOfDaysInMonth: Int { Calendar.current.range(of: .day, in: .month, for: self)?.count ?? 30 }
 	
 	static func numberOfDays(in month: Month, year: Int) -> Int {
-		let shortMonths: [Month] = [.apr, .jun, .sep, .nov]
-		if month == .feb { return year.isLeapYear ? 29 : 28 }
-		if shortMonths.contains(month) { return 30 }
-		return 31
+		let components = DateComponents(year: year, month: month.rawValue)
+		guard let date = Calendar.current.date(from: components) else { return 30 }
+		return Calendar.current.range(of: .day, in: .month, for: date)?.count ?? 30
 	}
 	
 	var firstDayOfWeekInMonth: DayOfWeek { self.firstDayInMonth.dayOfWeek }
