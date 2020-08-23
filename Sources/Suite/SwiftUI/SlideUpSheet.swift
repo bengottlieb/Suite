@@ -6,7 +6,9 @@
 //  Copyright © 2020 Stand Alone, Inc. All rights reserved.
 //
 
+#if canImport(Combine)
 import SwiftUI
+import Combine
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct SlideUpSheet<Content: View>: View {
@@ -119,3 +121,4 @@ struct SlideUpSheet_Previews: PreviewProvider {
 		
 	}
 }
+#endif

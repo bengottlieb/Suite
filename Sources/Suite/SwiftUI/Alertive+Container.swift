@@ -5,20 +5,21 @@
 //  Created by ben on 8/13/20.
 //
 
+#if canImport(Combine)
 import SwiftUI
+import Combine
 
 @available(OSX 10.15, iOS 13.0, *)
 extension Alertive {
 	public static func container() -> Container { Container() }
 	
 	public struct Container: View {
-		//@Environment(\.alertive) var alertive
 		@ObservedObject var alertive = Alertive.manager
 
 		var alerts: some View {
 			let count = alertive.pendingAlerts.count - 1
 			return ForEach(alertive.pendingAlerts.indices, id: \.self) { index in
-				Alertive.AlertView(alert: alertive.pendingAlerts[count - index])
+				Alertive.AlertView(alert: self.alertive.pendingAlerts[count - index])
 					.offset(x: -CGFloat(count - index) * 10, y: -CGFloat(count - index) * 10)
 			}
 		}
@@ -42,3 +43,4 @@ extension Alertive {
 		}
 	}
 }
+#endif

@@ -5,7 +5,9 @@
 //  Created by ben on 8/13/20.
 //
 
+#if canImport(Combine)
 import SwiftUI
+import Combine
 
 @available(OSX 10.15, iOS 13.0, *)
 extension Alertive {
@@ -99,3 +101,4 @@ extension EnvironmentValues {
 	}
 }
 
+#endif

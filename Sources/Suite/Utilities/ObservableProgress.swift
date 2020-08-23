@@ -5,8 +5,9 @@
 //  Created by Ben Gottlieb on 8/1/20.
 //
 
+#if canImport(Combine)
 import SwiftUI
-
+import Combine
 
 @available(iOS 13.0, macOS 10.15, *)
 public class ObservableProgress: ObservableObject {
@@ -37,3 +38,5 @@ public class ObservableProgress: ObservableObject {
 	
 	public var isIndeterminate: Bool { progress == nil }
 }
+
+#endif

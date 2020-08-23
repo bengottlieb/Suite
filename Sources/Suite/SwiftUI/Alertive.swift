@@ -5,7 +5,9 @@
 //  Created by ben on 8/13/20.
 //
 
+#if canImport(Combine)
 import SwiftUI
+import Combine
 
 @available(OSX 10.15, iOS 13.0, *)
 public struct Alertive {
@@ -50,10 +52,10 @@ extension Alertive {
 							self.alert.buttonPressed()
 						}) {
 							ZStack() {
-								RoundedRectangle(cornerRadius: radius)
+								RoundedRectangle(cornerRadius: self.radius)
 									.fill(Color.black.opacity(0.9))
 								
-								RoundedRectangle(cornerRadius: radius)
+								RoundedRectangle(cornerRadius: self.radius)
 									.stroke(Color.white.opacity(0.9))
 								
 								Text(button.label)
@@ -74,3 +76,12 @@ extension Alertive {
 		}
 	}
 }
+
+
+@available(OSX 10.15, iOS 13.0, *)
+struct Alertive_Previews: PreviewProvider {
+	static var previews: some View {
+		Alertive.container()
+	}
+}
+#endif
