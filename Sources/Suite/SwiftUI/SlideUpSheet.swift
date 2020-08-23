@@ -84,7 +84,7 @@ public struct SlideUpSheet<Content: View>: View {
 			.clipped()
 			.shadow(color: .black, radius: 5, x: 3, y: 3)
 			.padding()
-			.offset(y: show ? dragOffset.height : device.screenSize.height)
+			.offset(y: show ? dragOffset.height : device.screenSize.height * 2)
 			.animation(.default)
 			.transition(.slide)
 			.gesture(
