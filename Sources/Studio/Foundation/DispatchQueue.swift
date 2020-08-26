@@ -10,6 +10,7 @@ import Foundation
 extension DispatchQueue {
 	static var semaphores: [String: DispatchSemaphore] = [:]
 	
+	/// Run a piece of code all by itself, ensuring it's isolated from other code, keyed by a namespace
 	public static func isolated(_ namespace: String, block: () -> Void) {
 		var semaphore: DispatchSemaphore!
 		
@@ -23,5 +24,13 @@ extension DispatchQueue {
 		semaphore.wait()
 		block()
 		semaphore.signal()
+	}
+
+	public static func onMain(_ block: @escaping () -> Void) {
+		if Thread.isMainThread {
+			block()
+		} else {
+			DispatchQueue.main.async(execute: block)
+		}
 	}
 }
