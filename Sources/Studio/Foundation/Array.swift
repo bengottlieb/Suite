@@ -26,6 +26,13 @@ public extension Array where Element: Equatable {
 	}
 }
 
+public extension Array where Element: Hashable {
+	func removingDuplicates() -> [Element] {
+		let set = Set(self)
+		return Array(set)
+	}
+}
+
 public extension Array {
 	subscript(index index: Int?) -> Element? {
 		guard let idx = index, idx < self.count else { return nil }

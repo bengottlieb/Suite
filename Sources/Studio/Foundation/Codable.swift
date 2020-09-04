@@ -8,8 +8,14 @@
 
 import Foundation
 
+public typealias JSONDictionary = [String: Any]
+
+public protocol JSONExportable {
+	func asJSON() throws -> JSONDictionary
+}
+
 extension Decodable {
-	public static func load(from dictionary: [String: Any]) throws -> Self {
+	public static func load(from dictionary: JSONDictionary) throws -> Self {
 		let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
 		let decoder = JSONDecoder()
 		return try decoder.decode(Self.self, from: data)
@@ -17,9 +23,9 @@ extension Decodable {
 }
 
 extension Encodable {
-	public func asJSON() throws -> [String: Any] {
+	public func asJSON() throws -> JSONDictionary {
 		guard let data = self.asJSONData else { return [:] }
-		return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] ?? [:]
+		return try JSONSerialization.jsonObject(with: data, options: []) as? JSONDictionary ?? [:]
 	}
 
 	public var asJSONData: Data? {
