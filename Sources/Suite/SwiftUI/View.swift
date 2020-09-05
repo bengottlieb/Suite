@@ -20,6 +20,9 @@ public extension View {
 		frame(width: size, height: size)
 	}
 	
+	func anyView() -> AnyView {
+		AnyView(self)
+	}
 }
 
 #if canImport(UIKit)
