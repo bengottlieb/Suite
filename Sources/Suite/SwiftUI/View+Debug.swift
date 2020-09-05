@@ -1,0 +1,49 @@
+//
+//  View+Debug.swift
+//  
+//
+//  Created by Ben Gottlieb on 9/5/20.
+//
+
+#if canImport(SwiftUI)
+#if canImport(Combine)
+
+import SwiftUI
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+public extension View {
+	func log(_ text: String?) -> some View {
+		print(text ?? "")
+		return self
+	}
+	
+	func debug(_ action: () -> Void) -> some View {
+		#if DEBUG
+			action()
+		#endif
+		return self
+	}
+	
+	func debugModifier<T: View>(_ modifier: (Self) -> T) -> some View {
+		#if DEBUG
+			return modifier(self)
+		#else
+			return self
+		#endif
+	}
+	
+	func debugBorder(_ color: Color = .red, width: CGFloat = 1) -> some View {
+		debugModifier {
+			$0.border(color, width: width)
+		}
+	}
+	
+	func debugBackground(_ color: Color = .red) -> some View {
+		debugModifier {
+			$0.background(color)
+		}
+	}
+}
+
+#endif
+#endif
