@@ -10,14 +10,14 @@ import CoreData
 
 
 public extension NSManagedObject {
-	func jsonDictionary(dateStrategy: JSONEncoder.DateEncodingStrategy = .default) -> JSONDictionary {
+	func dictionary(dateStrategy: JSONEncoder.DateEncodingStrategy? = .default) -> JSONDictionary {
 		var results = JSONDictionary()
 		
 		for (name, attr) in self.entity.attributesByName {
 			guard !attr.isStoredInExternalRecord, !attr.isTransient, let raw = self.value(forKey: name) else { continue }
 			
-			if attr.attributeType == .dateAttributeType, let date = raw as? Date {
-				if let value = dateStrategy.jsonValue(from: date) {
+			if let strategy = dateStrategy, attr.attributeType == .dateAttributeType, let date = raw as? Date {
+				if let value = strategy.jsonValue(from: date) {
 					results[name] = value
 				}
 			} else {
@@ -28,9 +28,9 @@ public extension NSManagedObject {
 		return results
 	}
 	
-	func load(jsonDictionary: JSONDictionary, combining: Bool = true, dateStrategy: JSONDecoder.DateDecodingStrategy = .default) {
+	func load(dictionary: JSONDictionary, combining: Bool = true, dateStrategy: JSONDecoder.DateDecodingStrategy = .default) {
 		for (name, attr) in self.entity.attributesByName {
-			var value = jsonDictionary[name]
+			var value = dictionary[name]
 			
 			if attr.attributeType == .dateAttributeType {
 				value = dateStrategy.date(from: value)
