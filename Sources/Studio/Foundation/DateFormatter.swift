@@ -25,4 +25,6 @@ public extension DateFormatter {
 		self.dateFormat = format
 		self.locale = Locale(identifier: "en_US_POSIX")
 	}
+	
+	static var defaultJSONFormatter = DateFormatter.iso8601
 }
