@@ -10,13 +10,37 @@ import SwiftUI
 import Combine
 
 @available(OSX 10.15, iOS 13.0, *)
-public struct Alertive {
+public struct Alertive: Identifiable, Equatable {
+	public let id = UUID()
+	var tag: String?
+	var title: Text?
+	var message: Text?
+	let buttons: [Alertive.Button]
 	
+	func buttonPressed() {
+		Alertive.manager.remove(self)
+	}
+	
+	public init(title: Text? = nil, message: Text? = nil, tag: String? = nil, buttons: [Alertive.Button]) {
+		self.title = title
+		self.message = message
+		self.tag = tag
+		self.buttons = buttons
+	}
+
+	public init(title: Text? = nil, message: Text? = nil, tag: String? = nil, primaryButton: Alertive.Button? = nil, secondaryButton: Alertive.Button? = nil, dismissButton: Alertive.Button? = nil) {
+		self.title = title
+		self.message = message
+		self.tag = tag
+		self.buttons = [primaryButton, secondaryButton, dismissButton].compactMap { $0 }
+	}
+
+	public static func ==(lhs: Alertive, rhs: Alertive) -> Bool { lhs.id == rhs.id }
 }
 
-@available(OSX 11, iOS 14.0, *)
+@available(OSX 10.15, iOS 13.0, *)
 public extension View {
-	func alertive<Item: Identifiable>(item target: Binding<Item?>, content: (Item) -> Alertive.PendingAlert?) -> some View {
+	func alertive<Item: Identifiable>(item target: Binding<Item?>, content: (Item) -> Alertive?) -> some View {
 		if let item = target.wrappedValue, let alert = content(item) {
 			Alertive.manager.show(title: alert.title, message: alert.message, tag: alert.tag, buttons: alert.buttons)
 			DispatchQueue.main.async { target.wrappedValue = nil }
@@ -25,10 +49,10 @@ public extension View {
 	}
 }
 
-@available(OSX 11, iOS 14.0, *)
+@available(OSX 10.15, iOS 13.0, *)
 extension Alertive {
 	struct AlertView: View {
-		let alert: PendingAlert
+		let alert: Alertive
 		
 		let radius: CGFloat = 8
 		
@@ -41,8 +65,8 @@ extension Alertive {
 					.stroke(Color.white.opacity(0.9))
 				
 				VStack() {
-					if let title = alert.title {
-						title
+					if alert.title != nil {
+						alert.title!
 							.font(.headline)
 							.multilineTextAlignment(.center)
 							.lineLimit(nil)
@@ -51,8 +75,8 @@ extension Alertive {
 							.frame(maxWidth: 250)
 					}
 
-					if let body = alert.message {
-						body
+					if alert.message != nil {
+						alert.message!
 							.font(.body)
 							.multilineTextAlignment(.center)
 							.lineLimit(nil)
@@ -93,7 +117,7 @@ extension Alertive {
 }
 
 
-@available(OSX 11, iOS 14.0, *)
+@available(OSX 10.15, iOS 13.0, *)
 struct Alertive_Previews: PreviewProvider {
 	static var previews: some View {
 		Alertive.container()

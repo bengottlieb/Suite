@@ -9,7 +9,7 @@
 import SwiftUI
 import Combine
 
-@available(OSX 11, iOS 14.0, *)
+@available(OSX 10.15, iOS 13.0, *)
 extension Alertive {
 	public static let manager = Manager()
 	
@@ -18,12 +18,12 @@ extension Alertive {
 			
 		}
 		
-		@Published var pendingAlerts: [PendingAlert] = []
+		@Published var pendingAlerts: [Alertive] = []
 		
 		public func show(title: Text? = nil, message: Text? = nil, tag: String? = nil, buttons: [Alertive.Button]) {
 			guard title != nil || message != nil || buttons.isEmpty == false else { return }
 			
-			let alert = PendingAlert(title: title, message: message, tag: tag, buttons: buttons)
+			let alert = Alertive(title: title, message: message, tag: tag, buttons: buttons)
 			DispatchQueue.main.async {
 				if self.pendingAlerts.isEmpty {
 					withAnimation() {
@@ -35,7 +35,7 @@ extension Alertive {
 			}
 		}
 		
-		func remove(_ pending: PendingAlert) {
+		func remove(_ pending: Alertive) {
 			if let index = self.pendingAlerts.firstIndex(of: pending) {
 				_ = withAnimation() {
 					self.pendingAlerts.remove(at: index)
@@ -44,34 +44,6 @@ extension Alertive {
 		}
 	}
 	
-	public struct PendingAlert: Identifiable, Equatable {
-		public let id = UUID()
-		var tag: String?
-		var title: Text?
-		var message: Text?
-		let buttons: [Alertive.Button]
-		
-		func buttonPressed() {
-			Alertive.manager.remove(self)
-		}
-		
-		public init(title: Text? = nil, message: Text? = nil, tag: String? = nil, buttons: [Alertive.Button]) {
-			self.title = title
-			self.message = message
-			self.tag = tag
-			self.buttons = buttons
-		}
-
-		public init(title: Text? = nil, message: Text? = nil, tag: String? = nil, primaryButton: Alertive.Button? = nil, secondaryButton: Alertive.Button? = nil, dismissButton: Alertive.Button? = nil) {
-			self.title = title
-			self.message = message
-			self.tag = tag
-			self.buttons = [primaryButton, secondaryButton, dismissButton].compactMap { $0 }
-		}
-
-		public static func ==(lhs: PendingAlert, rhs: PendingAlert) -> Bool { lhs.id == rhs.id }
-	}
-
 	public struct Button: Identifiable {
 		public enum Kind { case normal, cancel, destructive }
 		public let id: String = UUID().uuidString
@@ -102,12 +74,12 @@ extension Alertive {
 
 
 
-@available(OSX 11, iOS 14.0, *)
+@available(OSX 10.15, iOS 13.0, *)
 public struct AlertiveKey: EnvironmentKey {
 	public static let defaultValue: Alertive.Manager = Alertive.manager
 }
 
-@available(OSX 11, iOS 14.0, *)
+@available(OSX 10.15, iOS 13.0, *)
 extension EnvironmentValues {
 	var alertive: Alertive.Manager {
 		get { return self[AlertiveKey.self] }
