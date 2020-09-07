@@ -9,7 +9,7 @@
 import SwiftUI
 import Combine
 
-@available(OSX 10.15, iOS 13.0, *)
+@available(OSX 11, iOS 14.0, *)
 extension Alertive {
 	public static func container() -> Container { Container() }
 	

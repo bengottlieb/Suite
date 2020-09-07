@@ -14,10 +14,21 @@ public struct Alertive {
 	
 }
 
-@available(OSX 10.15, iOS 13.0, *)
+@available(OSX 11, iOS 14.0, *)
+public extension View {
+	func alertive<Item: Identifiable>(item target: Binding<Item?>, content: (Item) -> Alertive.PendingAlert?) -> some View {
+		if let item = target.wrappedValue, let alert = content(item) {
+			Alertive.manager.show(title: alert.title, message: alert.message, tag: alert.tag, buttons: alert.buttons)
+			DispatchQueue.main.async { target.wrappedValue = nil }
+		}
+		return self
+	}
+}
+
+@available(OSX 11, iOS 14.0, *)
 extension Alertive {
 	struct AlertView: View {
-		let alert: Manager.PendingAlert
+		let alert: PendingAlert
 		
 		let radius: CGFloat = 8
 		
@@ -30,20 +41,24 @@ extension Alertive {
 					.stroke(Color.white.opacity(0.9))
 				
 				VStack() {
-					if alert.title?.isEmpty == false {
-						Text(alert.title ?? "")
+					if let title = alert.title {
+						title
 							.font(.headline)
 							.multilineTextAlignment(.center)
+							.lineLimit(nil)
 							.foregroundColor(.white)
 							.padding(3)
+							.frame(maxWidth: 250)
 					}
 
-					if alert.body?.isEmpty == false {
-						Text(alert.body ?? "")
+					if let body = alert.message {
+						body
 							.font(.body)
 							.multilineTextAlignment(.center)
+							.lineLimit(nil)
 							.foregroundColor(.white)
 							.padding(3)
+							.frame(maxWidth: 250)
 					}
 					
 					ForEach(alert.buttons) { button in
@@ -58,7 +73,7 @@ extension Alertive {
 								RoundedRectangle(cornerRadius: self.radius)
 									.stroke(Color.white.opacity(0.9))
 								
-								Text(button.label)
+								button.label
 									.font(.callout)
 									.multilineTextAlignment(.center)
 									.foregroundColor(.white)
@@ -78,7 +93,7 @@ extension Alertive {
 }
 
 
-@available(OSX 10.15, iOS 13.0, *)
+@available(OSX 11, iOS 14.0, *)
 struct Alertive_Previews: PreviewProvider {
 	static var previews: some View {
 		Alertive.container()

@@ -9,7 +9,7 @@
 import SwiftUI
 import Combine
 
-@available(OSX 10.15, iOS 13.0, *)
+@available(OSX 11, iOS 14.0, *)
 extension Alertive {
 	public static let manager = Manager()
 	
@@ -20,10 +20,10 @@ extension Alertive {
 		
 		@Published var pendingAlerts: [PendingAlert] = []
 		
-		public func show(title: String? = nil, body: String? = nil, tag: String? = nil, buttons: [Alertive.Button]) {
-			guard title?.isEmpty == false || body?.isEmpty == false || buttons.isEmpty == false else { return }
+		public func show(title: Text? = nil, message: Text? = nil, tag: String? = nil, buttons: [Alertive.Button]) {
+			guard title != nil || message != nil || buttons.isEmpty == false else { return }
 			
-			let alert = PendingAlert(title: title, body: body, tag: tag, buttons: buttons)
+			let alert = PendingAlert(title: title, message: message, tag: tag, buttons: buttons)
 			DispatchQueue.main.async {
 				if self.pendingAlerts.isEmpty {
 					withAnimation() {
@@ -42,26 +42,40 @@ extension Alertive {
 				}
 			}
 		}
-		
-		struct PendingAlert: Identifiable, Equatable {
-			let id: String = UUID().uuidString
-			let title: String?
-			let body: String?
-			let tag: String?
-			let buttons: [Alertive.Button]
-			
-			func buttonPressed() {
-				Alertive.manager.remove(self)
-			}
-			
-			static func ==(lhs: PendingAlert, rhs: PendingAlert) -> Bool { lhs.id == rhs.id }
-		}
 	}
 	
+	public struct PendingAlert: Identifiable, Equatable {
+		public let id = UUID()
+		var tag: String?
+		var title: Text?
+		var message: Text?
+		let buttons: [Alertive.Button]
+		
+		func buttonPressed() {
+			Alertive.manager.remove(self)
+		}
+		
+		public init(title: Text? = nil, message: Text? = nil, tag: String? = nil, buttons: [Alertive.Button]) {
+			self.title = title
+			self.message = message
+			self.tag = tag
+			self.buttons = buttons
+		}
+
+		public init(title: Text? = nil, message: Text? = nil, tag: String? = nil, primaryButton: Alertive.Button? = nil, secondaryButton: Alertive.Button? = nil, dismissButton: Alertive.Button? = nil) {
+			self.title = title
+			self.message = message
+			self.tag = tag
+			self.buttons = [primaryButton, secondaryButton, dismissButton].compactMap { $0 }
+		}
+
+		public static func ==(lhs: PendingAlert, rhs: PendingAlert) -> Bool { lhs.id == rhs.id }
+	}
+
 	public struct Button: Identifiable {
 		public enum Kind { case normal, cancel, destructive }
 		public let id: String = UUID().uuidString
-		public let label: String
+		public let label: Text
 		public let kind: Kind
 		public let action: (() -> Void)?
 		
@@ -69,15 +83,15 @@ extension Alertive {
 			self.action?()
 		}
 		
-		public static func `default`(_ label: String, action: (() -> Void)? = {}) -> Button {
+		public static func `default`(_ label: Text, action: (() -> Void)? = {}) -> Button {
 			Button(label: label, kind: .normal, action: action)
 		}
 		
-		public static func cancel(_ label: String = .Cancel, action: (() -> Void)? = {}) -> Button {
+		public static func cancel(_ label: Text = Text(String.Cancel), action: (() -> Void)? = {}) -> Button {
 			Button(label: label, kind: .cancel, action: action)
 		}
 		
-		public static func destructive(_ label: String, _ action: (() -> Void)? = {}) -> Button {
+		public static func destructive(_ label: Text, _ action: (() -> Void)? = {}) -> Button {
 			Button(label: label, kind: .destructive, action: action)
 		}
 
@@ -88,12 +102,12 @@ extension Alertive {
 
 
 
-@available(OSX 10.15, iOS 13.0, *)
+@available(OSX 11, iOS 14.0, *)
 public struct AlertiveKey: EnvironmentKey {
 	public static let defaultValue: Alertive.Manager = Alertive.manager
 }
 
-@available(OSX 10.15, iOS 13.0, *)
+@available(OSX 11, iOS 14.0, *)
 extension EnvironmentValues {
 	var alertive: Alertive.Manager {
 		get { return self[AlertiveKey.self] }
