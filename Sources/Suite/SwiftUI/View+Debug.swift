@@ -19,16 +19,16 @@ public extension View {
 	
 	func debug(_ action: () -> Void) -> some View {
 		#if DEBUG
-			action()
+		action()
 		#endif
 		return self
 	}
 	
 	func debugModifier<T: View>(_ modifier: (Self) -> T) -> some View {
 		#if DEBUG
-			return modifier(self)
+		return modifier(self)
 		#else
-			return self
+		return self
 		#endif
 	}
 	
@@ -42,6 +42,21 @@ public extension View {
 		debugModifier {
 			$0.background(color)
 		}
+	}
+}
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+public struct StatefulPreview<Value, Content: View>: View {
+	@State var value: Value
+	var content: (Binding<Value>) -> Content
+	
+	public var body: some View {
+		content($value)
+	}
+	
+	public init(_ value: Value, content: @escaping (Binding<Value>) -> Content) {
+		self._value = State(wrappedValue: value)
+		self.content = content
 	}
 }
 
