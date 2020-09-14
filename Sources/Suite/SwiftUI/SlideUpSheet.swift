@@ -9,6 +9,7 @@
 #if canImport(Combine)
 import SwiftUI
 import Combine
+import UIKit
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct SlideUpSheet<Content: View>: View {

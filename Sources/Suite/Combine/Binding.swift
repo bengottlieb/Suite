@@ -18,11 +18,6 @@ public extension Binding {
 		return Binding<Value>(get: { return value }) { value = $0 }
 	}
 
-	static func mock<Value>(value: Value?) -> Binding<Value?> {
-		var value = value
-		return Binding<Value?>(get: { return value }) { value = $0 }
-	}
-	
 	func onChange(_ completion: @escaping (Value) -> Void) -> Binding<Value> {
 		Binding<Value>(get: { self.wrappedValue }, set: { newValue in
 			self.wrappedValue = newValue
@@ -52,10 +47,6 @@ public extension Binding {
 		Binding<Value?>(get: { self.wrappedValue }, set: { opt in
 			if let val = opt { self.wrappedValue = val }
 		})
-	}
-	
-	init(readonly: Value) {
-		self.init(get: { return readonly }, set: { _ in })
 	}
 	
 	init<T>(isNotNil source: Binding<T?>, defaultValue: T) where Value == Bool {
