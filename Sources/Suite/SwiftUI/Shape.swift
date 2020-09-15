@@ -11,10 +11,10 @@ import SwiftUI
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension Shape {
-    func fill<S:ShapeStyle>(_ fillContent: S, andStroke stroke: Color) -> some View {
+	func fill<S:ShapeStyle>(_ fillContent: S, andStroke stroke: Color, lineWidth: CGFloat = 0.5) -> some View {
         ZStack {
             self.fill(fillContent)
-            self.stroke(stroke)
+            self.stroke(stroke, lineWidth: lineWidth)
         }
     }
 
