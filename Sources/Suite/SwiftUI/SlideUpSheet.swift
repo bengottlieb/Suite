@@ -9,7 +9,13 @@
 #if canImport(Combine)
 import SwiftUI
 import Combine
-import UIKit
+
+#if canImport(UIKit)
+	import UIKit
+#endif
+#if canImport(AppKit)
+	import AppKit
+#endif
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct SlideUpSheet<Content: View>: View {
@@ -19,10 +25,21 @@ public struct SlideUpSheet<Content: View>: View {
 	@Binding var show: Bool
 	@State var dragOffset = CGSize.zero
 	@State var backgroundAlpha = 0.0
-	@ObservedObject var device = CurrentDevice.instance
 	let content: Content
 	let radius: CGFloat
 	
+	#if canImport(UIKit)
+		@ObservedObject var device = CurrentDevice.instance
+
+		var backgroundColor = Color(UIColor.secondarySystemBackground)
+		var screenHeight: CGFloat { device.screenSize.height }
+	#elseif canImport(AppKit)
+		var backgroundColor = Color(NSColor.windowBackgroundColor)
+	var screenHeight: CGFloat = 1024
+	#else
+		var backgroundColor = Color.white
+		var screenHeight: CGFloat = 1024
+	#endif
 
 	public init(show: Binding<Bool>, dragStyle: DragStyle = .handle, blockBackground: Bool = true, @ViewBuilder content: () -> Content) {
 		_show = show
@@ -50,7 +67,7 @@ public struct SlideUpSheet<Content: View>: View {
 					Spacer()
 					ZStack() {
 						RoundedRectangle(cornerRadius: radius)
-							.fill(Color(UIColor.secondarySystemBackground))
+							.fill(backgroundColor)
 
 						RoundedRectangle(cornerRadius: radius)
 							.stroke(Color.black)
@@ -85,7 +102,7 @@ public struct SlideUpSheet<Content: View>: View {
 			.clipped()
 			.shadow(color: .black, radius: 5, x: 3, y: 3)
 			.padding()
-			.offset(y: show ? dragOffset.height : device.screenSize.height * 2)
+			.offset(y: show ? dragOffset.height : screenHeight * 2)
 			.animation(.default)
 			.transition(.slide)
 			.gesture(
@@ -118,8 +135,6 @@ struct SlideUpSheet_Previews: PreviewProvider {
 			}
 			
 		}
-		.preferredColorScheme(/*@START_MENU_TOKEN@*/.dark/*@END_MENU_TOKEN@*/)
-		
 	}
 }
 #endif

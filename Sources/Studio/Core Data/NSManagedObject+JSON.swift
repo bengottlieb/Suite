@@ -14,7 +14,7 @@ public extension NSManagedObject {
 		var results = JSONDictionary()
 		
 		for (name, attr) in self.entity.attributesByName {
-			guard !attr.isStoredInExternalRecord, !attr.isTransient, let raw = self.value(forKey: name) else { continue }
+			guard !attr.isTransient, let raw = self.value(forKey: name) else { continue }
 			
 			if let strategy = dateStrategy, attr.attributeType == .dateAttributeType, let date = raw as? Date {
 				if let value = strategy.jsonValue(from: date) {
