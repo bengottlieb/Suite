@@ -79,9 +79,29 @@ public extension TimeInterval {
 	var minutes: Int { return Int(self / .minute) }
 	var seconds: Int { return Int(self) }
 	
-	func durationString(includingNanoseconds: Bool) -> String {
-		let format = includingNanoseconds ? "%02d:%02d.%03d" : "%02d:%02d"
-		return String(format: format, minutes % 60, seconds % 60, Int(self * 1000) % 1000)
+	 enum DurationStyle { case hours, minutes, seconds, centiseconds, milliseconds }
+	
+	func durationString(style: DurationStyle = .seconds) -> String {
+		switch style {
+		case .hours:
+			return String(format: "%2d", hours)
+			
+		case .minutes:
+			return String(format: "%2d:%02d", hours, minutes % 60)
+
+		case .seconds:
+			if hours > 0 { return String(format: "%2d:%02d", hours, minutes % 60, seconds % 60) }
+			return String(format: "%2d:%02d", minutes % 60, seconds % 60)
+
+		case .centiseconds:
+			if hours > 0 { return String(format: "%02d:%02d:%02d.%02d", hours, minutes % 60, seconds % 60, Int(self * 100) % 100) }
+			return String(format: "%2d:%02d.%02d", minutes % 60, seconds % 60, Int(self * 100) % 100)
+
+		case .milliseconds:
+			if hours > 0 { return String(format: "%02d:%02d:%02d.%02d", hours, minutes % 60, seconds % 60, Int(self * 1000) % 1000) }
+			return String(format: "%2d:%02d.%02d", minutes % 60, seconds % 60, Int(self * 1000) % 1000)
+
+		}
 	}
 }
 
