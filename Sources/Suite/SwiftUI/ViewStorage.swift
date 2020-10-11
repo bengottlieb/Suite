@@ -6,6 +6,7 @@
 //
 
 #if canImport(SwiftUI)
+#if canImport(Combine)
 
 import SwiftUI
 
@@ -52,4 +53,5 @@ public class ViewStorage: ObservableObject {
 	}
 }
 
+#endif
 #endif
