@@ -48,7 +48,7 @@ public class SoundEffect: Equatable {
 				print("Error loading sound at \(url): \(error)")
 				return nil
 			}
-			if preload { self.player.prepareToPlay() }
+			if preload { self.preload() }
 			if !uncached { SoundEffect.cachedSounds[url.absoluteString] = self }
 		}
 	}
@@ -65,10 +65,13 @@ public class SoundEffect: Equatable {
 		#if os(iOS)
         	self.makeAmbient()
 		#endif
-		if preload { self.player.prepareToPlay() }
+		if preload { self.preload() }
 	}
 	
-    
+	public func preload() {
+		player.prepareToPlay()
+	}
+	
 	#if os(iOS)
     func makeAmbient() {
 		if #available(iOS 10.0, iOSApplicationExtension 10.0, *) {
