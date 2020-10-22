@@ -2,7 +2,7 @@
 import SystemConfiguration
 import Foundation
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 	import UIKit
 #endif
 
@@ -53,7 +53,7 @@ public class Reachability {
 		self.reachabilityCallbacks.removeValue(forKey: object.hashValue)
 	}
 	
-	#if canImport(UIKit)
+	#if canImport(UIKit) && !os(watchOS)
 		public var alertDisplayController: UIViewController?
 		public func showOfflineWarning(in controller: UIViewController? = nil) {
 			guard self.isOffline, let presenter = controller ?? self.alertDisplayController else { return }

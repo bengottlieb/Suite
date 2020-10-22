@@ -8,7 +8,7 @@
 #if canImport(Combine)
 import SwiftUI
 
-@available(OSX 10.15, iOS 13.0, *)
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 public struct ImprovedFont {
 	public let family: String
 	public let size: CGFloat

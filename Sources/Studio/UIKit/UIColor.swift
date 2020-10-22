@@ -5,7 +5,9 @@
 //  Created by Ben Gottlieb on 12/2/19.
 //
 
-#if canImport(UIKit)
+import Foundation
+
+#if canImport(UIKit) && !os(watchOS)
 import UIKit
 
 public extension UIColor {
@@ -107,7 +109,9 @@ public extension UIColor {
 	}
 }
 #else
+#if canImport(Cocoa)
 	import Cocoa
+#endif
 #endif
 
 public extension Int {
@@ -121,7 +125,7 @@ public extension String {
 		
 		if hex.hasPrefix("#") { hex = String(hex.dropFirst()) }
 		
-		if #available(macOS 10.15, iOS 13.0, *) {
+		if #available(macOS 10.15, iOS 13.0, watchOS 6.0, *) {
 			let rgbInt = Scanner(string: hex).scanInt(representation: .hexadecimal) ?? 0
 			rgbValue = UInt32(rgbInt)
 		} else {

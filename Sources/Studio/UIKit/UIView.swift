@@ -5,7 +5,7 @@
 //  Created by Ben Gottlieb on 11/9/19.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 import UIKit
 
 public extension UIView {

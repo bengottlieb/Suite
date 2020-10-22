@@ -9,7 +9,7 @@
 import SwiftUI
 import Combine
 
-@available(iOS 13.0, macOS 10.15, *)
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 public class ObservableProgress: ObservableObject {
 	@Published public var progress: Progress?
 	

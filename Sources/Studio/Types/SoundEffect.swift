@@ -4,6 +4,7 @@
 //  Created by Ben Gottlieb on 3/16/19.
 //
 
+#if os(iOS) || os(macOS)
 import Foundation
 import AVFoundation
 import OpenAL
@@ -188,3 +189,4 @@ extension SoundEffect {
 		self.dequeueTimer?.invalidate()
 	}
 }
+#endif

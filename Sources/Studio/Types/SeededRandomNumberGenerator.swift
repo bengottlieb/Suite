@@ -8,6 +8,8 @@
 import Foundation
 import GameKit
 
+#if !os(watchOS)
+
 public struct SeededRandomNumberGenerator: RandomNumberGenerator {
 	private let mersenne: GKMersenneTwisterRandomSource
 
@@ -22,3 +24,5 @@ public struct SeededRandomNumberGenerator: RandomNumberGenerator {
 	}
 	
 }
+
+#endif

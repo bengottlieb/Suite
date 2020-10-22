@@ -7,12 +7,12 @@
 
 #if canImport(SwiftUI)
 #if canImport(Combine)
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 
 import SwiftUI
 import Combine
 
-@available(iOS 13.0, macOS 10.15, *)
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 class KeyboardObserver: ObservableObject {
 	static let instance = KeyboardObserver()
 	
@@ -47,7 +47,7 @@ class KeyboardObserver: ObservableObject {
 	}
 }
 
-@available(iOS 13.0, macOS 10.15, *)
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 public struct KeyboardSpacer: View {
 	public init() { }
 	
@@ -61,7 +61,7 @@ public struct KeyboardSpacer: View {
 	}
 }
 
-@available(iOS 13.0, macOS 10.15, *)
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 struct KeyboardObserver_Previews: PreviewProvider {
 	static var previews: some View {
 		VStack() {

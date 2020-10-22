@@ -5,7 +5,7 @@
 //  Created by ben on 12/16/19.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 import UIKit
 
 public extension UIAlertController {

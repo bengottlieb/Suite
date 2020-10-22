@@ -5,7 +5,7 @@
 //  Created by ben on 11/29/19.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 import UIKit
 
 public extension UIStackView {

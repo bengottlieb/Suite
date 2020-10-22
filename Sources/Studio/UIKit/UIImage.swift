@@ -5,7 +5,7 @@
 //  Created by Ben Gottlieb on 12/7/19.
 //
 
-#if canImport(UIKIt)
+#if canImport(UIKit) && !os(watchOS)
 import UIKit
 
 public enum ImageFormat: String { case PNG = "png", JPEG = "jpeg"

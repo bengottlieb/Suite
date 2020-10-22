@@ -30,12 +30,12 @@ extension Int: CoreDataFieldType {
 	public static var defaultValue: Int { return 0 }
 }
 
-//@available(OSX 15.0, iOS 13.0, *)
+//@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 //extension NSManagedObject: Identifiable {
 //	public var id: URL { self.objectID.uriRepresentation() }
 //}
 
-@available(OSX 15.0, iOS 13.0, *)
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 public extension NSManagedObject {
 	func binding<T: CoreDataFieldType>(for field: String, defaultValue: T = T.defaultValue) -> Binding<T> {
 		return Binding<T>(get: { return self.value(forKey: field) as? T ?? defaultValue }, set:

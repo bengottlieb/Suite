@@ -5,7 +5,7 @@
 //  Created by Ben Gottlieb on 12/1/19.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 import UIKit
 
 public extension UITextField {

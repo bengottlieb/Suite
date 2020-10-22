@@ -4,7 +4,7 @@
 //
 //  Created by Ben Gottlieb on 11/10/19.
 //
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 import UIKit
 
 extension UITableViewCell {

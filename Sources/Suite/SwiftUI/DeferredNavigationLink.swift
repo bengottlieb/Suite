@@ -8,7 +8,7 @@
 #if canImport(Combine)
 import SwiftUI
 
-@available(OSX 10.15, iOS 13.0, *)
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 public struct DeferredNavigationLink<Destination: View, Content: View>: View {
 	var destination: () -> Destination
 	var content: () -> Content

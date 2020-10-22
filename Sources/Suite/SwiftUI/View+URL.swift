@@ -6,7 +6,7 @@
 //
 
 #if canImport(Combine)
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 
 import SwiftUI
 import SafariServices

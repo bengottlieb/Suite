@@ -10,7 +10,7 @@
 import SwiftUI
 import Combine
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 	import UIKit
 #endif
 #if canImport(AppKit)
@@ -28,7 +28,7 @@ public struct SlideUpSheet<Content: View>: View {
 	let content: Content
 	let radius: CGFloat
 	
-	#if canImport(UIKit)
+	#if canImport(UIKit) && !os(watchOS)
 		@ObservedObject var device = CurrentDevice.instance
 
 		var backgroundColor = Color(UIColor.secondarySystemBackground)

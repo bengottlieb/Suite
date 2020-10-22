@@ -5,7 +5,7 @@
 //  Created by Ben Gottlieb on 2/7/20.
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 import UIKit
 
 public extension Error {

@@ -5,6 +5,7 @@
 //  Created by ben on 5/30/20.
 //
 
+#if !os(watchOS)
 import Foundation
 import CoreGraphics
 
@@ -48,7 +49,4 @@ extension URL {
 	}
 }
 #endif
-
-
-
-
+#endif
