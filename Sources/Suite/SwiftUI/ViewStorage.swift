@@ -12,44 +12,54 @@ import SwiftUI
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public class ViewStorage: ObservableObject {
-	var views: [String: AnyView] = [:]
+	var views: [String: StoredView] = [:]
 	
-	public enum StandardView: String { case config, display, settings, modify
-		var keyValue: String { "_StandardView_" + rawValue }
-		
+	public struct ViewKey: RawRepresentable {
+		public var rawValue: String
+		public init(rawValue: String) { self.rawValue = rawValue }
+
+		public var keyValue: String { rawValue }
+
+		public static let config = ViewKey(rawValue: "_config")
+		public static let display = ViewKey(rawValue: "_display")
+		public static let settings = ViewKey(rawValue: "_settings")
+		public static let modify = ViewKey(rawValue: "_modify")
 	}
 	
 	public init() {
 		
 	}
 	
-	public func clear(_ key: StandardView) {
-		self.clear(key.keyValue)
+	struct StoredView: Comparable {
+		let id = UUID()
+		let date: Date = Date()
+		let view: AnyView
+		
+		static func ==(lhs: StoredView, rhs: StoredView) -> Bool { lhs.id == rhs.id }
+		static func <(lhs: StoredView, rhs: StoredView) -> Bool { lhs.date < rhs.date }
 	}
 	
-	public func clear(_ key: String) {
-		guard self.views[key] != nil else { return }
-		self.views.removeValue(forKey: key)
+	public func clear(_ key: ViewKey) {
+		guard self.views[key.keyValue] != nil else { return }
+		self.views.removeValue(forKey: key.keyValue)
 		
 		self.objectWillChange.send()
 	}
 	
-	public func store<Target: View>(_ view: Target, for key: StandardView) {
-		store(view, for: key.keyValue)
+	public func store<Target: View>(_ view: Target, for key: ViewKey) {
+		views[key.keyValue] = StoredView(view: view.anyView())
+		self.objectWillChange.send()
 		self.objectWillChange.send()
 	}
 	
-	public func view(for key: StandardView) -> AnyView? {
-		views[key.keyValue]
-	}
-
-	public func store<Target: View>(_ view: Target, for key: String) {
-		views[key] = view.anyView()
-		self.objectWillChange.send()
+	public func view(for key: ViewKey) -> AnyView? {
+		views[key.keyValue]?.view
 	}
 	
-	public func view(for key: String) -> AnyView? {
-		views[key]
+	public func isViewStored(for key: ViewKey) -> Bool { view(for: key) != nil }
+	
+	public var lastStoredView: AnyView? {
+		views.values.sorted().last?.view
 	}
 }
 
