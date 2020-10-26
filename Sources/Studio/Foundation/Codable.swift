@@ -24,12 +24,12 @@ extension Decodable {
 
 extension Encodable {
 	public func asJSON() throws -> JSONDictionary {
-		guard let data = self.asJSONData else { return [:] }
+		let data = try asJSONData()
 		return try JSONSerialization.jsonObject(with: data, options: []) as? JSONDictionary ?? [:]
 	}
 
-	public var asJSONData: Data? {
-		return try? JSONEncoder().encode(self)
+	public func asJSONData() throws -> Data {
+		try JSONEncoder().encode(self)
 	}
 	
 	public func saveJSON(to url: URL) throws {
@@ -43,12 +43,17 @@ extension Encodable {
 	}
 	
 	public func log(level: Logger.Level = .mild) {
-		guard let data = self.asJSONData, let raw = String(data: data, encoding: .utf8) else {
-			Logger.instance.log("Unabled to encode \(self)")
-			return
+		do {
+			let data = try self.asJSONData()
+			guard let raw = String(data: data, encoding: .utf8) else {
+				Logger.instance.log("Unabled to encode \(self)")
+				return
+			}
+			
+			Logger.instance.log(raw.cleanedFromJSON, level: level)
+		} catch {
+			Logger.instance.log("Failed to encode \(self): \(error)", level: level)
 		}
-		
-		Logger.instance.log(raw.cleanedFromJSON, level: level)
 	}
 }
 
