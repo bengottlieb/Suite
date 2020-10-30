@@ -46,6 +46,16 @@ public extension View {
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+public struct Log: View {
+	public init(_ text: String?) {
+		print(text ?? "")
+	}
+	
+	public var body: some View { EmptyView() }
+}
+
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct StatefulPreview<Value, Content: View>: View {
 	@State var value: Value
 	var content: (Binding<Value>) -> Content
