@@ -8,105 +8,75 @@
 #if canImport(Combine)
 import Foundation
 import CoreData
-import Studio
 import Combine
-
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension NSManagedObjectContext {
+	static let PublishersKey: StaticString = "__PublishersKey"
 	func publisher<Entity: NSManagedObject>(for request: NSFetchRequest<Entity>) -> AnyPublisher<[Entity], Never> {
-		RequestPublisher(request: request, context: self)
+		let pub = FetchedResultsControllerPublisher(request: request, in: self)
+		
+		if let array = self.associatedObject(forKey: Self.PublishersKey) as? NSMutableArray {
+			array.add(pub)
+		} else {
+			let newArray = NSMutableArray(array: [pub])
+			self.associate(object: newArray, forKey: Self.PublishersKey)
+		}
+		
+		return pub
+			.publisher
 			.eraseToAnyPublisher()
 	}
+}
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+final public class FetchedResultsControllerPublisher<FetchType>: NSObject where FetchType : NSFetchRequestResult & Hashable {
+	private let internalController: FetchedResultsControllerPublisherInternal<FetchType>
 	
-	class RequestPublisher<Entity: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate, Publisher {
-		public typealias Output = [Entity]
-		public typealias Failure = Never
-		
-		private let request: NSFetchRequest<Entity>
-		private let context: NSManagedObjectContext
-		private let subject: CurrentValueSubject<[Entity], Failure>
-		private var resultController: NSFetchedResultsController<Entity>?
-		private var subscriptions = 0
-		
-		init(request: NSFetchRequest<Entity>, context: NSManagedObjectContext) {
-			if request.sortDescriptors == nil { request.sortDescriptors = [] }
-			self.request = request
-			self.context = context
-			subject = CurrentValueSubject([])
-			super.init()
-		}
-		
-		public func receive<S>(subscriber: S) where S: Subscriber, S.Failure == RequestPublisher.Failure, S.Input == RequestPublisher.Output {
-			var isNewSubscription = false
-			
-			DispatchQueue.isolated("requestPublisher") {
-				self.subscriptions += 1
-				if self.subscriptions == 1 { isNewSubscription = true }
-			}
-			
-			if isNewSubscription {
-				let controller = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-				controller.delegate = self
-				
-				do {
-					try controller.performFetch()
-					let result = controller.fetchedObjects ?? []
-					subject.send(result)
-				} catch {
-					_ = print("Got an error when fetching: \(error)")
+	public init(request: NSFetchRequest<FetchType>, in moc: NSManagedObjectContext, performFetch: Bool = true) {
+		let controller = NSFetchedResultsController(fetchRequest: request, managedObjectContext: moc, sectionNameKeyPath: nil, cacheName: nil)
+		self.internalController = FetchedResultsControllerPublisherInternal(fetchedResultsController: controller, performFetch: performFetch)
+		super.init()
+	}
+	
+	public lazy var publisherWithErrors: AnyPublisher<[FetchType], Error> = {
+		return self.internalController.publisher.eraseToAnyPublisher()
+	}()
+	
+	public lazy var publisher: AnyPublisher<[FetchType], Never> = {
+		return self.internalController.publisher.replaceError(with: []).eraseToAnyPublisher()
+	}()
+}
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+final private class FetchedResultsControllerPublisherInternal<FetchType> : NSObject, NSFetchedResultsControllerDelegate where FetchType : NSFetchRequestResult & Hashable {
+	let publisher: PassthroughSubject<[FetchType], Error>
+	let fetchedResultsController: NSFetchedResultsController<FetchType>
+	var lastHashSent = 0
+	
+	init(fetchedResultsController: NSFetchedResultsController<FetchType>, performFetch: Bool) {
+		self.fetchedResultsController = fetchedResultsController
+		publisher = PassthroughSubject<[FetchType], Error>()
+		super.init()
+		fetchedResultsController.delegate = self
+		fetchedResultsController.managedObjectContext.perform {
+			do {
+				if performFetch {
+					try fetchedResultsController.performFetch()
 				}
-				resultController = controller
-			}
-			
-			RequestSubscription(fetchPublisher: self, subscriber: AnySubscriber(subscriber))
-		}
-		
-		public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-			let result = controller.fetchedObjects as? [Entity] ?? []
-			subject.send(result)
-		}
-		
-		private func dropSubscription() {
-			var isLastSubscription = false
-			DispatchQueue.isolated("requestPublisher") {
-				subscriptions -= 1
-				isLastSubscription = subscriptions == 0
-			}
-			
-			if isLastSubscription {
-				resultController?.delegate = nil
-				resultController = nil
+				self.publisher.send(fetchedResultsController.fetchedObjects ?? [])
+			} catch {
+				self.publisher.send(completion: .failure(error))
 			}
 		}
+	}
+	
+	@objc func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		let newHash = fetchedResultsController.fetchedObjects?.hashValue ?? 0
+		if newHash == lastHashSent { return }
 		
-		private class RequestSubscription: Subscription {
-			private var fetchPublisher: RequestPublisher?
-			private var cancellable: AnyCancellable?
-			
-			@discardableResult
-			init(fetchPublisher: RequestPublisher, subscriber: AnySubscriber<Output, Failure>) {
-				self.fetchPublisher = fetchPublisher
-				
-				subscriber.receive(subscription: self)
-				
-				cancellable = fetchPublisher.subject.sink(receiveCompletion: { completion in
-					subscriber.receive(completion: completion)
-				}, receiveValue: { value in
-					_ = subscriber.receive(value)
-				})
-			}
-			
-			func request(_ demand: Subscribers.Demand) {}
-			
-			func cancel() {
-				cancellable?.cancel()
-				cancellable = nil
-				fetchPublisher?.dropSubscription()
-				fetchPublisher = nil
-			}
-		}
-		
+		lastHashSent = newHash
+		publisher.send(fetchedResultsController.fetchedObjects ?? [])
 	}
 }
 
