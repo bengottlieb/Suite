@@ -78,3 +78,21 @@ extension String {
 		return self.replacingOccurrences(of: "\\", with: "")
 	}
 }
+
+public extension JSONEncoder {
+	static var iso8601Encoder: JSONEncoder {
+		let encoder = JSONEncoder()
+		
+		encoder.dateEncodingStrategy = .iso8601
+		return encoder
+	}
+}
+
+public extension JSONDecoder {
+	static var iso8601Decoder: JSONDecoder {
+		let decoder = JSONDecoder()
+		
+		decoder.dateDecodingStrategy = .iso8601
+		return decoder
+	}
+}

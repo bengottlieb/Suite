@@ -23,10 +23,10 @@ extension Date: Identifiable {
 #endif
 
 
-extension Date {
-	public enum StringLength: Int { case normal, short, veryShort }
+public extension Date {
+	enum StringLength: Int { case normal, short, veryShort }
 
-	public enum DayOfWeek: Int, CaseIterable, Codable, Comparable { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
+	enum DayOfWeek: Int, CaseIterable, Codable, Comparable { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 		public var nextDay: DayOfWeek { return self.increment(count: 1) }
 		public func increment(count: Int) -> DayOfWeek { return DayOfWeek(rawValue: (self.rawValue + count - 1) % 7 + 1)! }
 		public var abbreviation: String { return Calendar.current.veryShortWeekdaySymbols[self.rawValue - 1] }
@@ -51,15 +51,21 @@ extension Date {
 		public static func <(lhs: DayOfWeek, rhs: DayOfWeek) -> Bool { return lhs.rawValue < rhs.rawValue }
 	}
 	
-	public enum Month: Int, CaseIterable, Codable { case jan = 1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
+	enum Month: Int, CaseIterable, Codable { case jan = 1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
 		public var nextMonth: Month { return self.increment(by: 1) }
 		public func increment(by: Int) -> Month { return Month(rawValue: (self.rawValue + by - 1) % 12 + 1)! }
 		public var abbrev: String { return Calendar.current.veryShortMonthSymbols[self.rawValue] }
 		public var shortName: String { return Calendar.current.shortMonthSymbols[self.rawValue - 1] }
 		public var name: String { return Calendar.current.monthSymbols[self.rawValue - 1] }
 	}
+}
+
+public extension Date {
+	var iso8601String: String {
+		DateFormatter.iso8601.string(from: self)
+	}
 	
-	public var nearestSecond: Date {
+	var nearestSecond: Date {
 		return Date(timeIntervalSinceReferenceDate: floor(self.timeIntervalSinceReferenceDate))
 	}
 }
