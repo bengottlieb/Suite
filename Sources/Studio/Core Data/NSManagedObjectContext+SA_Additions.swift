@@ -20,6 +20,10 @@ public extension NSManagedObjectContext {
 		}
 	}
 	
+	func perform(block: @escaping (NSManagedObjectContext) -> Void) {
+		self.perform { block(self) }
+	}
+	
 	func insertEntity(named name: String) -> NSManagedObject {
 		let result = NSEntityDescription.insertNewObject(forEntityName: name, into: self) as NSManagedObject
 		type(of: result).didInsertNotification.notify(self)
