@@ -15,9 +15,8 @@ public protocol JSONExportable {
 }
 
 extension Decodable {
-	public static func load(from dictionary: JSONDictionary) throws -> Self {
+	public static func load(from dictionary: JSONDictionary, using decoder: JSONDecoder = .init()) throws -> Self {
 		let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
-		let decoder = JSONDecoder()
 		return try decoder.decode(Self.self, from: data)
 	}
 }
@@ -28,17 +27,17 @@ extension Encodable {
 		return try JSONSerialization.jsonObject(with: data, options: []) as? JSONDictionary ?? [:]
 	}
 
-	public func asJSONData() throws -> Data {
-		try JSONEncoder().encode(self)
+	public func asJSONData(using encoder: JSONEncoder = .init()) throws -> Data {
+		try encoder.encode(self)
 	}
 	
-	public func saveJSON(to url: URL) throws {
-		let data = try JSONEncoder().encode(self)
+	public func saveJSON(to url: URL, using encoder: JSONEncoder = .init()) throws {
+		let data = try encoder.encode(self)
 		try data.write(to: url)
 	}
 	
-	public func saveJSON(toUserDefaults key: String) throws {
-		let data = try JSONEncoder().encode(self)
+	public func saveJSON(toUserDefaults key: String, using encoder: JSONEncoder = .init()) throws {
+		let data = try encoder.encode(self)
 		UserDefaults.standard.set(data, forKey: key)
 	}
 	
@@ -58,8 +57,8 @@ extension Encodable {
 }
 
 extension Decodable {
-	public static func load(fromJSONData data: Data) throws -> Self {
-		return try JSONDecoder().decode(self, from: data)
+	public static func load(fromJSONData data: Data, using decoder: JSONDecoder = .init()) throws -> Self {
+		return try decoder.decode(self, from: data)
 	}
 	
 	public static func loadJSON(from url: URL) throws -> Self {
