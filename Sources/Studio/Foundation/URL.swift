@@ -7,6 +7,10 @@
 
 import Foundation
 
+public protocol URLLocatable {
+	var url: URL { get }
+}
+
 extension URL: Identifiable {
 	public var id: String { self.absoluteString }
 }

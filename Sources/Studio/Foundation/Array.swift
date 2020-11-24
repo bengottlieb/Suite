@@ -26,6 +26,15 @@ public extension Array where Element: Equatable {
 	}
 }
 
+public extension Array where Element: Numeric {
+	func sum() -> Element {
+		var total: Element = 0
+		
+		for item in self { total += item }
+		return total
+	}
+}
+
 public extension Array where Element: Hashable {
 	func removingDuplicates() -> [Element] {
 		let set = Set(self)
