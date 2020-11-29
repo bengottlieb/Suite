@@ -35,10 +35,17 @@ public extension Array where Element: Numeric {
 	}
 }
 
-public extension Array where Element: Hashable {
+public extension Array where Element: Equatable {
 	func removingDuplicates() -> [Element] {
-		let set = Set(self)
-		return Array(set)
+		guard let first = self.first else { return [] }
+		
+		var result = [first]
+		
+		for item in self {
+			if !result.contains(item) { result.append(item) }
+		}
+		
+		return result
 	}
 }
 
