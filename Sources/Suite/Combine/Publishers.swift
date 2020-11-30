@@ -24,12 +24,13 @@ public extension Publisher {
 
 @available(iOS 13.0, watchOS 6.0, OSX 10.15, *)
 public extension Publisher {
-	func sinkLog(_ label: String = "PUB Error", receiveValue: @escaping (Self.Output) -> Void) -> AnyCancellable {
+	func sink(_ label: String = "PUB Error", completed: (() -> Void)? = nil, receiveValue: @escaping (Self.Output) -> Void) -> AnyCancellable {
 		self.sink(receiveCompletion: { result in
 			switch result {
 			case .failure(let error): Swift.print("\(label): \(error)")
 			case .finished: break
 			}
+			completed?()
 		}, receiveValue: receiveValue)
 
 	}
