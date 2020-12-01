@@ -35,4 +35,18 @@ public extension Publisher {
 
 	}
 }
+
+@available(iOS 13.0, watchOS 6.0, OSX 10.15, *)
+extension AnyPublisher {
+	static func just(_ output: Output) -> Self {
+		Just(output)
+			.setFailureType(to: Failure.self)
+			.eraseToAnyPublisher()
+	}
+	
+	static func fail(with error: Failure) -> Self {
+		Fail(error: error).eraseToAnyPublisher()
+	}
+}
+
 #endif
