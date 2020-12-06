@@ -49,4 +49,13 @@ extension AnyPublisher {
 	}
 }
 
+@available(iOS 13.0, watchOS 6.0, OSX 10.15, *)
+public extension Collection where Element: Publisher {
+	func serialize() -> AnyPublisher<Element.Output, Element.Failure>? {
+		Publishers.Sequence(sequence: self)
+				  .flatMap(maxPublishers: .max(1)) { $0 }
+				  .eraseToAnyPublisher()
+	}
+}
+
 #endif

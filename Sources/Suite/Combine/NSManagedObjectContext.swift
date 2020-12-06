@@ -10,6 +10,27 @@ import Foundation
 import CoreData
 import Combine
 
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+extension NSManagedObjectContext {
+	func publish<T>(block: @escaping (NSManagedObjectContext) throws -> T) -> AnyPublisher<T, Error> {
+		let future = Future<T,Error>() { promise in
+			do {
+				let result = try block(self)
+				promise(.success(result))
+			} catch {
+				promise(.failure(error))
+			}
+		}
+		
+		return future.eraseToAnyPublisher()
+	}
+
+	func publish<T>(block: @escaping (NSManagedObjectContext) -> AnyPublisher<T, Error>) -> AnyPublisher<T, Error> {
+		block(self)
+	}
+}
+
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension NSManagedObjectContext {
 	static let PublishersKey: StaticString = "__PublishersKey"
