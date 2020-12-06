@@ -20,8 +20,7 @@ import SwiftUI
 
 */
 
-@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
-open class URLImporter: ObservableObject {	
+open class URLImporter {
 
 	public init() { }
 	
@@ -39,14 +38,24 @@ open class URLImporter: ObservableObject {
 		return url
 	}()
 	
+	public func queue(_ urls: [URL]) {
+		urls.forEach { addOne(url: $0) }
+		startImportTimer()
+	}
+
+	
 	public func queue(_ url: URL) {
+		self.addOne(url: url)
+		startImportTimer()
+	}
+	
+	func addOne(url: URL) {
 		let newURL = availableFilename(startingWith: url.deletingPathExtension().lastPathComponent, extension: url.pathExtension)
 		
 		do {
 			try FileManager.default.moveItem(at: url, to: newURL)
 		
 			pendingURLs.append(newURL)
-			startImportTimer()
 		} catch {
 			print("Problem copying \(url) to \(newURL): \(error)")
 		}
