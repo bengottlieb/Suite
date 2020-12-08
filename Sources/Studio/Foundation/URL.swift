@@ -43,4 +43,6 @@ public extension URL {
 		}
 		return dict
 	}
+	
+	var fileSize: UInt64 { FileManager.default.fileSize(at: self) }
 }

@@ -14,6 +14,13 @@ public extension FileManager {
 		return self.fileExists(atPath: url.path)
 	}
 	
+	func fileSize(at url: URL?) -> UInt64 {
+		guard let url = url, url.isFileURL else { return 0 }
+		let attr = (try? attributesOfItem(atPath: url.path)) ?? [:]
+		
+		return attr[.size] as? UInt64 ?? 0
+	}
+	
 	func directoryExists(at url: URL) -> Bool {
 		var isDir: ObjCBool = false
 		
