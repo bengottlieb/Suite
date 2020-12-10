@@ -22,6 +22,16 @@ extension Decodable {
 }
 
 extension Encodable {
+	var stringValue: String? {
+		stringValue(from: JSONEncoder())
+	}
+	
+	func stringValue(from encoder: JSONEncoder) -> String? {
+		guard let data = try? encoder.encode(self) else { return nil }
+		
+		return String(data: data, encoding: .utf8)
+	}
+
 	public func asJSON() throws -> JSONDictionary {
 		let data = try asJSONData()
 		return try JSONSerialization.jsonObject(with: data, options: []) as? JSONDictionary ?? [:]

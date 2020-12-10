@@ -22,12 +22,14 @@ public class SoundEffect: Equatable {
 	private static var playingSounds: [SoundEffect] = []
     private static var isAmbient = false
 	public static var disableAllSounds = Gestalt.runningOnSimulator
-	var player: AVAudioPlayer!
+	var internalPlayer: AVAudioPlayer!
 	var original: SoundEffect?
 	weak var dequeueTimer: Timer?
 	public var isPlaying = false
 	public private(set) var isLooping = false
 	var startedAt: Date?
+	var url: URL?
+	var data: Data?
 	var pausedAt: Date?
 	var completion: (() -> Void)?
 	public var volume: Float = 1.0 { didSet {
@@ -38,17 +40,30 @@ public class SoundEffect: Equatable {
 		self.original = original
 	}
 	
+	func setupPlayer() -> AVAudioPlayer? {
+		if internalPlayer == nil {
+			do {
+				if let url = self.url {
+					internalPlayer = try AVAudioPlayer(contentsOf: url, fileTypeHint: nil)
+				} else if let data = self.data {
+					internalPlayer = try AVAudioPlayer(data: data, fileTypeHint: nil)
+				}
+			} catch {
+				if let url = self.url {
+					print("Problem loading \(url.lastPathComponent): \(error)")
+				} else {
+					print("Problem loading sound: \(error)")
+				}
+			}
+		}
+		return internalPlayer
+	}
+	
 	public init?(url: URL, preload: Bool = true, uncached: Bool = false) {
 		if let original = SoundEffect.cachedSounds[url.absoluteString] {
 			self.original = original
 		} else {
-			do {
-				self.player = try AVAudioPlayer(contentsOf: url, fileTypeHint: nil)
-                
-			} catch {
-				print("Error loading sound at \(url): \(error)")
-				return nil
-			}
+			self.url = url
 			if preload { self.preload() }
 			if !uncached { SoundEffect.cachedSounds[url.absoluteString] = self }
 		}
@@ -57,12 +72,7 @@ public class SoundEffect: Equatable {
 	public init?(data: Data?, preload: Bool = true, uncached: Bool = false) {
 		guard let data = data else { return nil }
 		
-		do {
-			self.player = try AVAudioPlayer(data: data, fileTypeHint: nil)
-		} catch {
-			print("Error loading sound from data: \(error)")
-			return nil
-		}
+		self.data = data
 		#if os(iOS)
         	self.makeAmbient()
 		#endif
@@ -70,7 +80,7 @@ public class SoundEffect: Equatable {
 	}
 	
 	public func preload() {
-		player.prepareToPlay()
+		actualPlayer?.prepareToPlay()
 	}
 	
 	#if os(iOS)
@@ -101,12 +111,13 @@ public class SoundEffect: Equatable {
 			} else {
 				print("Unable to locate a sound named \(name) in \(bundle?.description ?? "--")")
 				self.init(data: nil, preload: false, uncached: false)
+				return nil
 			}
 		}
 	}
 	
 	public func loop(fadingInOver fadeIn: TimeInterval = 0) {
-		self.player.numberOfLoops = -1
+		actualPlayer?.numberOfLoops = -1
 		if self.isLooping { return }
 		
 		self.isLooping = true
@@ -116,16 +127,16 @@ public class SoundEffect: Equatable {
 	
 	public func stop(fadingOutOver fadeOut: TimeInterval = 0) {
 		if #available(iOS 10.0, iOSApplicationExtension 10.0, OSX 10.12, OSXApplicationExtension 10.12, *), fadeOut > 0 {
-			self.actualPlayer.setVolume(0, fadeDuration: fadeOut)
+			actualPlayer?.setVolume(0, fadeDuration: fadeOut)
 			DispatchQueue.main.asyncAfter(deadline: .now() + fadeOut) {
 				self.stop()
 			}
 			return
 		}
 
-		self.player.numberOfLoops = 0
+		actualPlayer?.numberOfLoops = 0
 		self.isLooping = false
-		self.actualPlayer.stop()
+		actualPlayer?.stop()
 		self.stopPlaying()
 	}
 
@@ -157,34 +168,34 @@ public class SoundEffect: Equatable {
 }
 
 extension SoundEffect {
-	public var duration: TimeInterval? { return self.player?.duration }
-	var actualPlayer: AVAudioPlayer! { return self.player ?? self.original!.player }
+	public var duration: TimeInterval? { return actualPlayer?.duration }
+	var actualPlayer: AVAudioPlayer? { return self.original?.internalPlayer ?? self.setupPlayer() }
 	@discardableResult public func play(fadingInOver fadeIn: TimeInterval = 0, completion: (() -> Void)? = nil) -> Bool {
-		if SoundEffect.disableAllSounds { return false }
+		guard !SoundEffect.disableAllSounds, let player = actualPlayer else { return false }
 
 		self.completion = completion
 		if let startedAt = self.startedAt, let pausedAt = self.pausedAt {
 			let elapsed = pausedAt.timeIntervalSince(startedAt)
-			self.registerAsPlayingFor(duration: self.actualPlayer.duration - elapsed)
+			self.registerAsPlayingFor(duration: player.duration - elapsed)
 		} else {
 			self.pausedAt = nil
 			self.startedAt = Date()
 			self.isPlaying = true
-			self.registerAsPlayingFor(duration: self.actualPlayer.duration)
+			self.registerAsPlayingFor(duration: player.duration)
 		}
 
-		if fadeIn > 0 { self.actualPlayer.volume = 0 }
-		if !self.actualPlayer.play() { return false }
+		if fadeIn > 0 { player.volume = 0 }
+		if !player.play() { return false }
 
 		if #available(iOS 10.0, iOSApplicationExtension 10.0, OSX 10.12, OSXApplicationExtension 10.12, *), fadeIn > 0 {
-			self.actualPlayer.setVolume(self.volume, fadeDuration: fadeIn)
+			player.setVolume(self.volume, fadeDuration: fadeIn)
 		}
 		return true
 	}
 	
 	public func pause() {
 		self.isPlaying = true
-		self.actualPlayer.pause()
+		actualPlayer?.pause()
 		self.pausedAt = Date()
 		self.dequeueTimer?.invalidate()
 	}

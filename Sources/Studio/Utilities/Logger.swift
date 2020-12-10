@@ -8,10 +8,10 @@
 import Foundation
 import CoreData
 
-public func log(_ msg: @autoclosure () -> String, _ level: Logger.Level = .quiet) { Logger.instance.log(msg(), level: level) }
+public func log(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
 public func log(_ special: Logger.Special, _ level: Logger.Level = .mild) { Logger.instance.log(special, level: level) }
 public func dlog(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
-public func elog(_ error: Error, _ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(error: error, msg(), level: .quiet) }
+public func elog(_ error: Error, _ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(error: error, msg(), level: level) }
 public func dlog(_ something: Any, _ level: Logger.Level = .mild) { Logger.instance.log("\(something)", level: level) }
 
 public class Logger {
