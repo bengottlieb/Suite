@@ -75,3 +75,19 @@ public extension Array {
 		return results
 	}
 }
+
+public extension Collection {
+	func split<T: Equatable & Hashable>(by path: KeyPath<Element, T>) -> [[Element]] {
+		var groups: [T: [Element]] = [:]
+		
+		for item in self {
+			let key = item[keyPath: path]
+			var set = groups[key] ?? []
+			
+			set.append(item)
+			groups[key] = set
+		}
+		
+		return groups.map { $0.1 }
+	}
+}
