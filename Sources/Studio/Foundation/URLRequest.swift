@@ -10,7 +10,7 @@ import Foundation
 public extension URLRequest {
 	var curl: String {
 		guard let url = url else { return "" }
-		var baseCommand = "curl \(url.absoluteString)"
+		var baseCommand = "curl \"\(url.absoluteString)\""
 		
 		if httpMethod == "HEAD" {
 			baseCommand += " --head"

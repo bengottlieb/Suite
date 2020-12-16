@@ -92,7 +92,7 @@ public extension String {
 				var random: UInt8 = 0
 				let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
 				if errorCode != errSecSuccess {
-					print("Unable to generate random string. SecRandomCopyBytes failed with OSStatus \(errorCode)")
+					Logger.instance.log("Unable to generate random string. SecRandomCopyBytes failed with OSStatus \(errorCode)")
 					return 0
 				}
 				return random

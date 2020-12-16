@@ -13,7 +13,7 @@ public extension Publisher {
 	func logFailures(_ replacement: Output, label: String = "", completion: (() -> Void)? = nil) -> AnyPublisher<Output, Never> {
 		self
 			.catch { error -> Just<Output> in
-				Swift.print("\(label) \(error)")
+				log(error: error, "\(label)")
 				completion?()
 				return Just(replacement)
 			}
@@ -27,7 +27,7 @@ public extension Publisher {
 	func sink(_ label: String = "PUB Error", completed: (() -> Void)? = nil, receiveValue: @escaping (Self.Output) -> Void) -> AnyCancellable {
 		self.sink(receiveCompletion: { result in
 			switch result {
-			case .failure(let error): Swift.print("\(label): \(error)")
+			case .failure(let error): log(error: error, "\(label)")
 			case .finished: break
 			}
 			completed?()

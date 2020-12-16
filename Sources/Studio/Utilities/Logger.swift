@@ -11,8 +11,25 @@ import CoreData
 public func log(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
 public func log(_ special: Logger.Special, _ level: Logger.Level = .mild) { Logger.instance.log(special, level: level) }
 public func dlog(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
-public func elog(_ error: Error, _ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(error: error, msg(), level: level) }
+public func log(error: Error?, _ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(error: error, msg(), level: level) }
 public func dlog(_ something: Any, _ level: Logger.Level = .mild) { Logger.instance.log("\(something)", level: level) }
+public func log<T>(result: Result<T, Error>, _ msg: @autoclosure () -> String) {
+	switch result {
+	case .failure(let error): log(error: error, msg())
+	default: break
+	}
+}
+
+#if canImport(Combine)
+import Combine
+@available(iOS 13.0, *)
+public func log<Failure>(completion: Subscribers.Completion<Failure>, _ msg: @autoclosure () -> String) {
+	switch completion {
+	case .failure(let error): log(error: error, msg())
+	default: break
+	}
+}
+#endif
 
 public class Logger {
 	static public let instance = Logger()
@@ -49,9 +66,9 @@ public class Logger {
 		print(message)
 	}
 	
-	public func log(error: Error, _ msg: @autoclosure () -> String, level: Level = .mild) {
+	public func log(error: Error?, _ msg: @autoclosure () -> String, level: Level = .mild) {
 		if level > self.level { return }
-		let message = "⚠️ \(msg()) \(error)"
+		let message = "⚠️ \(msg()) \(error?.localizedDescription ?? "")"
 		print(message)
 	}
 }
