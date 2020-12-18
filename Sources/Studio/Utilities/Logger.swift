@@ -22,7 +22,7 @@ public func log<T>(result: Result<T, Error>, _ msg: @autoclosure () -> String) {
 
 #if canImport(Combine)
 import Combine
-@available(iOS 13.0, *)
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public func log<Failure>(completion: Subscribers.Completion<Failure>, _ msg: @autoclosure () -> String) {
 	switch completion {
 	case .failure(let error): log(error: error, msg())
