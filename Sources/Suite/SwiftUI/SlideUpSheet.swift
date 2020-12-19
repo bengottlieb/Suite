@@ -18,6 +18,31 @@ import Combine
 #endif
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+public class SlideUpManager: ObservableObject {
+	public var isSheetVisible = false { willSet { self.objectWillChange.send() }}
+
+	public init() {
+		
+	}
+	
+	@Published public var currentSheet: AnyView?
+	
+	public func hide() {
+		self.isSheetVisible = false
+	}
+	
+	public func show(_ view: AnyView) {
+		self.currentSheet = view
+		
+		DispatchQueue.main.async() {
+			withAnimation {
+				self.isSheetVisible = true
+			}
+		}
+	}
+}
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct SlideUpSheet<Content: View>: View {
 	public enum DragStyle { case handle, noHandle, noDrag }
 	let dragStyle: DragStyle

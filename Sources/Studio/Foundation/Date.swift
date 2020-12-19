@@ -84,7 +84,11 @@ public extension TimeInterval {
 	var hours: Int { return Int(self / .hour) }
 	var minutes: Int { return Int(self / .minute) }
 	var seconds: Int { return Int(self) }
-	
+
+	var leftoverHours: Int { return Int(self / .hour) % 24 }
+	var leftoverMinutes: Int { return Int(self / .minute) % 60 }
+	var leftoverSeconds: Int { return Int(self) % 60 }
+
 	 enum DurationStyle { case hours, minutes, seconds, centiseconds, milliseconds }
 	
 	func durationString(style: DurationStyle = .seconds, showLeadingZero: Bool = false) -> String {
@@ -109,6 +113,16 @@ public extension TimeInterval {
 			return String(format: leading + "%02d.%02d", minutes % 60, seconds % 60, Int(self * 1000) % 1000)
 
 		}
+	}
+	
+	func durationWords() -> String {
+		var components: [String] = []
+		
+		if hours != 0 { components.append(Pluralizer.instance.pluralize(hours, NSLocalizedString("hour", comment: "hour"))) }
+		if leftoverMinutes != 0 { components.append(Pluralizer.instance.pluralize(leftoverMinutes, NSLocalizedString("minute", comment: "minute"))) }
+		if leftoverSeconds != 0 { components.append(Pluralizer.instance.pluralize(leftoverSeconds, NSLocalizedString("second", comment: "second"))) }
+		
+		return components.joined(separator: ", ")
 	}
 }
 
