@@ -495,3 +495,9 @@ public extension Array where Element == Date {
 		return nil
 	}
 }
+
+extension Set where Element == Calendar.Component {
+	public static var all: Set<Calendar.Component> {
+		[ .era, .year, .month, .day, .hour, .minute, .second, .weekday, .weekdayOrdinal, .quarter, .weekOfMonth, .weekOfYear, .yearForWeekOfYear, .nanosecond, .calendar, .timeZone ]
+	}
+}
