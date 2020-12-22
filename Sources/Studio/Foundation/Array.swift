@@ -26,6 +26,14 @@ public extension Array where Element: Equatable {
 	}
 }
 
+public extension Array {
+	func first(_ number: Int) -> [Element] {
+		if number >= count { return self }
+		
+		return Array(self[0..<number])
+	}
+}
+
 public extension Array where Element: Numeric {
 	func sum() -> Element {
 		var total: Element = 0
