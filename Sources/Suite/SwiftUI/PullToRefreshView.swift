@@ -39,11 +39,9 @@ public struct PullToRefreshIndicator: View {
 				let height = proxy.frame(in: .global).y / fullHeight
 				DispatchQueue.main.async {
 					percentFull = max(0, min(Double(height), 1))
-					withAnimation() {
-						if percentFull >= 1.0, !isRefreshing {
-							isRefreshing = true
-							refresh() { stopRefreshing() }
-						}
+					if percentFull >= 1.0, !isRefreshing {
+						isRefreshing = true
+						refresh() { stopRefreshing() }
 					}
 				}
 				
@@ -60,7 +58,7 @@ public struct PullToRefreshIndicator: View {
 				}
 			}
 			.padding(.bottom, 10)
-
+			
 		}
 	}
 }
