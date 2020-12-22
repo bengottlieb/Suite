@@ -45,4 +45,8 @@ public extension URL {
 	}
 	
 	var fileSize: UInt64 { FileManager.default.fileSize(at: self) }
+	
+	func replacingPathExtension(with ext: String) -> URL {
+		deletingPathExtension().appendingPathExtension(ext)
+	}
 }
