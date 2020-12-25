@@ -13,11 +13,6 @@ import Combine
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension Binding {
-	static func mock<Value>(value: Value) -> Binding<Value> {
-		var value = value
-		return Binding<Value>(get: { return value }) { value = $0 }
-	}
-
 	func onChange(_ completion: @escaping (Value) -> Void) -> Binding<Value> {
 		Binding<Value>(get: { self.wrappedValue }, set: { newValue in
 			self.wrappedValue = newValue
@@ -38,6 +33,25 @@ public extension Binding where Value: Equatable {
 					source.wrappedValue = newValue
 				}
 			})
+	}
+}
+
+public protocol OptionalType {
+	var isEmpty: Bool { get }
+}
+extension Optional: OptionalType {
+	public var isEmpty: Bool {
+		switch self {
+		case .none: return true
+		default: return false
+		}
+	}
+}
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+public extension Binding where Value: OptionalType {
+	var bool: Binding<Bool> {
+		Binding<Bool>(get: { !wrappedValue.isEmpty }, set: { _ in })
 	}
 }
 
