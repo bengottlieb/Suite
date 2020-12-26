@@ -106,9 +106,11 @@ public extension NSManagedObjectContext {
 		return self.insertObject(named: entityName) as? T
 	}
 	
-	func insertObject<T>() -> T! where T: NSManagedObject {
+	func insertObject<T>(loading dictionary: JSONDictionary? = nil, dateStrategy: JSONDecoder.DateDecodingStrategy = .default) -> T! where T: NSManagedObject {
 		let entityName = T.entityName(in: self)
-		return self.insertObject(named: entityName) as? T
+		let entity = self.insertObject(named: entityName) as? T
+		if let dict = dictionary { entity?.load(dictionary: dict, combining: false, dateStrategy: dateStrategy) }
+		return entity
 	}
 	
 	func fetchAll<T>(matching predicate: NSPredicate? = nil, sortedBy: [NSSortDescriptor] = []) -> [T] where T: NSManagedObject {
