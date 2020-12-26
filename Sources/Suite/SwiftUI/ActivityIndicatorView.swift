@@ -11,16 +11,22 @@ import SwiftUI
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct ActivityIndicatorView: View {
-	private var color: Color
-	private var spokeCount = 8
-	private var period: TimeInterval = 1.2
+	@State private var spokeRotation = 1
+	let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+
 	private var fixedPercent: Double?
+	private var spokeCount: Int
+
+	private var period: TimeInterval = 1.0
+	private var spokeColors: [Color]
+	private let visibleSpokeCount: Int
 	
-	@State private var gradientRotation = Angle.zero
-	
-	public init(_ color: Color = .gray, fixedPercent: Double? = nil) {
-		self.color = color
-		self.fixedPercent = fixedPercent
+	public init(_ color: Color = Color(white: 0.5), count: Int = 8, fixed percent: Double? = nil) {
+		spokeCount = count
+		fixedPercent = percent
+		visibleSpokeCount = Int(Double(count) * (percent ?? 1))
+
+		spokeColors = Array(0..<count).map { color.opacity(1.0 - Double($0) / Double(count)) }
 	}
 	
 	public func small() -> some View { self.frame(width: 20, height: 20) }
@@ -28,24 +34,33 @@ public struct ActivityIndicatorView: View {
 	public func large() -> some View { self.frame(width: 50, height: 50) }
 	
 	public var body: some View {
-		AngularGradient(gradient: .init(colors: [.clear, self.color]), center: .center)
-			.rotationEffect(self.gradientRotation)
-			.animation(Animation.linear(duration: period).repeatForever(autoreverses: false))
-			.mask(self.spokes)
-			.onAppear {
-				if fixedPercent == nil { self.gradientRotation = .radians(2 * .pi) }
+		self.spokes
+			.onReceive(timer) { _ in
+				spokeRotation += 1
 			}
 	}
 	
 	var spokes: some View {
 		GeometryReader { geo in
-			ForEach(0..<Int(Double(self.spokeCount) * (fixedPercent ?? 1)), id: \.self) { index in
+			ForEach(0..<visibleSpokeCount, id: \.self) { index in
 				RoundedRectangle(cornerRadius: 2)
-					.frame(width: geo.size.width / 10, height: geo.size.height / 4)
-					.position(x: geo.size.width / 2, y: geo.size.height / 5)
+					.fill(spokeColor(at: index))
+					.frame(width: geo.size.width / 8.5, height: geo.size.height / 3)
+					.position(x: geo.size.width / 2, y: geo.size.height / 6)
 					.rotationEffect(.radians(2 * .pi * Double(index) / Double(self.spokeCount)))
 			}
 		}
+	}
+	
+	func spokeColor(at index: Int) -> Color {
+		if let percent = fixedPercent {
+			let colorIndex = (Int(percent * Double(spokeCount)) - index) % spokeCount
+			
+			return spokeColors[colorIndex]
+		}
+		
+		let colorIndex = (spokeCount + spokeRotation - index) % spokeCount
+		return spokeColors[colorIndex]
 	}
 }
 

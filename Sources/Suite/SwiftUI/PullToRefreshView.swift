@@ -54,7 +54,7 @@ public struct PullToRefreshIndicator: View {
 				if isRefreshing {
 					ActivityIndicatorView(spinnerColor).medium()
 				} else {
-					ActivityIndicatorView(spinnerColor, fixedPercent: percentFull).medium()
+					ActivityIndicatorView(spinnerColor, fixed: percentFull).medium()
 				}
 			}
 			.padding(.bottom, 10)
