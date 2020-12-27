@@ -57,7 +57,7 @@ open class URLImporter {
 		
 			pendingURLs.append(newURL)
 		} catch {
-			log(error: error, "Problem copying \(url) to \(newURL)")
+			logg(error: error, "Problem copying \(url) to \(newURL)")
 		}
 	}
 	

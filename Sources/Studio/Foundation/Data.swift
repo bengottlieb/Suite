@@ -55,7 +55,7 @@ public extension Data {
 			try self.write(to: url)
 			return url
 		} catch {
-			Studio.log(error: error, "Writing data to \(url)")
+			Studio.logg(error: error, "Writing data to \(url)")
 			return nil
 		}
 	}

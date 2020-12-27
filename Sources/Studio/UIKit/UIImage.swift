@@ -48,7 +48,7 @@ public extension UIImage {
 		if #available(iOS 10.0, iOSApplicationExtension 10.0, *) {
 			return UIGraphicsImageRenderer(size: size).image { renderer in
 				guard let ctx = UIGraphicsGetCurrentContext() else {
-					dlog("UIGraphicsGetCurrentContext() Failed")
+					dlogg("UIGraphicsGetCurrentContext() Failed")
 					return
 				}
 				
@@ -57,7 +57,7 @@ public extension UIImage {
 		} else {
 			UIGraphicsBeginImageContextWithOptions(size, false, 0)
 			guard let ctx = UIGraphicsGetCurrentContext() else {
-				dlog("UIGraphicsGetCurrentContext() Failed")
+				dlogg("UIGraphicsGetCurrentContext() Failed")
 				return nil
 			}
 

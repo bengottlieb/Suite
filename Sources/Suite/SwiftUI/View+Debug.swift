@@ -12,8 +12,8 @@ import SwiftUI
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension View {
-	func log(_ text: String?) -> some View {
-		Studio.log(text ?? "")
+	func logg(_ text: String?) -> some View {
+		Studio.logg(text ?? "")
 		return self
 	}
 	
@@ -48,7 +48,7 @@ public extension View {
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct Log: View {
 	public init(_ text: String?) {
-		Studio.log(text ?? "")
+		Studio.logg(text ?? "")
 	}
 	
 	public var body: some View { EmptyView() }

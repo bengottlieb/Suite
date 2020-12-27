@@ -8,14 +8,14 @@
 import Foundation
 import CoreData
 
-public func log(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
-public func log(_ special: Logger.Special, _ level: Logger.Level = .mild) { Logger.instance.log(special, level: level) }
-public func dlog(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
-public func log(error: Error?, _ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(error: error, msg(), level: level) }
-public func dlog(_ something: Any, _ level: Logger.Level = .mild) { Logger.instance.log("\(something)", level: level) }
-public func log<T>(result: Result<T, Error>, _ msg: @autoclosure () -> String) {
+public func logg(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
+public func logg(_ special: Logger.Special, _ level: Logger.Level = .mild) { Logger.instance.log(special, level: level) }
+public func dlogg(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
+public func logg(error: Error?, _ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(error: error, msg(), level: level) }
+public func dlogg(_ something: Any, _ level: Logger.Level = .mild) { Logger.instance.log("\(something)", level: level) }
+public func logg<T>(result: Result<T, Error>, _ msg: @autoclosure () -> String) {
 	switch result {
-	case .failure(let error): log(error: error, msg())
+	case .failure(let error): logg(error: error, msg())
 	default: break
 	}
 }
@@ -23,9 +23,9 @@ public func log<T>(result: Result<T, Error>, _ msg: @autoclosure () -> String) {
 #if canImport(Combine)
 import Combine
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
-public func log<Failure>(completion: Subscribers.Completion<Failure>, _ msg: @autoclosure () -> String) {
+public func logg<Failure>(completion: Subscribers.Completion<Failure>, _ msg: @autoclosure () -> String) {
 	switch completion {
-	case .failure(let error): log(error: error, msg())
+	case .failure(let error): logg(error: error, msg())
 	default: break
 	}
 }
@@ -74,5 +74,5 @@ public class Logger {
 }
 
 public extension NSManagedObject {
-	func logObject(_ level: Logger.Level = .mild) { dlog("\(self)", level) }
+	func logObject(_ level: Logger.Level = .mild) { dlogg("\(self)", level) }
 }

@@ -50,9 +50,9 @@ public class SoundEffect: Equatable {
 				}
 			} catch {
 				if let url = self.url {
-					log(error: error, "Problem loading \(url.lastPathComponent)")
+					logg(error: error, "Problem loading \(url.lastPathComponent)")
 				} else {
-					log(error: error, "Problem loading sound")
+					logg(error: error, "Problem loading sound")
 				}
 			}
 		}
@@ -109,7 +109,7 @@ public class SoundEffect: Equatable {
 				self.init(data: data, preload: preload, uncached: uncached)
 				if !uncached { SoundEffect.cachedSounds[name] = self }
 			} else {
-				log(error: nil, "Unable to locate a sound named \(name) in \(bundle?.description ?? "--")")
+				logg(error: nil, "Unable to locate a sound named \(name) in \(bundle?.description ?? "--")")
 				self.init(data: nil, preload: false, uncached: false)
 				return nil
 			}

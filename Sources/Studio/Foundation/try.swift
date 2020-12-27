@@ -11,7 +11,7 @@ public func tryLog<T>(_ closure: @autoclosure () throws -> T) -> T? {
 	do {
 		return try closure()
 	} catch {
-		log("\(error)")
+		logg("\(error)")
 		return nil
 	}
 }
