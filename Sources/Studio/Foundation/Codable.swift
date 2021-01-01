@@ -14,10 +14,25 @@ public protocol JSONExportable {
 	func asJSON() throws -> JSONDictionary
 }
 
+public protocol PostDecodeAwakable: class {
+	func awakeFromDecoder()
+}
+
 extension Decodable {
-	public static func load(from dictionary: JSONDictionary, using decoder: JSONDecoder = .init()) throws -> Self {
+	public static func load(from dictionary: JSONDictionary, using decoder: JSONDecoder = JSONExpandedDecoder()) throws -> Self {
 		let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
 		return try decoder.decode(Self.self, from: data)
+	}
+}
+
+public class JSONExpandedDecoder: JSONDecoder {
+	open override func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable {
+		let result = try super.decode(type, from: data)
+		
+		if let awakable = result as? PostDecodeAwakable {
+			awakable.awakeFromDecoder()
+		}
+		return result
 	}
 }
 
@@ -99,7 +114,7 @@ public extension JSONEncoder {
 
 public extension JSONDecoder {
 	static var iso8601Decoder: JSONDecoder {
-		let decoder = JSONDecoder()
+		let decoder = JSONExpandedDecoder()
 		
 		decoder.dateDecodingStrategy = .iso8601
 		return decoder
