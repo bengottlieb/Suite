@@ -6,8 +6,10 @@
 //
 
 #if canImport(SwiftUI)
+#if canImport(Combine)
 
 import SwiftUI
+import Combine
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 public struct OptionalNavigationLink<Check, Content: View, Dest: View>: View {
@@ -28,4 +30,5 @@ public struct OptionalNavigationLink<Check, Content: View, Dest: View>: View {
 
 
 
+#endif
 #endif
