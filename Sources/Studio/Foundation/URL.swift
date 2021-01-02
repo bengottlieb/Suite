@@ -15,7 +15,17 @@ extension URL: Identifiable {
 	public var id: String { self.absoluteString }
 }
 
+extension URL: ExpressibleByStringLiteral {
+	public init(stringLiteral value: StringLiteralType) {
+		self.init(string: value)!
+	}
+}
+
 public extension URL {
+	init(_ string: StaticString) {
+		self = URL(string: "\(string)")!
+	}
+	
 	var relativePathToHome: String? {
 		return self.path.abbreviatingWithTildeInPath
 	}
