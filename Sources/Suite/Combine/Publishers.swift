@@ -47,6 +47,16 @@ extension AnyPublisher {
 	static func fail(with error: Failure) -> Self {
 		Fail(error: error).eraseToAnyPublisher()
 	}
+    
+    func onCompletion(_ completion: @escaping (Result<Output, Failure>) -> Void) {
+        subscribe(Subscribers.Sink(receiveCompletion: { (result: Subscribers.Completion<Failure>) in
+            if case .failure(let err) = result {
+                completion(.failure(err))
+            }
+        }, receiveValue: { (result: Output) in
+            completion(.success(result))
+        }))
+    }
 }
 
 @available(iOS 13.0, watchOS 6.0, OSX 10.15, *)
