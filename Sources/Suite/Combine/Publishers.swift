@@ -57,6 +57,14 @@ public extension AnyPublisher {
 			completion(.success(result))
 		}))
 	}
+	
+	func withPreviousValue() -> AnyPublisher<(previous: Output?, new: Output), Failure> {
+		scan((previous: Output?.none, new: Output?.none)) { tuple, newValue in
+			(previous: tuple.new, new: newValue)
+		}
+		.map { (previous: $0.previous, new: $0.new!) }
+		.eraseToAnyPublisher()
+	}
 }
 
 @available(iOS 13.0, watchOS 6.0, OSX 10.15, *)
