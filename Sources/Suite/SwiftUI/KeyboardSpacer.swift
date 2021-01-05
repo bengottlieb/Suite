@@ -18,6 +18,7 @@ class KeyboardObserver: ObservableObject {
 	
 	@Published var visibleHeight: CGFloat = 0
 	@Published var animationDuration: TimeInterval = 0.2
+	var cancellables = Set<AnyCancellable>()
 
 	init() {
 		NotificationCenter.default
@@ -25,25 +26,25 @@ class KeyboardObserver: ObservableObject {
 			.compactMap { $0.userInfo![UIResponder.keyboardFrameEndUserInfoKey] as? CGRect }
 			.map { $0.height }
 			.assign(to: \.visibleHeight, on: self)
-			.sequester()
+			.store(in: &cancellables)
 		
 		NotificationCenter.default
 			.publisher(for: UIResponder.keyboardWillShowNotification)
 			.compactMap { $0.userInfo![UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval }
 			.assign(to: \.animationDuration, on: self)
-			.sequester()
-		
+			.store(in: &cancellables)
+
 		NotificationCenter.default
 			.publisher(for: UIResponder.keyboardWillHideNotification)
 			.map { _ in 0 }
 			.assign(to: \.visibleHeight, on: self)
-			.sequester()
+			.store(in: &cancellables)
 
 		NotificationCenter.default
 			.publisher(for: UIResponder.keyboardWillHideNotification)
 			.compactMap { $0.userInfo![UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval }
 			.assign(to: \.animationDuration, on: self)
-			.sequester()
+			.store(in: &cancellables)
 	}
 }
 

@@ -19,6 +19,7 @@ public class OrientationWatcher: ObservableObject, CustomStringConvertible {
 		self.instance = OrientationWatcher(initialOrientation: windowScene.interfaceOrientation)
 	}
 	
+	var cancellables = Set<AnyCancellable>()
 	init(initialOrientation: UIInterfaceOrientation = .unknown) {
 		self.orientation = initialOrientation
 		self.subscription = UIDevice.orientationDidChangeNotification.publisher()
@@ -26,7 +27,7 @@ public class OrientationWatcher: ObservableObject, CustomStringConvertible {
 				if let newOrientation = UIApplication.shared.currentScene?.interfaceOrientation, newOrientation != self.orientation {
 					self.orientation = newOrientation
 				}
-			}.sequester()
+			}
 	}
 	
 	@Published public var orientation: UIInterfaceOrientation

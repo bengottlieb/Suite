@@ -58,6 +58,16 @@ public extension AnyPublisher {
 		}))
 	}
 	
+	func onSuccessfulCompletion(_ completion: @escaping (Output) -> Void) {
+		subscribe(Subscribers.Sink(receiveCompletion: { (result: Subscribers.Completion<Failure>) in
+			if case .failure(let err) = result {
+				logg("Failed to complete \(self): \(err)")
+			}
+		}, receiveValue: { (result: Output) in
+			completion(result)
+		}))
+	}
+	
 	func withPreviousValue() -> AnyPublisher<(previous: Output?, new: Output), Failure> {
 		scan((previous: Output?.none, new: Output?.none)) { tuple, newValue in
 			(previous: tuple.new, new: newValue)
