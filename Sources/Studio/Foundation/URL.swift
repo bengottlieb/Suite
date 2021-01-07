@@ -59,4 +59,19 @@ public extension URL {
 	func replacingPathExtension(with ext: String) -> URL {
 		deletingPathExtension().appendingPathExtension(ext)
 	}
+	
+	var fileAttributes: [FileAttributeKey : Any]? {
+		guard self.isFileURL else { return nil }
+		return (try? FileManager.default.attributesOfItem(atPath: path)) ?? [:]
+	}
+	
+	var createdAt: Date? {
+		fileAttributes?[.creationDate] as? Date
+	}
+
+	var modifiedAt: Date? {
+		fileAttributes?[.modificationDate] as? Date
+	}
+
+
 }

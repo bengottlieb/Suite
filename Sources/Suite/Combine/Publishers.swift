@@ -58,7 +58,7 @@ public extension AnyPublisher {
 		}))
 	}
 	
-	func onSuccessfulCompletion(_ completion: @escaping (Output) -> Void) {
+	func onSuccess(_ completion: @escaping (Output) -> Void) {
 		subscribe(Subscribers.Sink(receiveCompletion: { (result: Subscribers.Completion<Failure>) in
 			if case .failure(let err) = result {
 				logg("Failed to complete \(self): \(err)")
