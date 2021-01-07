@@ -7,6 +7,10 @@
 
 import Foundation
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 #if canImport(Combine)
 import Combine
 
@@ -21,7 +25,10 @@ public class InMemoryCache<Element: Cachable>: Cache<Element> {
 	
 	public override init(backingCache: Cache<Element>? = nil) {
 		super.init(backingCache: backingCache)
-		self.addAsObserver(of: UIApplication.didReceiveMemoryWarningNotification, selector: #selector(didReceiveMemoryWarningNotification))
+		
+		#if os(iOS)
+			self.addAsObserver(of: UIApplication.didReceiveMemoryWarningNotification, selector: #selector(didReceiveMemoryWarningNotification))
+		#endif
 	}
 	
 	@objc func didReceiveMemoryWarningNotification() {
