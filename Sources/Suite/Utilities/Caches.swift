@@ -13,12 +13,14 @@ import Combine
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public protocol Cachable {
 	var cacheableData: Data? { get }
+	var cacheCost: UInt64 { get }
 	init?(data: Data)
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 extension UIImage: Cachable {
 	public var cacheableData: Data? { self.pngData() }
+	public var cacheCost: UInt64 { UInt64(size.width * size.height) }
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
@@ -28,21 +30,22 @@ public class ImageCache: Cache<UIImage> {
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
-public class Cache<Element: Cachable> {
+public class Cache<Element: Cachable>: NSObject {
 	public enum CacheError: Error { case notFound, failedToUnCache }
 	
-	init(backingCache: Cache<Element>? = nil) {
+	public init(backingCache: Cache<Element>? = nil) {
 		self.backingCache = backingCache
+		super.init()
 	}
-	func fetch(for url: URL) -> AnyPublisher<Element, Error> {
+	public func fetch(for url: URL) -> AnyPublisher<Element, Error> {
 		if let backing = backingCache { return backing.fetch(for: url) }
 		return .fail(with: CacheError.notFound)
 	}
 
-	func store(_ element: Element, for url: URL) {
+	public func store(_ element: Element, for url: URL) {
 		backingCache?.store(element, for: url)
 	}
-	func clear(itemFor url: URL) { backingCache?.clear(itemFor: url) }
+	public func clear(itemFor url: URL) { backingCache?.clear(itemFor: url) }
 	
 	func just(_ result: Element) -> AnyPublisher<Element, Error> {
 		Just(result)
@@ -50,12 +53,24 @@ public class Cache<Element: Cachable> {
 			.eraseToAnyPublisher()
 	}
 	
+	public func clearCache() { }
 	var backingCache: Cache<Element>?
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public class InMemoryCache<Element: Cachable>: Cache<Element> {
 	var cache: [String: Element] = [:]
+	
+	public override init(backingCache: Cache<Element>? = nil) {
+		super.init(backingCache: backingCache)
+		self.addAsObserver(of: UIApplication.didReceiveMemoryWarningNotification, selector: #selector(didReceiveMemoryWarningNotification))
+	}
+	
+	@objc func didReceiveMemoryWarningNotification() {
+		clearCache()
+	}
+	
+	public override func clearCache() { self.cache = [:] }
 	
 	public override func fetch(for url: URL) -> AnyPublisher<Element, Error> {
 		let cacheKey = key(for: url)
@@ -77,6 +92,7 @@ public class InMemoryCache<Element: Cachable>: Cache<Element> {
 	public override func store(_ element: Element, for url: URL) {
 		let cacheKey = key(for: url)
 		cache[cacheKey] = element
+		super.store(element, for: url)
 	}
 	
 	func key(for url: URL) -> String { url.absoluteString.sha256 }
@@ -111,6 +127,11 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 		return super.fetch(for: url)
 	}
 	
+	public override func clearCache() {
+		try? FileManager.default.removeItem(at: root)
+		try? FileManager.default.createDirectory(at: root, withIntermediateDirectories: true, attributes: nil)
+	}
+	
 	func location(for url: URL) -> URL {
 		let filename = url.absoluteString.sha256
 		
@@ -127,7 +148,7 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 	public override func store(_ element: Element, for url: URL) {
 		let file = location(for: url)
 		
-		try? FileManager.default.removeItem(at: file)
+		if FileManager.default.fileExists(at: file) { return }
 		guard let data = element.cacheableData else { return }			// nothing to store
 		
 		do {
@@ -135,6 +156,7 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 		} catch {
 			logg(error: error, "Failed to store \(url) at \(file) in \(self)")
 		}
+		super.store(element, for: url)
 	}
 }
 
