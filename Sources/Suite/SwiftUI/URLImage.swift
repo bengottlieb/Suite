@@ -13,12 +13,22 @@ import Foundation
 import SwiftUI
 import Combine
 
+#if canImport(UIKit)
+import UIKit
+typealias FrameworkImage = UIImage
+#endif
+
+#if canImport(AppKit)
+import AppKit
+typealias FrameworkImage = NSImage
+#endif
+
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct URLImage: View {
     let placeholder: Image?
     let imageURL: URL?
     let contentMode: ContentMode
-    @State var uiImage: UIImage?
+    @State var frameworkImage: FrameworkImage?
     
     public init(url: URL?, contentMode: ContentMode = .fit, placeholder: Image? = nil) {
         imageURL = url
@@ -27,12 +37,20 @@ public struct URLImage: View {
     }
     
     var imageView: Image {
-        if let image = uiImage {
-            return Image(uiImage: image)
+        if let image = frameworkImage {
+            #if os(OSX)
+                return Image(nsImage: image)
+            #else
+                return Image(uiImage: image)
+            #endif
         }
         
         if let placeholder = placeholder { return placeholder }
-        return Image(.square)
+        if #available(OSX 11.0, *) {
+            return Image(systemName: "square")
+        } else {
+            return Image("")
+        }
     }
     
     public var body: some View {
@@ -43,7 +61,7 @@ public struct URLImage: View {
                 if let imageURL = imageURL {
                     ImageCache.instance.fetch(for: imageURL)
                         .onSuccess { image in
-                            uiImage = image
+                            frameworkImage = image
                         }
                 }
             }

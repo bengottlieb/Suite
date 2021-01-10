@@ -5,8 +5,6 @@
 //  Created by Ben Gottlieb on 1/6/21.
 //
 
-import UIKit
-
 #if canImport(Combine)
 import Combine
 
@@ -17,11 +15,39 @@ public protocol Cachable {
 	init?(data: Data)
 }
 
+#if canImport(UIKit)
+import UIKit
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 extension UIImage: Cachable {
-	public var cacheableData: Data? { self.pngData() }
-	public var cacheCost: UInt64 { UInt64(size.width * size.height) }
+    public var cacheableData: Data? { self.pngData() }
+    public var cacheCost: UInt64 { UInt64(size.width * size.height) }
 }
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+public class ImageCache: Cache<UIImage> {
+    public static var root = FileManager.cachesDirectory.appendingPathComponent("cached-images")
+    public static let instance = InMemoryCache<UIImage>(backingCache: DiskCache<UIImage>(backingCache: RemoteCache<UIImage>(), rootedAt: ImageCache.root, pathExtension: "png"))
+}
+#endif
+
+#if canImport(AppKit)
+import AppKit
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+extension NSImage: Cachable {
+    public var cacheableData: Data? {
+        guard let rep = tiffRepresentation else { return nil }
+        let bmp = NSBitmapImageRep(data: rep)
+        return bmp?.representation(using: .png, properties: [:])
+    }
+    public var cacheCost: UInt64 { UInt64(size.width * size.height) }
+}
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+public class ImageCache: Cache<NSImage> {
+    public static var root = FileManager.cachesDirectory.appendingPathComponent("cached-images")
+    public static let instance = InMemoryCache<NSImage>(backingCache: DiskCache<NSImage>(backingCache: RemoteCache<NSImage>(), rootedAt: ImageCache.root, pathExtension: "png"))
+}
+#endif
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 extension Data: Cachable {
@@ -30,12 +56,6 @@ extension Data: Cachable {
 	public init?(data: Data) {
 		self = data
 	}
-}
-
-@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
-public class ImageCache: Cache<UIImage> {
-	public static var root = FileManager.cachesDirectory.appendingPathComponent("cached-images")
-	public static let instance = InMemoryCache<UIImage>(backingCache: DiskCache<UIImage>(backingCache: RemoteCache<UIImage>(), rootedAt: ImageCache.root, pathExtension: "png"))
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
