@@ -21,7 +21,7 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 	}
 	
 	public override func fetch(for url: URL, behavior: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
-		if behavior == .ignoreRemote { return Fail(outputType: Element.self, failure: CacheError.noLocalItemFound).eraseToAnyPublisher() }
+		if behavior == .skipRemote { return Fail(outputType: Element.self, failure: CacheError.noLocalItemFound).eraseToAnyPublisher() }
 
 		return session.dataTaskPublisher(for: url)
 			.tryMap { output in

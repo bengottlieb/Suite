@@ -83,22 +83,21 @@ public class DataCache: Cache<Data> {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public enum CacheError: Error { case notFound, noLocalItemFound, failedToUnCache }
-public enum CachePolicy: Equatable { case normal, alwaysReturnLocal, returnLocalIfNewerThan(Date), ignoreLocal, ignoreRemote
+public enum CachePolicy: Equatable { case normal, skipRemote, returnLocalIfNewerThan(Date), skipLocal
 	func shouldIgnoreLocal(forDate: Date?) -> Bool {
 		switch self {
 		case .normal: return false
-		case .alwaysReturnLocal: return false
+		case .skipRemote: return false
 		case .returnLocalIfNewerThan(let limit):
 			guard let date = forDate else { return true }
 			return date > limit
-		case .ignoreLocal: return true
-		case .ignoreRemote: return false
+		case .skipLocal: return true
 		}
 	}
 	
 	public static func ==(lhs: CachePolicy, rhs: CachePolicy) -> Bool {
 		switch (lhs, rhs) {
-		case (.normal, .normal), (.alwaysReturnLocal, .alwaysReturnLocal), (.ignoreLocal, .ignoreLocal), (.ignoreRemote, .ignoreRemote): return true
+		case (.normal, .normal), (.skipRemote, .skipRemote), (.skipLocal, .skipLocal): return true
 		case (.returnLocalIfNewerThan(let date1), .returnLocalIfNewerThan(let date2)): return date1 == date2
 		default: return false
 		}
