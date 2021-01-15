@@ -69,7 +69,15 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 		try? FileManager.default.removeItem(at: file)
 	}
 
-	
+	public override func localValue(for url: URL) -> Element? {
+		let file = location(for: url)
+		
+		if FileManager.default.fileExists(at: file), let data = try? Data(contentsOf: file), let item = Element.create(with: data) as? Element {
+			return item
+		}
+		return super.localValue(for: url)
+	}
+
 	public override func store(_ element: Element, for url: URL) {
 		let file = location(for: url)
 		

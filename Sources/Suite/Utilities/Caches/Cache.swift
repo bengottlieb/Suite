@@ -118,6 +118,9 @@ public class Cache<Element: Cachable>: NSObject {
 	public func store(_ element: Element, for url: URL) {
 		backingCache?.store(element, for: url)
 	}
+	
+	public func localValue(for url: URL) -> Element? { backingCache?.localValue(for: url) }
+	
 	public func clear(itemFor url: URL) { backingCache?.clear(itemFor: url) }
 	
 	func just(_ result: Element) -> AnyPublisher<Element, Error> {

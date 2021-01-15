@@ -60,6 +60,17 @@ public class InMemoryCache<Element: Cachable>: Cache<Element> {
 		super.store(element, for: url)
 	}
 	
+	public override func localValue(for url: URL) -> Element? {
+		if let item = cache[key(for: url)]?.item { return item }
+		
+		if let cached = super.localValue(for: url) {
+			store(cached, for: url)
+			return cached
+		}
+		return nil
+	}
+
+	
 	func key(for url: URL) -> String { url.absoluteString.sha256 }
 }
 
