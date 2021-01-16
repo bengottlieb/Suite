@@ -72,6 +72,29 @@ public extension URL {
 	var modifiedAt: Date? {
 		fileAttributes?[.modificationDate] as? Date
 	}
+}
 
-
+public extension URL {
+    init?(secureBookmarkData data: Data?) {
+        var stale = false
+        guard let data = data else {
+            self.init(string: "")
+            return nil
+        }
+        do {
+            self = try URL(resolvingBookmarkData: data, options: [.withSecurityScope], relativeTo: nil, bookmarkDataIsStale: &stale)
+            
+            if stale { return nil }
+        } catch {
+            return nil
+        }
+    }
+    var secureBookmarkData: Data? {
+        do {
+            return try self.bookmarkData(options: [.withSecurityScope], includingResourceValuesForKeys: nil, relativeTo: nil)
+        } catch {
+            print("Unable to extract secore data: \(error)")
+            return nil
+        }
+    }
 }
