@@ -72,7 +72,7 @@ public class Logger {
 				let linefeed = "\n".data(using: .utf8)!
 				
 				let file = try FileHandle(forUpdating: url)
-				if #available(iOS 13.4, watchOS 6.2, *) {
+				if #available(iOS 13.4, watchOS 6.2, macOS 10.15.4, *) {
 					try file.seekToEnd()
 				} else {
 					file.seekToEndOfFile()

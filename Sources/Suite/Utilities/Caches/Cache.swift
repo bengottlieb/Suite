@@ -53,6 +53,7 @@ public class ImageCache: Cache<UIImage> {
 import AppKit
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 extension NSImage: Cachable {
+	public static func create(with data: Data) -> Any? { NSImage(data: data) }
 	public var cacheableData: Data? {
 		guard let rep = tiffRepresentation else { return nil }
 		let bmp = NSBitmapImageRep(data: rep)
