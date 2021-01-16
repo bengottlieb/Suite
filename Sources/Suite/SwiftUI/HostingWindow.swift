@@ -6,10 +6,29 @@
 //
 
 #if canImport(AppKit)
+#if canImport(SwiftUI)
 
 import SwiftUI
 import AppKit
 
+typealias WindowFetcher = () -> NSWindow?
+
+@available(OSX 10.15, *)
+struct HostingWindowKey: EnvironmentKey {
+	static let defaultValue: WindowFetcher = { nil }
+}
+
+@available(OSX 10.15, *)
+extension EnvironmentValues {
+	 public var hostingWindow: NSWindow? {
+		  get {
+				return self[HostingWindowKey.self]()
+		  }
+		  set {
+				self[HostingWindowKey.self] = { [weak newValue] in newValue }
+		  }
+	 }
+}
 
 @available(OSX 10.15, *)
 public class HostingWindow<Root: View>: NSWindow {
@@ -32,11 +51,13 @@ public class HostingWindow<Root: View>: NSWindow {
             self.setFrameAutosaveName(title)
             self.title = title
         }
-        self.contentView = NSHostingView(rootView: root)
+        self.contentView = NSHostingView(rootView: root
+											.environment(\.hostingWindow, self))
     }
 }
 
 
 
 
+#endif
 #endif

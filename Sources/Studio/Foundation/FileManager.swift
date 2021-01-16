@@ -58,4 +58,15 @@ public extension FileManager {
 	static var cachesDirectory: URL { return self.systemDirectoryURL(which: .cachesDirectory)! }
 	static var applicationSpecificSupportDirectory: URL { return self.systemDirectoryURL(which: .applicationSupportDirectory)!.appendingPathComponent(Bundle.main.bundleIdentifier ?? Bundle.main.name) }
 	static var tempDirectory: URL { return URL(fileURLWithPath: NSTemporaryDirectory()) }
+	
+	static var realHomeDirectory: URL {
+		let home = FileManager.default.homeDirectoryForCurrentUser
+		let components = home.path.components(separatedBy: "/")
+		
+		if let index = components.firstIndex(of: "Containers"), index > 2 {
+			return URL(fileURLWithPath: components[0..<(index - 1)].joined(separator: "/"))
+		}
+		
+		return home
+	}
 }
