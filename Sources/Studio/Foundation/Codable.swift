@@ -113,10 +113,13 @@ public extension JSONEncoder {
 }
 
 public extension JSONDecoder {
+	enum DecodingError: Error { case unknownKey(String) }
+
 	static var iso8601Decoder: JSONDecoder {
 		let decoder = JSONExpandedDecoder()
 		
 		decoder.dateDecodingStrategy = .iso8601
 		return decoder
 	}
+	
 }

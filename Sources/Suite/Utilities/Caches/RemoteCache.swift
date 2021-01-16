@@ -20,12 +20,14 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 		super.init(backingCache: nil)
 	}
 	
-	public override func fetch(for url: URL, behavior: CacheBehavior = .normal) -> AnyPublisher<Element, Error> {
-		if behavior == .ignoreRemote { return Fail(outputType: Element.self, failure: CacheError.noLocalItemFound).eraseToAnyPublisher() }
+	public override func localValue(for url: URL) -> Element? { nil }
+	
+	public override func fetch(for url: URL, behavior: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
+		if behavior == .skipRemote { return Fail(outputType: Element.self, failure: CacheError.noLocalItemFound).eraseToAnyPublisher() }
 
 		return session.dataTaskPublisher(for: url)
 			.tryMap { output in
-				if let result = Element(data: output.data) { return result }
+				if let result = Element.create(with: output.data) as? Element { return result }
 				throw CacheError.failedToUnCache
 			}
 			.eraseToAnyPublisher()
