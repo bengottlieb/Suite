@@ -44,8 +44,9 @@ extension UIImage: Cachable {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public class ImageCache: Cache<UIImage> {
+	public static var remoteCache = RemoteCache<UIImage>() { didSet { ImageCache.instance.backingCache?.backingCache = remoteCache }}
 	public static var root = FileManager.cachesDirectory.appendingPathComponent("cached-images")
-	public static let instance = InMemoryCache<UIImage>(backingCache: DiskCache<UIImage>(backingCache: RemoteCache<UIImage>(), rootedAt: ImageCache.root, pathExtension: "png"))
+	public static let instance = InMemoryCache<UIImage>(backingCache: DiskCache<UIImage>(backingCache: ImageCache.remoteCache, rootedAt: ImageCache.root, pathExtension: "png"))
 }
 #endif
 
@@ -64,8 +65,9 @@ extension NSImage: Cachable {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public class ImageCache: Cache<NSImage> {
+	public static var remoteCache = RemoteCache<NSImage>() { didSet { ImageCache.instance.backingCache?.backingCache = remoteCache }}
 	public static var root = FileManager.cachesDirectory.appendingPathComponent("cached-images")
-	public static let instance = InMemoryCache<NSImage>(backingCache: DiskCache<NSImage>(backingCache: RemoteCache<NSImage>(), rootedAt: ImageCache.root, pathExtension: "png"))
+	public static let instance = InMemoryCache<NSImage>(backingCache: DiskCache<NSImage>(backingCache: ImageCache.remoteCache, rootedAt: ImageCache.root, pathExtension: "png"))
 }
 #endif
 
@@ -78,8 +80,9 @@ extension Data: Cachable {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public class DataCache: Cache<Data> {
+	public static var remoteCache = RemoteCache<Data>() { didSet { DataCache.instance.backingCache?.backingCache = remoteCache }}
 	public static var root = FileManager.cachesDirectory.appendingPathComponent("cached-data")
-	public static let instance = InMemoryCache<Data>(backingCache: DiskCache<Data>(backingCache: RemoteCache<Data>(), rootedAt: DataCache.root, pathExtension: "dat"))
+	public static let instance = InMemoryCache<Data>(backingCache: DiskCache<Data>(backingCache: DataCache.remoteCache, rootedAt: DataCache.root, pathExtension: "dat"))
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)

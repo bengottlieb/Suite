@@ -60,13 +60,17 @@ public extension FileManager {
 	static var tempDirectory: URL { return URL(fileURLWithPath: NSTemporaryDirectory()) }
 	
 	static var realHomeDirectory: URL {
-		let home = FileManager.default.homeDirectoryForCurrentUser
-		let components = home.path.components(separatedBy: "/")
+		#if os(OSX)
+			let home = FileManager.default.homeDirectoryForCurrentUser
+			let components = home.path.components(separatedBy: "/")
+			
+			if let index = components.firstIndex(of: "Containers"), index > 2 {
+				return URL(fileURLWithPath: components[0..<(index - 1)].joined(separator: "/"))
+			}
+			
+			return home
+		#endif
 		
-		if let index = components.firstIndex(of: "Containers"), index > 2 {
-			return URL(fileURLWithPath: components[0..<(index - 1)].joined(separator: "/"))
-		}
-		
-		return home
+		return self.documentsDirectory.deletingLastPathComponent()
 	}
 }

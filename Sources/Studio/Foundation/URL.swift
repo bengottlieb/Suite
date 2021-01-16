@@ -74,6 +74,7 @@ public extension URL {
 	}
 }
 
+#if os(OSX)
 public extension URL {
     init?(secureBookmarkData data: Data?) {
         var stale = false
@@ -98,3 +99,4 @@ public extension URL {
         }
     }
 }
+#endif
