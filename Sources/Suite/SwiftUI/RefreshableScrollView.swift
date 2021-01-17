@@ -19,22 +19,24 @@ public struct RefreshableScrollView<Content: View>: View {
 	var spinnerColor: Color
 	@Binding var refreshing: Bool
 	let content: Content
+	let showsIndicators: Bool
 
 	@State private var previousScrollOffset: CGFloat = 0
 	@State private var scrollOffset: CGFloat = 0
 	@State private var isLockedToTop: Bool = false
 	@State private var percentDown: CGFloat = 0
 	
-	public init(headerHeight: CGFloat = 50, color: Color = .gray, refreshing: Binding<Bool>, @ViewBuilder content builder: () -> Content) {
+	public init(headerHeight: CGFloat = 50, color: Color = .gray, showsIndicators indicators: Bool = true, refreshing: Binding<Bool>, @ViewBuilder content builder: () -> Content) {
 		scrollHeaderHeight = headerHeight
 		spinnerColor = color
 		_refreshing = refreshing
+		showsIndicators = indicators
 		content = builder()
 	}
 	
 	public var body: some View {
 		return VStack {
-			ScrollView {
+			ScrollView(showsIndicators: showsIndicators) {
 				ZStack(alignment: .top) {
 					ScrollTrackingView()
 					
