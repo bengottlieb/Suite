@@ -41,7 +41,7 @@ public struct ActivityIndicatorView: View {
 					spokeRotation += 1
 				}
 				#if os(iOS)
-					RunLoop.main.add(timer!, forMode: .tracking)
+					RunLoop.main.add(timer!, forMode: .common)
 				#else
 					RunLoop.main.add(timer!, forMode: .common)
 				#endif
