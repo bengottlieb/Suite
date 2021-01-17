@@ -8,12 +8,13 @@
 #if canImport(Combine)
 
 import SwiftUI
+import UIKit
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct ActivityIndicatorView: View {
 	@State private var spokeRotation = 1
-	let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
-
+	@State private var timer: Timer?
+	
 	private var fixedPercent: Double?
 	private var spokeCount: Int
 
@@ -35,8 +36,18 @@ public struct ActivityIndicatorView: View {
 	
 	public var body: some View {
 		self.spokes
-			.onReceive(timer) { _ in
-				spokeRotation += 1
+			.onAppear() {
+				timer = Timer(timeInterval: 0.1, repeats: true) { _ in
+					spokeRotation += 1
+				}
+				#if os(iOS)
+					RunLoop.main.add(timer!, forMode: .tracking)
+				#else
+					RunLoop.main.add(timer!, forMode: .common)
+				#endif
+			}
+			.onDisappear() {
+				timer?.invalidate()
 			}
 	}
 	

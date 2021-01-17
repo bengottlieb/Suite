@@ -17,6 +17,7 @@ public class CurrentDevice: ObservableObject {
 
 	@Published public var isLandscape = false
 	@Published public var screenSize = UIScreen.main.bounds.size
+	@Published public var safeAreaInsets = UIEdgeInsets.zero
 	
 	public let isIPhone = UIDevice.current.userInterfaceIdiom == .phone
 	public let isIPad = UIDevice.current.userInterfaceIdiom == .pad
@@ -25,6 +26,7 @@ public class CurrentDevice: ObservableObject {
 		UIDevice.current.beginGeneratingDeviceOrientationNotifications()
 		
 		self.isLandscape = UIDevice.current.orientation.isLandscape
+		self.safeAreaInsets = UIApplication.shared.currentWindow?.rootViewController?.view.safeAreaInsets ?? .zero
 		NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged), name: UIDevice.orientationDidChangeNotification, object: nil)
 	}
 	
@@ -33,6 +35,7 @@ public class CurrentDevice: ObservableObject {
 			if UIDevice.current.orientation == .unknown { return }
 			self.isLandscape = UIDevice.current.orientation.isLandscape
 			self.screenSize = UIScreen.main.bounds.size
+			self.safeAreaInsets = UIApplication.shared.currentWindow?.rootViewController?.view.safeAreaInsets ?? .zero
 		}
 	}
 }

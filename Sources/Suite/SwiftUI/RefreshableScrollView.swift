@@ -35,7 +35,7 @@ public struct RefreshableScrollView<Content: View>: View {
 	}
 	
 	public var body: some View {
-		return VStack {
+		return
 			ScrollView(showsIndicators: showsIndicators) {
 				ZStack(alignment: .top) {
 					ScrollTrackingView()
@@ -49,7 +49,7 @@ public struct RefreshableScrollView<Content: View>: View {
 			.onPreferenceChange(RefreshableKeyTypes.PrefKey.self) { values in
 				updateRefreshHeader(with: values)
 			}
-		}
+		
 	}
 	
 	func updateRefreshHeader(with values: [RefreshableKeyTypes.PrefData]) {
