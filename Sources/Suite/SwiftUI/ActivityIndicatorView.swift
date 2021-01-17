@@ -42,12 +42,14 @@ public struct ActivityIndicatorView: View {
 	
 	var spokes: some View {
 		GeometryReader { geo in
-			ForEach(0..<visibleSpokeCount, id: \.self) { index in
-				RoundedRectangle(cornerRadius: 2)
-					.fill(spokeColor(at: index))
-					.frame(width: geo.size.width / 8.5, height: geo.size.height / 3)
-					.position(x: geo.size.width / 2, y: geo.size.height / 6)
-					.rotationEffect(.radians(2 * .pi * Double(index) / Double(self.spokeCount)))
+			if visibleSpokeCount > 0 {
+				ForEach(0..<visibleSpokeCount, id: \.self) { index in
+					RoundedRectangle(cornerRadius: 2)
+						.fill(spokeColor(at: index))
+						.frame(width: geo.size.width / 8.5, height: geo.size.height / 3)
+						.position(x: geo.size.width / 2, y: geo.size.height / 6)
+						.rotationEffect(.radians(2 * .pi * Double(index) / Double(self.spokeCount)))
+				}
 			}
 		}
 	}
