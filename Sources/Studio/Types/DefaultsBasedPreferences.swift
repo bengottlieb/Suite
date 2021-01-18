@@ -26,6 +26,15 @@ public protocol DefaultsBasedPreferencesKeyProvider: class {
 	public override init() {
 		super.init()
 		
+		load()
+	}
+
+	
+	public func refresh() {
+		load()
+	}
+	
+	func load() {
 		let defaults = self.defaults
 		var mirror = Mirror(reflecting: self)
 		
