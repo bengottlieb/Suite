@@ -6,6 +6,7 @@
 //
 
 #if canImport(SwiftUI)
+#if canImport(Combine)
 import SwiftUI
 
 // Thanks to https://swiftui-lab.com/scrollview-pull-to-refresh/
@@ -127,4 +128,5 @@ struct RefreshableKeyTypes {
 		}
 	}
 }
+#endif
 #endif

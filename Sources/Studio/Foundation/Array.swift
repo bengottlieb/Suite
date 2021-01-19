@@ -64,7 +64,7 @@ public extension Array {
 	}
 	
 	func breakIntoChunks(ofSize size: Int) -> [[Element]] {
-		if self.count <= size { return [self] }
+		if self.count <= size || size == 0 { return [self] }
 
 		let count = self.count
 		var start = size
