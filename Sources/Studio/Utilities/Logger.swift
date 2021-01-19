@@ -91,7 +91,7 @@ public class Logger {
 	}
 	
 	public var level: Level = {
-		if Gestalt.isProductionBuild { return .off }
+		if Gestalt.distribution == .appStore { return .off }
 		if Gestalt.isAttachedToDebugger { return .mild }
 		return .quiet
 	}()

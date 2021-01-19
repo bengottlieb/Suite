@@ -21,7 +21,7 @@ public class SoundEffect: Equatable {
 	private static var cachedSounds: [String: SoundEffect] = [:]
 	private static var playingSounds: [SoundEffect] = []
     private static var isAmbient = false
-	public static var disableAllSounds = Gestalt.runningOnSimulator
+	public static var disableAllSounds = Gestalt.isOnSimulator
 	var internalPlayer: AVAudioPlayer!
 	var original: SoundEffect?
 	weak var dequeueTimer: Timer?

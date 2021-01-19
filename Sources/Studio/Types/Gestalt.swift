@@ -15,15 +15,34 @@ import Foundation
 
 
 public struct Gestalt {
+	public enum Distribution { case development, testflight, appStore }
+	
+	
+	public static var distribution: Distribution {
+		#if DEBUG
+			return .development
+		#else
+		#if os(OSX)
+			let bundlePath = Bundle.main.bundleURL
+			let receiptURL = bundlePath.appendingPathComponent("Contents").appendingPathComponent("_MASReceipt").appendingPathComponent("receipt")
+			
+			return FileManager.default.fileExists(at: receiptURL) ? .appStore : .development
+		#endif
+			if isOnSimulator { return .development }
+			if Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt" && MobileProvisionFile.default?.properties["ProvisionedDevices"] == nil { return .testflight }
+			
+			return .appStore
+		#endif
+	}
 	public enum DebugLevel: Int, Comparable { case none, testFlight, internalTesting, debugging
 		public static func < (lhs: Gestalt.DebugLevel, rhs: Gestalt.DebugLevel) -> Bool { return lhs.rawValue < rhs.rawValue }
 	}
 	public static var debugLevel = Gestalt.isAttachedToDebugger ? DebugLevel.debugging : DebugLevel.none
 	
 	#if targetEnvironment(simulator)
-		public static var runningOnSimulator: Bool { return true }
+		public static var isOnSimulator: Bool { return true }
 	#else
-		public static var runningOnSimulator: Bool { return false }
+		public static var isOnSimulator: Bool { return false }
 	#endif
 	
 	public static var isAttachedToDebugger: Bool = { return isatty(STDERR_FILENO) != 0 }()
@@ -37,7 +56,7 @@ public struct Gestalt {
 		return extensionDictionary is NSDictionary
 	}()
 	
-	public static var runningInPreview: Bool { ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" }
+	public static var isInPreview: Bool { ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" }
 	
 	#if os(OSX)
 		public static var isOnMac: Bool { return true }
@@ -68,16 +87,6 @@ public struct Gestalt {
 		#endif
 		public static var isOnIPad: Bool = { return UIDevice.current.userInterfaceIdiom == .pad }()
 		public static var isOnIPhone: Bool = { return UIDevice.current.userInterfaceIdiom == .phone }()
-        public static var isTestflightBuild: Bool = {
-            return Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt" && MobileProvisionFile.default?.properties["ProvisionedDevices"] == nil
-        }()
-    
-        public static var isAppStoreBuild: Bool = { return !Gestalt.runningOnSimulator && !Gestalt.isTestflightBuild && !Gestalt.hasEmbeddedMobileProvision }()
-		public static var isProductionBuild: Bool = { return !Gestalt.runningOnSimulator && !Gestalt.hasEmbeddedMobileProvision }()
-	
-        private static var hasEmbeddedMobileProvision: Bool = {
-            return Bundle.main.path(forResource: "embedded", ofType: "mobileprovision") != nil
-        }()
     
 		public static var osMajorVersion: Int = {
 			return Int(UIDevice.current.systemVersion.components(separatedBy: ".").first ?? "") ?? 0
@@ -248,19 +257,6 @@ public struct Gestalt {
 	
 	
 	#else
-		public static var isTestflightBuild: Bool = false
-		
-		public static var isAppStoreBuild: Bool = {
-			let bundlePath = Bundle.main.bundleURL
-			let receiptURL = bundlePath.appendingPathComponent("Contents").appendingPathComponent("_MASReceipt").appendingPathComponent("receipt")
-			
-			return FileManager.default.fileExists(at: receiptURL)
-		}()
-		
-		public static var isProductionBuild: Bool = {
-			return Gestalt.isAppStoreBuild
-		}()
-	
 		#if os(OSX)
 			public static var serialNumber: String? = {
 				let platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
