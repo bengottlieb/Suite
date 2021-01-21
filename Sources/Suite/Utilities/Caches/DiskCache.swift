@@ -30,6 +30,18 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 	}
 	
 	public override func fetch(for url: URL, behavior: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
+		if url.isFileURL {
+			do {
+				let data = try Data(contentsOf: url)
+				guard let result = Element.create(with: data) as? Element else {
+					return Fail(outputType: Element.self, failure: CacheError.failedToUnCache).eraseToAnyPublisher()
+				}
+				return self.just(result)
+			} catch {
+				return Fail(outputType: Element.self, failure: error).eraseToAnyPublisher()
+			}
+		}
+		
 		let file = location(for: url)
 		
 		if let info = cacheInfo(for: url), !behavior.shouldIgnoreLocal(forDate: info.cachedAt) {
