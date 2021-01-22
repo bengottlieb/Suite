@@ -9,6 +9,7 @@ import Foundation
 import CoreData
 
 public func logg(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
+public func logg<What: AnyObject>(raw: What, _ level: Logger.Level = .mild) { Logger.instance.log(raw: raw, level) }
 public func logg(_ special: Logger.Special, _ level: Logger.Level = .mild) { Logger.instance.log(special, level: level) }
 public func dlogg(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
 public func logg(error: Error?, _ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(error: error, msg(), level: level) }
@@ -101,6 +102,10 @@ public class Logger {
 		switch special {
 		case .break: output("\n")
 		}
+	}
+	
+	public func log<What: AnyObject>(raw: What, _ level: Logger.Level = .mild) {
+		self.log("\(Unmanaged.passUnretained(raw).toOpaque())", level: level)
 	}
 	
 	public func log(_ msg: @autoclosure () -> String, level: Level = .mild) {
