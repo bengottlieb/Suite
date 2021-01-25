@@ -301,4 +301,6 @@ public struct Gestalt {
 		 }
 		 return address
 	}
+	
+	public static var buildDate: Date? { Bundle.main.executableURL?.createdAt }
 }
