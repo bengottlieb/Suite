@@ -8,7 +8,7 @@
 #if canImport(Combine)
 
 import SwiftUI
-import UIKit
+import Foundation
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct ActivityIndicatorView: View {

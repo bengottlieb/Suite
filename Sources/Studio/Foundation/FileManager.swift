@@ -69,8 +69,9 @@ public extension FileManager {
 			}
 			
 			return home
+        #else
+            return self.documentsDirectory.deletingLastPathComponent()
 		#endif
 		
-		return self.documentsDirectory.deletingLastPathComponent()
 	}
 }
