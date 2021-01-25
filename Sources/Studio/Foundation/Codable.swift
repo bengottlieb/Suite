@@ -121,5 +121,11 @@ public extension JSONDecoder {
 		decoder.dateDecodingStrategy = .iso8601
 		return decoder
 	}
-	
+}
+
+public extension Encodable where Self: Decodable {
+	func duplicate(using encoder: JSONEncoder = .iso8601Encoder, and decoder: JSONDecoder = .iso8601Decoder) throws -> Self {
+		let data = try encoder.encode(self)
+		return try decoder.decode(Self.self, from: data)
+	}
 }
