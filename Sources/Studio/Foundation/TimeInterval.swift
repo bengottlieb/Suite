@@ -62,7 +62,7 @@ public extension TimeInterval {
 		return components.joined(separator: ", ")
 	}
 	
-	init?(_ string: String?) {
+	init?(string: String?) {
 		guard let string = string else { return nil }
 		let comps = string.components(separatedBy: ":")
 		
