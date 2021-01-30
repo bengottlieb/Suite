@@ -32,7 +32,8 @@ extension EnvironmentValues {
 
 @available(OSX 10.15, *)
 public class HostingWindow<Root: View>: NSWindow {
-    public init(root: Root, title: String? = nil, background: NSColor = .windowBackgroundColor) {
+    var onClose: (() -> Void)?
+    public init(root: Root, title: String? = nil, background: NSColor = .windowBackgroundColor, onClose: (() -> Void)? = nil) {
         var flags: NSWindow.StyleMask = [.fullSizeContentView]
         
         if title != nil {
@@ -51,8 +52,15 @@ public class HostingWindow<Root: View>: NSWindow {
             self.setFrameAutosaveName(title)
             self.title = title
         }
+        self.onClose = onClose
         self.contentView = NSHostingView(rootView: root
 											.environment(\.hostingWindow, self))
+    }
+    
+    
+    public override func performClose(_ sender: Any?) {
+        super.performClose(sender)
+        self.onClose?()
     }
 }
 

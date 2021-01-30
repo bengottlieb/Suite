@@ -90,6 +90,13 @@ public extension URL {
             return nil
         }
     }
+    
+    var hasValidBookmarkData: Bool {
+        guard let data = secureBookmarkData else { return false }
+        
+        return URL(secureBookmarkData: data) != nil
+    }
+    
     var secureBookmarkData: Data? {
         do {
             return try self.bookmarkData(options: [.withSecurityScope], includingResourceValuesForKeys: nil, relativeTo: nil)
