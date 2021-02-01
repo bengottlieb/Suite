@@ -45,28 +45,39 @@ extension NSNumber {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct NumericField<Number: NumericFieldNumber>: View {
-	public var title: String
+	public var placeholder: String
 	@Binding public var number: Number
+	@State var text: String
 	public var formatter: NumberFormatter
-	public init(_ title: String, number: Binding<Number>, formatter: NumberFormatter = NumberFormatter()) {
-		self.title = title
+	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil) {
+		self.placeholder = placeholder
 		self._number = number
-		self.formatter = formatter
+		
+		let actualFormatter = formatter ?? NumberFormatter.formatter(for: number.wrappedValue)
+		self.formatter = actualFormatter
+		_text = State(initialValue: actualFormatter.string(from: NSNumber(value: number.wrappedValue)) ?? "")
 	}
-	
-	var textBinding: Binding<String> {
-		Binding<String>(get: {
-			self.formatter.string(from: NSNumber(value: self.number)) ?? ""
-		}, set: { new in
-			if let newNumber = self.formatter.number(from: new)?.convert(to: Number.self) {
-				self.number = newNumber
+
+	public var body: some View {
+		TextField(placeholder, text: $text.onChange { newText in
+			if let newNumber = formatter.number(from: newText) as? Number {
+				number = newNumber
 			}
 		})
-	}
-	
-	public var body: some View {
-		TextField(title, text: textBinding)
 			
+	}
+}
+
+extension NumberFormatter {
+	static func formatter(for number: NumericFieldNumber) -> NumberFormatter {
+		let formatter = NumberFormatter()
+		
+		if number is Double || number is Float {
+			formatter.numberStyle = .decimal
+		} else {
+			formatter.numberStyle = .none
+		}
+		return formatter
 	}
 }
 

@@ -48,9 +48,7 @@ public class ImageCache: Cache<UIImage> {
 	public static var root = FileManager.cachesDirectory.appendingPathComponent("cached-images")
 	public static let instance = InMemoryCache<UIImage>(backingCache: DiskCache<UIImage>(backingCache: ImageCache.remoteCache, rootedAt: ImageCache.root, pathExtension: "png"))
 }
-#endif
-
-#if canImport(AppKit)
+#elseif canImport(AppKit)
 import AppKit
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 extension NSImage: Cachable {
