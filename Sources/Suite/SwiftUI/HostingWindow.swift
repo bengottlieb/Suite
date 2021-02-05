@@ -8,6 +8,8 @@
 #if canImport(AppKit)
 #if canImport(SwiftUI)
 
+#if !targetEnvironment(macCatalyst)
+
 import SwiftUI
 import AppKit
 
@@ -67,5 +69,6 @@ public class HostingWindow<Root: View>: NSWindow {
 
 
 
+#endif
 #endif
 #endif

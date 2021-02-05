@@ -27,7 +27,8 @@ public extension Date {
 	enum StringLength: Int { case normal, short, veryShort }
 
 	enum DayOfWeek: Int, CaseIterable, Codable, Comparable { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
-		public var nextDay: DayOfWeek { return self.increment(count: 1) }
+		public var nextDay: DayOfWeek { increment(count: 1) }
+		public var previousDay: DayOfWeek { increment(count: 6) }
 		public func increment(count: Int) -> DayOfWeek { return DayOfWeek(rawValue: (self.rawValue + count - 1) % 7 + 1)! }
 		public var abbreviation: String { return Calendar.current.veryShortWeekdaySymbols[self.rawValue - 1] }
 		public var veryShortName: String {
@@ -39,7 +40,8 @@ public extension Date {
 		public var isWeekendDay: Bool { return self == .saturday || self == .sunday }
 		public var isWeekDay: Bool { return !self.isWeekendDay }
 
-		public static var firstDayOfWeek: DayOfWeek { return DayOfWeek(rawValue: Calendar.current.firstWeekday) ?? .monday }
+		public static var firstDayOfWeek: DayOfWeek { DayOfWeek(rawValue: Calendar.current.firstWeekday) ?? .monday }
+		public static var lastDayOfWeek: DayOfWeek { firstDayOfWeek.previousDay }
 		public static var weekdays: [DayOfWeek] {
 			var days: [DayOfWeek] = []
 			let first = Calendar.current.firstWeekday
@@ -49,6 +51,15 @@ public extension Date {
 			return days
 		}
 		public static func <(lhs: DayOfWeek, rhs: DayOfWeek) -> Bool { return lhs.rawValue < rhs.rawValue }
+		
+		public func days(since day: DayOfWeek) -> Int {
+			if day == self { return 0 }
+			let weekdays = Self.weekdays
+			let firstIndex = weekdays.firstIndex(of: day) ?? 0
+			let lastIndex = weekdays.firstIndex(of: self) ?? 0
+			
+			return abs(lastIndex - firstIndex)
+		}
 	}
 	
 	enum Month: Int, CaseIterable, Codable { case jan = 1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
@@ -208,6 +219,18 @@ public extension Date {
 		return date ?? self
 	}
 	
+	var firstDayInWeek: Date {
+		let weekDay = DayOfWeek.firstDayOfWeek
+		let delta = dayOfWeek.days(since: weekDay)
+		return self.byAdding(days: delta)
+	}
+	
+	var lastDayInWeek: Date {
+		let weekDay = DayOfWeek.lastDayOfWeek
+		let delta = weekDay.days(since: self.dayOfWeek)
+		return self.byAdding(days: delta)
+	}
+
 	var hourMinuteString: String {
 		let formatter = DateFormatter()
 		formatter.dateStyle = .none

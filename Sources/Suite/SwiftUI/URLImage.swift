@@ -14,13 +14,11 @@ import SwiftUI
 import Combine
 
 #if canImport(UIKit)
-import UIKit
-typealias FrameworkImage = UIImage
-#endif
-
-#if canImport(AppKit)
-import AppKit
-typealias FrameworkImage = NSImage
+	import UIKit
+	typealias FrameworkImage = UIImage
+#elseif canImport(AppKit)
+	import AppKit
+	typealias FrameworkImage = NSImage
 #endif
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)

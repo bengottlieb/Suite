@@ -7,8 +7,10 @@
 
 import Foundation
 
+#if !targetEnvironment(macCatalyst)
 #if canImport(AppKit)
 import AppKit
+
 
 public extension NSEvent {
 	func isModifierKeyDown(_ key: NSEvent.ModifierFlags) -> Bool {
@@ -28,4 +30,5 @@ public extension NSEvent {
 	}
 }
 
+#endif
 #endif

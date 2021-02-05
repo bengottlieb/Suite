@@ -40,6 +40,24 @@ public extension Color {
 }
 
 
+#if os(macOS) && !targetEnvironment(macCatalyst)
+	import AppKit
+
+	@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+	public extension Color {
+		static var systemBackground: Color { Color(NSColor.windowBackgroundColor) }
+		static var tertiaryText: Color { Color(NSColor.tertiaryLabelColor) }
+	}
+#elseif canImport(UIKit)
+	import UIKit
+
+	@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+	public extension Color {
+		static var systemBackground: Color { Color(UIColor.systemBackground) }
+		static var tertiaryText: Color { Color(UIColor.tertiaryLabel) }
+	}
+#endif
+
 
 #endif
 
