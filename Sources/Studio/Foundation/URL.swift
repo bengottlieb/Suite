@@ -26,6 +26,8 @@ public extension URL {
 		self = URL(string: "\(string)")!
 	}
 	
+    var filename: String { deletingPathExtension().lastPathComponent }
+
 	var relativePathToHome: String? {
 		return self.path.abbreviatingWithTildeInPath
 	}
@@ -76,6 +78,13 @@ public extension URL {
 
 #if os(OSX)
 public extension URL {
+    @discardableResult
+    func accessSecurely(block: () -> Void) -> Bool {
+        if !hasValidBookmarkData || !startAccessingSecurityScopedResource() { return false }
+        block()
+        stopAccessingSecurityScopedResource()
+        return true
+    }
     init?(secureBookmarkData data: Data?) {
         var stale = false
         guard let data = data else {
