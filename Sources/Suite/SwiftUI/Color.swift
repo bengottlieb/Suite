@@ -48,7 +48,7 @@ public extension Color {
 		static var systemBackground: Color { Color(NSColor.windowBackgroundColor) }
 		static var tertiaryText: Color { Color(NSColor.tertiaryLabelColor) }
 	}
-#elseif canImport(UIKit)
+#elseif canImport(UIKit) && os(iOS)
 	import UIKit
 
 	@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
