@@ -43,6 +43,10 @@ public struct UserDefaultsBackedDictionary<Key: StringConvertible, Value: UserDe
 		self.converter = converter
 	}
 	
+	public func removeValue(forKey key: Key) {
+		defaults.removeValue(forKey: string(from: key))
+	}
+	
 	func string(from key: Key) -> String { return converter(key) }
 	public subscript(key: Key) -> Value? {
 		get { return defaults.value(forKey: string(from: key)) as? Value }
