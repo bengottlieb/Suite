@@ -3,7 +3,6 @@
 //  InternalUI
 //
 //  Created by Ben Gottlieb on 2/19/20.
-//  Copyright © 2020 DataBright. All rights reserved.
 //
 
 #if canImport(SwiftUI)

@@ -13,7 +13,7 @@ import Combine
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public class DiskCache<Element: Cachable>: Cache<Element> {
-	let root: URL
+	var root: URL
 	let fileExtension: String
 	
 	struct CachedItemInfo {
@@ -25,8 +25,13 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 		root = rootedAt
 		fileExtension = pathExtension
 		super.init(backingCache: backingCache)
-
-		try? FileManager.default.createDirectory(at: rootedAt, withIntermediateDirectories: true, attributes: nil)
+	}
+	
+	func checkForRootDirectory() {
+		let url = root
+		
+		if FileManager.default.directoryExists(at: url) { return }
+		try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
 	}
 	
 	public override func fetch(for url: URL, behavior: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
@@ -91,6 +96,7 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 	}
 
 	public override func store(_ element: Element, for url: URL) {
+		checkForRootDirectory()
 		let file = location(for: url)
 		
 		if FileManager.default.fileExists(at: file) { return }
