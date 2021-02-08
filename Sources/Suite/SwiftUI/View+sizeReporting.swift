@@ -15,12 +15,12 @@ public struct SizeViewModifier: ViewModifier {
     @Binding var size: CGSize
     
     public func body(content: Content) -> some View {
-        GeometryReader { proxy in
-            content
-                .frame(size: proxy.size)
-                .onAppear { self.size = proxy.size }
-        }
-        .clipped()
+		content.background(
+			GeometryReader() { geo -> Color in
+				DispatchQueue.main.async { size = geo.size }
+				return Color.clear
+			}
+		)
     }
 }
 
@@ -33,7 +33,7 @@ public extension View {		// Tracks the size available for the view
 	func sizeReporting(_ callback: @escaping (CGSize) -> Void) -> some View {
 		self.background(
 			GeometryReader() { geo -> Color in
-				callback(geo.size)
+				DispatchQueue.main.async { callback(geo.size) }
 				return Color.clear
 			}
 		)
