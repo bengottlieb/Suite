@@ -52,7 +52,9 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 		if let info = cacheInfo(for: url), !behavior.shouldIgnoreLocal(forDate: info.cachedAt) {
 			do {
 				let data = try Data(contentsOf: file)
-				guard let result = Element.create(with: data) as? Element else { throw CacheError.failedToUnCache }
+				guard let result = Element.create(with: data) as? Element else {
+					throw CacheError.failedToUnCache
+				}
 				return self.just(result)
 			} catch {
 				return Fail(outputType: Element.self, failure: error).eraseToAnyPublisher()
@@ -86,13 +88,20 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 		try? FileManager.default.removeItem(at: file)
 	}
 
-	public override func localValue(for url: URL) -> Element? {
+	public override func cachedValue(for url: URL) -> Element? {
 		let file = location(for: url)
 		
 		if FileManager.default.fileExists(at: file), let data = try? Data(contentsOf: file), let item = Element.create(with: data) as? Element {
 			return item
 		}
-		return super.localValue(for: url)
+		return super.cachedValue(for: url)
+	}
+
+	public override func hasCachedValue(for url: URL) -> Bool {
+		let file = location(for: url)
+		
+		if FileManager.default.fileExists(at: file) { return true }
+		return super.hasCachedValue(for: url)
 	}
 
 	public override func store(_ element: Element, for url: URL) {

@@ -26,10 +26,12 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 		super.init(backingCache: nil)
 	}
 	
-	public override func localValue(for url: URL) -> Element? { nil }
+	public override func cachedValue(for url: URL) -> Element? { nil }
 	
 	public override func fetch(for url: URL, behavior: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
-		if behavior == .skipRemote { return Fail(outputType: Element.self, failure: CacheError.noLocalItemFound).eraseToAnyPublisher() }
+		if behavior == .skipRemote {
+			return Fail(outputType: Element.self, failure: CacheError.noLocalItemFound).eraseToAnyPublisher()
+		}
 		
 		if let builder = requestBuilder {
 			return builder.request(from: url)

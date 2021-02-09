@@ -90,7 +90,7 @@ public class DataCache: Cache<Data> {
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
-public enum CacheError: Error { case notFound, noLocalItemFound, failedToUnCache }
+public enum CacheError: String, Error { case notFound, noLocalItemFound, failedToUnCache }
 public enum CachePolicy: Equatable { case normal, skipRemote, returnLocalIfNewerThan(Date), skipLocal
 	func shouldIgnoreLocal(forDate: Date?) -> Bool {
 		switch self {
@@ -127,7 +127,8 @@ public class Cache<Element: Cachable>: NSObject {
 		backingCache?.store(element, for: url)
 	}
 	
-	public func localValue(for url: URL) -> Element? { backingCache?.localValue(for: url) }
+	public func cachedValue(for url: URL) -> Element? { backingCache?.cachedValue(for: url) }
+	public func hasCachedValue(for url: URL) -> Bool { backingCache?.hasCachedValue(for: url) ?? false }
 	
 	public func clear(itemFor url: URL) { backingCache?.clear(itemFor: url) }
 	
