@@ -21,6 +21,30 @@ public extension FileManager {
 		return attr[.size] as? UInt64 ?? 0
 	}
 	
+	func copy(itemsAt source: URL, into destination: URL, replacingOld: Bool = true, ignoringErrors: Bool = false) throws {
+		do {
+			try? createDirectory(at: destination, withIntermediateDirectories: true, attributes: nil)
+			let contents = try contentsOfDirectory(at: source, includingPropertiesForKeys: nil, options: [])
+			
+			for url in contents {
+				let destURL = destination.appendingPathComponent(url.lastPathComponent)
+				
+				do {
+					if directoryExists(at: url) {
+						try copy(itemsAt: url, into: destURL, replacingOld: replacingOld)
+					} else {
+						if replacingOld, fileExists(at: destURL) { try? removeItem(at: destURL) }
+						try copyItem(at: url, to: destURL)
+					}
+				} catch {
+					if !ignoringErrors { throw error }
+				}
+			}
+		} catch {
+			if !ignoringErrors { throw error }
+		}
+	}
+	
 	func directoryExists(at url: URL) -> Bool {
 		var isDir: ObjCBool = false
 		

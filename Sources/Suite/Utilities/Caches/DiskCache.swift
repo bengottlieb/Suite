@@ -13,7 +13,8 @@ import Combine
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public class DiskCache<Element: Cachable>: Cache<Element> {
-	var root: URL
+	var root: URL { didSet { self.checkForRootDirectory() }}
+	public var logCaches = false
 	let fileExtension: String
 	
 	struct CachedItemInfo {
@@ -111,6 +112,7 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 		if FileManager.default.fileExists(at: file) { return }
 		guard let data = element.cacheableData else { return }			// nothing to store
 		
+		if logCaches { logg("Caching \(url) to \(file.path)") }
 		do {
 			try data.write(to: file)
 		} catch {
