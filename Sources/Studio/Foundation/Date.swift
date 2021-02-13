@@ -124,15 +124,6 @@ public extension Date {
 		return myComponents.month == otherComponents.month && myComponents.year == otherComponents.year
 	}
 
-	func localTimeString(date dateStyle: DateFormatter.Style = .short, time timeStyle: DateFormatter.Style = .short) -> String {
-		let formatter = DateFormatter()
-		
-		formatter.dateStyle = dateStyle
-		formatter.timeStyle = timeStyle
-		
-		return formatter.string(from: self)
-	}
-	
 	var isToday: Bool { self.isSameDay(as: Date()) }
 	var isTomorrow: Bool { self.isSameDay(as: Date().byAdding(days: 1)) }
 	var isYesterday: Bool { self.isSameDay(as: Date().byAdding(days: -1)) }
