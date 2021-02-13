@@ -9,6 +9,7 @@ import Foundation
 import CoreData
 
 
+@available(iOS 11.0, *)
 public extension NSManagedObject {
 	func dictionary(dateStrategy: JSONEncoder.DateEncodingStrategy? = .default) -> JSONDictionary {
 		var results = JSONDictionary()
@@ -28,12 +29,23 @@ public extension NSManagedObject {
 		return results
 	}
 	
+	func load<Object: Encodable>(from object: Object, dateStrategy: JSONEncoder.DateEncodingStrategy = .default) throws {
+		let encoder = JSONEncoder()
+		encoder.dateEncodingStrategy = dateStrategy
+		let data = try object.asJSONData(using: encoder)
+		
+		guard let dictionary = try JSONSerialization.jsonObject(with: data, options: []) as? JSONDictionary else { return }
+		self.load(dictionary: dictionary)
+	}
+	
 	func load(dictionary: JSONDictionary, combining: Bool = true, dateStrategy: JSONDecoder.DateDecodingStrategy = .default) {
 		for (name, attr) in self.entity.attributesByName {
 			var value = dictionary[name]
 			
 			if attr.attributeType == .dateAttributeType {
 				value = dateStrategy.date(from: value)
+			} else if attr.attributeType == .URIAttributeType {
+				value = URL(string: value as? String ?? "")
 			}
 			if let raw = value {
 				self.setPrimitiveValue(raw, forKey: name)

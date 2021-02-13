@@ -106,6 +106,7 @@ public extension NSManagedObjectContext {
 		return self.insertObject(named: entityName) as? T
 	}
 	
+	@available(iOS 11.0, *)
 	func insertObject<T>(loading dictionary: JSONDictionary? = nil, dateStrategy: JSONDecoder.DateDecodingStrategy = .default) -> T! where T: NSManagedObject {
 		let entityName = T.entityName(in: self)
 		let entity = self.insertObject(named: entityName) as? T
