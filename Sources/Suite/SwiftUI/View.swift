@@ -12,6 +12,19 @@ import SwiftUI
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension View {
+	func toImage() -> UIImage? {
+		let host = UIHostingController(rootView: self.edgesIgnoringSafeArea(.all))
+		host.view.sizeToFit()
+		host.view.backgroundColor = .clear
+		let window = UIWindow(frame: host.view.bounds)
+		window.insetsLayoutMarginsFromSafeArea = false
+		window.rootViewController = host
+		window.makeKeyAndVisible()
+		let image = host.view.toImage()
+		window.removeFromSuperview()
+		return image
+	}
+
 	func frame(size: CGSize) -> some View {
 		frame(width: size.width, height: size.height)
 	}

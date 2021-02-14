@@ -9,6 +9,17 @@
 import UIKit
 
 public extension UIView {
+	func toImage() -> UIImage? {
+		let rect = self.bounds
+		UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
+		guard let context = UIGraphicsGetCurrentContext() else { return nil }
+		self.layer.render(in: context)
+
+		let capturedImage = UIGraphicsGetImageFromCurrentImageContext()!
+		UIGraphicsEndImageContext()
+		return capturedImage
+	}
+	
 	static var frontSafeAreaInsets: UIEdgeInsets {
 		if #available(iOS 13.0, *) {
 			return UIApplication.shared.currentScene?.frontWindow?.rootViewController?.view.safeAreaInsets ?? .zero
