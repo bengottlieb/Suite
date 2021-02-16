@@ -12,13 +12,39 @@ import SwiftUI
 public struct ImprovedFont {
 	public let family: String
 	public let size: CGFloat
+    public let weight: Font.Weight
+    public let design: Font.Design
+    public let isSystem: Bool
 	
-	public init(_ family: String, size: CGFloat) {
+    public init(_ family: String, size: CGFloat) {
 		self.family = family
 		self.size = size
+        self.weight = .regular
+        self.design = .default
+        isSystem = false
 	}
 	
-	public var font: Font { Font.custom(family, size: size) }
+    public init(systemSize: CGFloat, weight: Font.Weight = .regular, design: Font.Design = .default) {
+        family = UIFont.systemFont(ofSize: systemSize).familyName
+        size = systemSize
+        self.weight = weight
+        self.design = design
+        isSystem = true
+    }
+    
+    public static func system(size: CGFloat, weight: Font.Weight, design: Font.Design) -> ImprovedFont {
+        ImprovedFont(systemSize: size, weight: weight, design: design)
+    }
+    
+    public var uiFont: UIFont { UIFont(name: family, size: size) ?? .systemFont(ofSize: size) }
+    
+	public var font: Font {
+        if isSystem {
+            return Font.system(size: size, weight: weight, design: design)
+        } else {
+            return Font.custom(family, size: size)
+        }
+    }
 	
 	public func ofSize(_ size: CGFloat) -> Font { Font.custom(family, size: size) }
 	
