@@ -10,12 +10,15 @@ import CoreGraphics
 
 #if os(iOS)
 	import UIKit
-	
-	public typealias RectContentMode = UIView.ContentMode
-#else
-	public enum RectContentMode { case scaleToFill, scaleAspectFit, scaleAspectFill, none, center, top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight }
-
 #endif
+
+extension CGRect {
+	#if os(iOS)
+		public typealias Placement = UIView.ContentMode
+	#else
+		public enum Placement { case scaleToFill, scaleAspectFit, scaleAspectFill, none, center, top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight }
+	#endif
+}
 
 
 public func roundcgf(value: CGFloat) -> CGFloat { return CGFloat(floorf(Float(value))) }
@@ -183,7 +186,7 @@ public extension CGRect {
 		return CGRect(x: (self.width - width) / 2, y: (self.height - height) / 2, width: width, height: height)
 	}
 	
-	func within(limit: CGRect, placed: RectContentMode) -> CGRect {
+	func within(limit: CGRect, placed: CGRect.Placement) -> CGRect {
 		let parent = limit
 		let child = self
 		var newSize = self.size

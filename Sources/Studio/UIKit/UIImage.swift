@@ -111,7 +111,7 @@ public extension UIImage {
 		return result
 	}
 	
-	func draw(in frame: CGRect, blendMode: CGBlendMode = .normal, alpha: CGFloat = 1.0, mode: RectContentMode) {
+	func draw(in frame: CGRect, blendMode: CGBlendMode = .normal, alpha: CGFloat = 1.0, mode: CGRect.Placement) {
 		let rect = self.size.rect.within(limit: frame, placed: mode)
 		self.draw(in: rect, blendMode: blendMode, alpha: alpha)
 	}
