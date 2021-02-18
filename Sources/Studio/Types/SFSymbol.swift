@@ -7,7 +7,7 @@
 //  Thanks to CoreSwiftUI for this! // https://github.com/CodeSlicing/pure-swift-ui
 
 @available(OSX 10.15, iOS 13.0, *)
-public enum SFSymbol: String {
+public enum SFSymbol: String, CaseIterable {
 	case numeric_0_circle = "0.circle"
 	case numeric_0_circle_fill = "0.circle.fill"
 	case numeric_0_square = "0.square"

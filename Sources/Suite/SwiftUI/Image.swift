@@ -22,6 +22,10 @@ public extension Image {
 	init(_ sfsymbol: SFSymbol) {
 		self.init(systemName: sfsymbol.rawValue)
 	}
+	
+	static func random() -> Image {
+		Image(SFSymbol.allCases.randomElement()!)
+	}
 }
 
 

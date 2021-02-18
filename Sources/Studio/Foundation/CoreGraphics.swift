@@ -20,6 +20,16 @@ extension CGRect {
 	#endif
 }
 
+public extension CGRect.Placement {
+	var isLeft: Bool { self == .left || self == .topLeft || self == .bottomLeft }
+	var isCenterH: Bool { self == .top || self == .center || self == .bottom }
+	var isRight: Bool { self == .right || self == .topRight || self == .bottomRight }
+
+	var isTop: Bool { self == .top || self == .topLeft || self == .topRight }
+	var isCenterV: Bool { self == .left || self == .center || self == .right }
+	var isBottom: Bool { self == .bottomLeft || self == .bottom || self == .bottomRight }
+}
+
 
 public func roundcgf(value: CGFloat) -> CGFloat { return CGFloat(floorf(Float(value))) }
 
