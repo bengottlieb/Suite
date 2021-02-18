@@ -6,6 +6,7 @@
 //
 
 #if canImport(Combine)
+
 import SwiftUI
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
@@ -25,7 +26,12 @@ public struct ImprovedFont {
 	}
 	
     public init(systemSize: CGFloat, weight: Font.Weight = .regular, design: Font.Design = .default) {
-        family = UIFont.systemFont(ofSize: systemSize).familyName
+        #if os(iOS)
+            family = UIFont.systemFont(ofSize: systemSize).familyName
+        #endif
+        #if os(OSX)
+            family = NSFont.systemFont(ofSize: systemSize).familyName!
+        #endif
         size = systemSize
         self.weight = weight
         self.design = design
@@ -36,7 +42,10 @@ public struct ImprovedFont {
         ImprovedFont(systemSize: size, weight: weight, design: design)
     }
     
-    public var uiFont: UIFont { UIFont(name: family, size: size) ?? .systemFont(ofSize: size) }
+    #if os(iOS)
+        public var uiFont: UIFont { UIFont(name: family, size: size) ?? .systemFont(ofSize: size) }
+    #endif
+
     
 	public var font: Font {
         if isSystem {

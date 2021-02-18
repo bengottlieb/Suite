@@ -12,6 +12,7 @@ import SwiftUI
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension View {
+    #if os(iOS)
 	func toImage() -> UIImage? {
 		let host = UIHostingController(rootView: self.edgesIgnoringSafeArea(.all))
 		host.view.sizeToFit()
@@ -24,6 +25,7 @@ public extension View {
 		window.removeFromSuperview()
 		return image
 	}
+    #endif
 
 	func frame(size: CGSize) -> some View {
 		frame(width: size.width, height: size.height)
