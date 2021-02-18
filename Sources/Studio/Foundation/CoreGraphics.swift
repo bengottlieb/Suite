@@ -59,6 +59,9 @@ public func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
 public extension CGSize {
 	var dimString: String { "\(Int(width)) x \(Int(height))" }
 
+	var largestDimension: CGFloat { max(width, height) }
+	var smallestDimension: CGFloat { min(width, height) }
+
 	enum AspectRatioType: Int { case portrait, landscape, square }
 	func scaled(within limit: CGSize) -> CGSize {
 		let myAspectRatio = self.width / self.height
@@ -131,6 +134,9 @@ public extension CGSize {
 }
 
 public extension CGRect {
+	var largestDimension: CGFloat { max(width, height) }
+	var smallestDimension: CGFloat { min(width, height) }
+
 	func scaled(to factor: CGFloat) -> CGRect {
 		return CGRect(x: self.x * factor, y: self.y * factor, width: self.width * factor, height: self.height * factor)
 	}
