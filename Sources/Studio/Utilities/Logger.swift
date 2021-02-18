@@ -41,6 +41,7 @@ public class Logger {
 	var logFileExists = false
 	public var showTimestamps = true { didSet { self.timestampStart = Date() }}
 	public var timestampStart = Date()
+	public var logErrors: Bool { level > .mild }
 	
 	public func log(to url: URL, clearingFirst: Bool = true) {
 		fileURL = url
@@ -93,7 +94,7 @@ public class Logger {
 	
 	public var level: Level = {
 		if Gestalt.distribution == .appStore { return .off }
-		if Gestalt.isAttachedToDebugger { return .mild }
+		if Gestalt.isAttachedToDebugger { return Gestalt.isOnSimulator ? .loud : .mild }
 		return .quiet
 	}()
 	

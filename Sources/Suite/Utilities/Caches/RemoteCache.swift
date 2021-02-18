@@ -30,7 +30,7 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 	
 	public override func fetch(for url: URL, behavior: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
 		if behavior == .skipRemote {
-			return Fail(outputType: Element.self, failure: CacheError.noLocalItemFound).eraseToAnyPublisher()
+			return Fail(outputType: Element.self, failure: CacheError.noLocalItemFound(url)).eraseToAnyPublisher()
 		}
 		
 		if let builder = requestBuilder {
@@ -46,9 +46,12 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 	
 	func publisher(for request: URLRequest) -> AnyPublisher<Element, Error> {
 		return session.dataTaskPublisher(for: request)
+			.mapError { error in
+				CacheError.failedToDownloadServerError(request.url!, error)
+			}
 			.tryMap { output in
 				if let result = Element.create(with: output.data) as? Element { return result }
-				throw CacheError.failedToUnCache
+				throw CacheError.failedToDownload(request.url!, output.data)
 			}
 			.eraseToAnyPublisher()
 	}

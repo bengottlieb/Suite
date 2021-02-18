@@ -41,7 +41,7 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 			do {
 				let data = try Data(contentsOf: url)
 				guard let result = Element.create(with: data) as? Element else {
-					return Fail(outputType: Element.self, failure: CacheError.failedToUnCache).eraseToAnyPublisher()
+					return Fail(outputType: Element.self, failure: CacheError.failedToUnCacheFromDisk(url)).eraseToAnyPublisher()
 				}
 				return self.just(result)
 			} catch {
@@ -55,11 +55,11 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 			do {
 				let data = try Data(contentsOf: file)
 				guard let result = Element.create(with: data) as? Element else {
-					throw CacheError.failedToUnCache
+					return Fail(outputType: Element.self, failure: CacheError.failedToUnCache(url)).eraseToAnyPublisher()
 				}
 				return self.just(result)
 			} catch {
-				return Fail(outputType: Element.self, failure: error).eraseToAnyPublisher()
+				return Fail(outputType: Element.self, failure: CacheError.failedToDecode(url, file, error)).eraseToAnyPublisher()
 			}
 		}
 

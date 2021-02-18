@@ -7,6 +7,7 @@
 
 #if canImport(Combine)
 import Combine
+import Studio
 
 @available(iOS 13.0, watchOS 6.0, OSX 10.15, *)
 public extension Publisher {
@@ -58,10 +59,10 @@ public extension AnyPublisher {
 		}))
 	}
 	
-	func onSuccess(_ completion: @escaping (Output) -> Void) {
+	func onSuccess(logError: Bool = Logger.instance.logErrors, _ completion: @escaping (Output) -> Void) {
 		subscribe(Subscribers.Sink(receiveCompletion: { (result: Subscribers.Completion<Failure>) in
-			if case .failure(let err) = result {
-				logg("Failed to complete \(self): \(err)")
+			if logError, case .failure(let err) = result {
+				logg("Publisher failed: \(err.localizedDescription)")
 			}
 		}, receiveValue: { (result: Output) in
 			completion(result)

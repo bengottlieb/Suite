@@ -90,7 +90,20 @@ public class DataCache: Cache<Data> {
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
-public enum CacheError: String, Error { case notFound, noLocalItemFound, failedToUnCache }
+public enum CacheError: Error, LocalizedError { case notFound(URL), noLocalItemFound(URL), failedToDecode(URL, URL, Error), failedToUnCache(URL), failedToUnCacheFromDisk(URL), failedToDownload(URL, Data), failedToDownloadServerError(URL, Error)
+	public var errorDescription: String? {
+		switch self {
+		case CacheError.notFound(let url): return "Item not found: \(url.absoluteString)"
+		case CacheError.noLocalItemFound(let url): return "Local item not found: \(url.absoluteString)"
+		case CacheError.failedToUnCache(let url): return "Item not found: \(url.absoluteString)"
+		case CacheError.failedToDecode(let src, let local, let error): return "Failed to decode from \(local.path) (original location: \(src.absoluteString)): \(error)"
+		case CacheError.failedToUnCacheFromDisk(let url): return "Item not found: \(url.absoluteString)"
+		case CacheError.failedToDownload(let url, let data):
+			return "Item failed to download: \(url.absoluteString) (got: \(String(data: data, encoding: .utf8) ?? "nothing"))"
+		case CacheError.failedToDownloadServerError(let url, let error): return "\(url.absoluteString) failed: \(error)"
+		}
+	}
+}
 public enum CachePolicy: Equatable { case normal, skipRemote, returnLocalIfNewerThan(Date), skipLocal
 	func shouldIgnoreLocal(forDate: Date?) -> Bool {
 		switch self {
@@ -120,7 +133,7 @@ public class Cache<Element: Cachable>: NSObject {
 	}
 	public func fetch(for url: URL, behavior: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
 		if let backing = backingCache { return backing.fetch(for: url, behavior: behavior) }
-		return .fail(with: CacheError.notFound)
+		return .fail(with: CacheError.notFound(url))
 	}
 	
 	public func store(_ element: Element, for url: URL) {
