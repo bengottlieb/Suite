@@ -58,26 +58,17 @@ public struct URLImage: View {
 		imageView
 			.resizable()
 			.aspectRatio(contentMode: contentMode)
-			.id(imageURL)
 			.onAppear() {
 				if let imageURL = imageURL, frameworkImage == nil {
-					URLSession.shared.dataTaskPublisher(for: imageURL)
-									.map { UIImage(data: $0.data) }
-									.replaceError(with: nil)
-									.receive(on: DispatchQueue.main)
+					ImageCache.instance.fetch(for: imageURL)
+						.receive(on: RunLoop.main)
 						.eraseToAnyPublisher()
 						.onSuccess { image in
 							frameworkImage = image
 						}
-						
-//					ImageCache.instance.fetch(for: imageURL)
-//						.receive(on: RunLoop.main)
-//						.eraseToAnyPublisher()
-//						.onSuccess { image in
-//							frameworkImage = image
-//						}
 				}
 			}
+			.id(imageURL?.absoluteString ?? "--")
 	}
 }
 
