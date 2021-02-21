@@ -93,6 +93,14 @@ public class Logger {
 	}
 	
 	public var level: Level = {
+        if let cmdLineArg = CommandLine.string(for: "logger")?.lowercased() {
+            switch cmdLineArg {
+            case "v": return .verbose
+            case "q": return .quiet
+            default: break
+            }
+            
+        }
 		if Gestalt.distribution == .appStore { return .off }
 		if Gestalt.isAttachedToDebugger { return Gestalt.isOnSimulator ? .loud : .mild }
 		return .quiet
