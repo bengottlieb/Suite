@@ -46,12 +46,14 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 	
 	func publisher(for request: URLRequest) -> AnyPublisher<Element, Error> {
 		return session.dataTaskPublisher(for: request)
+            .assumeHTTP()
+            .responseData()
 			.mapError { error in
 				CacheError.failedToDownloadServerError(request.url!, error)
 			}
-			.tryMap { output in
-				if let result = Element.create(with: output.data) as? Element { return result }
-				throw CacheError.failedToDownload(request.url!, output.data)
+			.tryMap { data in
+				if let result = Element.create(with: data) as? Element { return result }
+				throw CacheError.failedToDownload(request.url!, data)
 			}
 			.eraseToAnyPublisher()
 	}
