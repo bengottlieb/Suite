@@ -48,6 +48,18 @@ public extension AnyPublisher {
 	static func fail(with error: Failure) -> Self {
 		Fail(error: error).eraseToAnyPublisher()
 	}
+
+	func asResult() -> AnyPublisher<Result<Output, Failure>, Never> {
+		self
+			.map { result in
+				Result.success(result)
+			}
+			.catch { error in
+				Just(Result.failure(error))
+					.eraseToAnyPublisher()
+			}
+			.eraseToAnyPublisher()
+	}
     
 	func onCompletion(_ completion: @escaping (Result<Output, Failure>) -> Void) {
 		subscribe(Subscribers.Sink(receiveCompletion: { (result: Subscribers.Completion<Failure>) in
