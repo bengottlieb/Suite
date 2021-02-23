@@ -14,7 +14,7 @@ public protocol JSONExportable {
 	func asJSON() throws -> JSONDictionary
 }
 
-public protocol PostDecodeAwakable: class {
+public protocol PostDecodeAwakable: AnyObject {
 	func awakeFromDecoder()
 }
 

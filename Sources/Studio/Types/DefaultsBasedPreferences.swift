@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol DefaultsBasedPreferencesKeyProvider: class {
+public protocol DefaultsBasedPreferencesKeyProvider: AnyObject {
 	var keys: [String: String] { get }
 }
 
