@@ -17,10 +17,10 @@ public extension TimeInterval {
 	static var pressAndHoldInterval: TimeInterval = 1.0
 
 	
-	var days: Int { return Int(self / .day) }
-	var hours: Int { return Int(self / .hour) }
-	var minutes: Int { return Int(self / .minute) }
-	var seconds: Int { return Int(self) }
+	var days: Int { return abs(Int(self / .day)) }
+	var hours: Int { return abs(Int(self / .hour)) }
+	var minutes: Int { return abs(Int(self / .minute)) }
+	var seconds: Int { return abs(Int(self)) }
 
 	var leftoverHours: Int { return Int(self / .hour) % 24 }
 	var leftoverMinutes: Int { return Int(self / .minute) % 60 }
@@ -29,7 +29,9 @@ public extension TimeInterval {
 	 enum DurationStyle { case hours, minutes, seconds, centiseconds, milliseconds }
 	
 	func durationString(style: DurationStyle = .seconds, showLeadingZero: Bool = false) -> String {
-		let leading = showLeadingZero ? "%02d" : "%d"
+		var leading = showLeadingZero ? "%02d" : "%d"
+		if self < 0 { leading = "-" + leading }
+
 		switch style {
 		case .hours:
 			return String(format: leading, hours)
