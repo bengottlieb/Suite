@@ -43,6 +43,12 @@ public extension URL {
 		
 		return FileManager.default.fileExists(at: self)
 	}
+
+    subscript(name: String) -> String? {
+        guard let components = URLComponents(url: self, resolvingAgainstBaseURL: false) else { return nil }
+        
+        return components.queryItems?.first { $0.name == name }?.value
+    }
 	
 	var queryDictionary: [String: String] {
 		let pairs = self.query?.components(separatedBy: "&") ?? []
