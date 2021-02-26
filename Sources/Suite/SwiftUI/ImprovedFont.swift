@@ -32,6 +32,9 @@ public struct ImprovedFont {
         #if os(OSX)
             family = NSFont.systemFont(ofSize: systemSize).familyName!
         #endif
+		  #if os(watchOS)
+				family = UIFont.systemFont(ofSize: systemSize).familyName
+		  #endif
         size = systemSize
         self.weight = weight
         self.design = design
