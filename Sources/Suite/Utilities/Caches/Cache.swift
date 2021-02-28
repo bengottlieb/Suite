@@ -100,7 +100,7 @@ public enum CacheError: Error, LocalizedError { case notFound(URL), noLocalItemF
 		case CacheError.failedToUnCacheFromDisk(let url): return "Item not found: \(url.absoluteString)"
 		case CacheError.failedToDownload(let url, let data):
 			return "Item failed to download: \(url.absoluteString) (got: \(String(data: data, encoding: .utf8) ?? "nothing"))"
-		case CacheError.failedToDownloadServerError(let url, let error): return "\(url.absoluteString) failed: \(error)"
+        case CacheError.failedToDownloadServerError(let url, let error): return "\(url.absoluteString) failed: \(error.localizedDescription)"
 		}
 	}
 }
