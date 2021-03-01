@@ -16,7 +16,7 @@ public extension Error {
 
 public extension Array where Element == Error {
     var isOffline: Bool {
-        self.count == self.filter { $0.isOffline }.count
+        !isEmpty && self.count == self.filter { $0.isOffline }.count
     }
 }
 
