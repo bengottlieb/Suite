@@ -9,48 +9,6 @@
 import Combine
 
 @available(iOS 13.0, watchOS 6.0, OSX 10.15, *)
-public enum HTTPError: Error, LocalizedError {
-	case nonHTTPResponse(Data)
-	case requestFailed(Int, Data)
-	case redirectError(Int, Data)
-	case serverError(Int, Data)
-	case unknownError(Int, Data?)
-	case networkError(Error)
-	case decodingError(DecodingError)
-	
-    public var errorDescription: String? {
-        switch self {
-        case .nonHTTPResponse(let data): return "Non HTTP Response: \(String(data: data, encoding: .utf8) ?? "--")"
-        case .requestFailed(let code, let data): return prettyString("Request failed", code, data)
-        case .redirectError(let code, let data): return prettyString("Request failed", code, data)
-        case .serverError(let code, let data): return prettyString("Request failed", code, data)
-        case .unknownError(let code, let data): return prettyString("Request failed", code, data)
-        case .networkError(let err): return err.localizedDescription
-        case .decodingError(let err): return err.localizedDescription
-        }
-    }
-    func prettyString(_ title: String, _ code: Int, _ data: Data?) -> String {
-        if let data = data, let string = String(data: data, encoding: .utf8) { return "\(title) (\(code)): \(string)"}
-        return "\(title) (\(code))"
-    }
-
-	public var isRetriable: Bool {
-		switch self {
-		case .redirectError: return false
-		case .unknownError: return false
-		case .decodingError: return false
-		case .requestFailed(let status, _):
-			let timeoutStatus = 408
-			let rateLimitStatus = 429
-			return status == timeoutStatus || status == rateLimitStatus
-			
-		case .serverError, .networkError, .nonHTTPResponse:
-			return true
-		}
-	}
-}
-
-@available(iOS 13.0, watchOS 6.0, OSX 10.15, *)
 public extension Publisher where Output == (data: Data, response: URLResponse) {
 	func assumeHTTP() -> AnyPublisher<(data: Data, response: HTTPURLResponse), HTTPError> {
 		tryMap { data, response in
@@ -60,7 +18,9 @@ public extension Publisher where Output == (data: Data, response: URLResponse) {
 		.mapError { error in
 			if error is HTTPError {
 				return error as? HTTPError ?? HTTPError.unknownError(0, nil)
-			} else {
+            } else if error.isOffline {
+                return .offline
+            } else {
 				return HTTPError.networkError(error)
 			}
 		}

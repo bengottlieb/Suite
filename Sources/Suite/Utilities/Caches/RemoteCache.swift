@@ -49,7 +49,7 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
             .assumeHTTP()
             .responseData()
 			.mapError { error in
-				CacheError.failedToDownloadServerError(request.url!, error)
+                error.isOffline ? error : CacheError.failedToDownloadServerError(request.url!, error)
 			}
 			.tryMap { data in
 				if let result = Element.create(with: data) as? Element { return result }
