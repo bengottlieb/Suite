@@ -15,6 +15,11 @@ public extension UIWindowScene {
 		if let window = self.windows.first(where: { $0.isKeyWindow }) { return window }
 		return self.windows.first
 	}
+
+	var mainWindow: UIWindow? {
+		if let window = self.windows.first(where: { $0.windowLevel == .normal }) { return window }
+		return self.windows.first
+	}
 }
 
 #endif
