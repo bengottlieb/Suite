@@ -81,6 +81,18 @@ public extension UIImage {
 		return result
 	}
 	
+    func overlaying(_ overlay: UIImage) -> UIImage {
+        let frame = self.size.rect
+        
+        UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
+        self.draw(in: frame)
+        overlay.resizedImage(size: self.size, trimmed: true)?.draw(in: frame)
+        let result = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return result ?? self
+    }
+
 	func scaledImage(scale: CGFloat) -> UIImage {
 		if scale == 1.0 { return self }
 		if let cgImage = self.cgImage {
