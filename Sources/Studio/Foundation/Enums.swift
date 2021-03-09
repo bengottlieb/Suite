@@ -11,3 +11,8 @@ public extension CaseIterable {
 	static func random() -> Self { return Self.allCases.randomElement()! }
 }
 
+public extension CaseIterable where Self: Equatable {
+    var isLastCase: Bool {
+        self == Array(Self.allCases).last
+    }
+}
