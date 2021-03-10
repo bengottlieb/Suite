@@ -129,7 +129,7 @@ public extension Date {
 }
 
 extension Array where Element == Date.Time {
-	public var average: Date.Time? {
+	public func average() -> Date.Time? {
 		guard !isEmpty else { return nil }
 		let sum = self.map { $0.timeInterval }.sum()
 		

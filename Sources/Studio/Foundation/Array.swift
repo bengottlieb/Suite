@@ -43,6 +43,12 @@ public extension Array where Element: Numeric {
 	}
 }
 
+public extension Array where Element: BinaryFloatingPoint {
+	func average() -> Element? {
+		guard !isEmpty, let divisor = Element(exactly: count) else { return nil }
+		return sum() / divisor
+	}
+}
 public extension Array where Element: Equatable {
 	func removingDuplicates() -> [Element] {
 		guard let first = self.first else { return [] }
