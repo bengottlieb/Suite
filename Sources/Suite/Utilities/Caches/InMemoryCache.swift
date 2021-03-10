@@ -37,11 +37,11 @@ public class InMemoryCache<Element: Cachable>: Cache<Element> {
 	
 	public override func clearCache() { self.cache = [:] }
 	
-	public override func fetch(for url: URL, behavior: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
+	public override func fetch(for url: URL, caching: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
 		let cacheKey = key(for: url)
 		
-		if let current = cache[cacheKey], !behavior.shouldIgnoreLocal(forDate: current.cachedAt) { return self.just(current.item) }
-		return super.fetch(for: url, behavior: behavior)
+		if let current = cache[cacheKey], !caching.shouldIgnoreLocal(forDate: current.cachedAt) { return self.just(current.item) }
+		return super.fetch(for: url, caching: caching)
 			.flatMap { result -> AnyPublisher<Element, Error> in
 				self.store(result, for: url)
 				return self.just(result)

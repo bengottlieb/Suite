@@ -36,7 +36,7 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 		try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
 	}
 	
-	public override func fetch(for url: URL, behavior: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
+	public override func fetch(for url: URL, caching: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
 		if url.isFileURL {
 			do {
 				let data = try Data(contentsOf: url)
@@ -51,7 +51,7 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 		
 		let file = location(for: url)
 		
-		if let info = cacheInfo(for: url), !behavior.shouldIgnoreLocal(forDate: info.cachedAt) {
+		if let info = cacheInfo(for: url), !caching.shouldIgnoreLocal(forDate: info.cachedAt) {
 			do {
 				let data = try Data(contentsOf: file)
 				guard let result = Element.create(with: data) as? Element else {
@@ -63,7 +63,7 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 			}
 		}
 
-		return super.fetch(for: url, behavior: behavior)
+		return super.fetch(for: url, caching: caching)
 	}
 	
 	public override func clearCache() {

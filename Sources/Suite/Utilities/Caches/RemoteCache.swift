@@ -19,6 +19,7 @@ public protocol RemoteCacheRequestBuilder {
 public class RemoteCache<Element: Cachable>: Cache<Element> {
 	let session: URLSession
 	let requestBuilder: RemoteCacheRequestBuilder?
+    var inflightRequests: [URL: AnyPublisher<Element, Error>] = [:]
 	
 	public init(session urlSession: URLSession = .shared, requestBuilder builder: RemoteCacheRequestBuilder? = nil) {
 		session = urlSession
@@ -28,8 +29,9 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 	
 	public override func cachedValue(for url: URL) -> Element? { nil }
 	
-	public override func fetch(for url: URL, behavior: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
-		if behavior == .skipRemote {
+	public override func fetch(for url: URL, caching: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
+        if caching != .skipLocal, let inflight = inflightRequests[url] { return inflight }
+		if caching == .skipRemote {
 			return Fail(outputType: Element.self, failure: CacheError.noLocalItemFound(url)).eraseToAnyPublisher()
 		}
 		
@@ -45,17 +47,23 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 	}
 	
 	func publisher(for request: URLRequest) -> AnyPublisher<Element, Error> {
-		return session.dataTaskPublisher(for: request)
+        guard let url = request.url else { return Fail(outputType: Element.self, failure: CacheError.noURL).eraseToAnyPublisher() }
+        let pub: AnyPublisher<Element, Error> = session.dataTaskPublisher(for: request)
             .assumeHTTP()
             .responseData()
-			.mapError { error in
-                error.isOffline ? error : CacheError.failedToDownloadServerError(request.url!, error)
+			.mapError { error -> Error in
+                self.inflightRequests.removeValue(forKey: url)
+                return error.isOffline ? error : CacheError.failedToDownloadServerError(request.url!, error)
 			}
 			.tryMap { data in
+                self.inflightRequests.removeValue(forKey: url)
 				if let result = Element.create(with: data) as? Element { return result }
 				throw CacheError.failedToDownload(request.url!, data)
 			}
 			.eraseToAnyPublisher()
+        
+        inflightRequests[url] = pub
+        return pub
 	}
 }
 
