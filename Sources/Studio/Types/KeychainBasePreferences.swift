@@ -1,16 +1,11 @@
 //
-//  DefaultsBasedPreferences.swift
-//  Suite
+//  File.swift
+//  
 //
-//  Created by Ben Gottlieb on 9/9/19.
-//  Copyright © 2019 Stand Alone, Inc. All rights reserved.
+//  Created by Ben Gottlieb on 3/11/21.
 //
 
 import Foundation
-
-public protocol PreferencesKeyProvider: AnyObject {
-	var keys: [String: String] { get }
-}
 
 /**
 	Subclass this, then create all instance variables as
@@ -22,27 +17,24 @@ public protocol PreferencesKeyProvider: AnyObject {
 		ps auwx | grep cfprefsd | grep -v grep | awk '{print $2}' | xargs sudo kill -2
 */
 
-@objc open class DefaultsBasedPreferences: NSObject {
+@objc open class KeychainBasedPreferences: NSObject {
 	public override init() {
 		super.init()
-		
 		load()
 	}
 
-	
 	public func refresh() {
 		load()
 	}
 	
 	func load() {
-		let defaults = self.defaults
 		var mirror = Mirror(reflecting: self)
 		
 		while true {
 			for child in mirror.children {
 				guard let key = child.label else { continue }
 				
-				if let value = defaults.object(forKey: self.name(forKey: key)) {
+				if let value = Keychain.instance.get(key) {
 					self.setValue(value, forKey: key)
 				}
 				self.addObserver(self, forKeyPath: key, options: .new, context: nil)
@@ -60,40 +52,20 @@ public protocol PreferencesKeyProvider: AnyObject {
 	}
 	
 	open func clearValue(forKey key: String) {
-		self.defaults.removeObject(forKey: key)
+		Keychain.instance.delete(key)
 	}
-	
-	open func name(forKey key: String) -> String {
-		if let provider = self as? PreferencesKeyProvider, let name = provider.keys[key] {
-			return name
-		}
-		return key
-	}
-	
-	public func hasValue(forKey key: String) -> Bool {
-		return self.defaults.hasValueForKey(key: self.name(forKey: key))
-	}
-	
-	open var defaults: UserDefaults { return UserDefaults.standard }
-	weak var saveTimer: Timer?
-	
+
 	open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
 		var mirror = Mirror(reflecting: self)
 		while true {
 			for child in mirror.children {
 				guard let key = child.label, key == keyPath else { continue }
 				
-				let defaultsKey = self.name(forKey: key)
-				if let value = change?[.newKey], !(value is NSNull) {
-					self.defaults.set(value, forKey: defaultsKey)
+				let keychainKey = key
+				if let value = change?[.newKey] as? String {
+					Keychain.instance.set(value, forKey: keychainKey)
 				} else {
-					self.defaults.removeValue(forKey: defaultsKey)
-				}
-				DispatchQueue.main.async {
-					self.saveTimer?.invalidate()
-					self.saveTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { _ in
-						self.defaults.synchronize()
-					}
+					Keychain.instance.delete(keychainKey)
 				}
 				Notification.postOnMainThread(name: self.notificationName(forKey: key))
 				return
@@ -107,20 +79,6 @@ public protocol PreferencesKeyProvider: AnyObject {
 	}
 	
 	open func notificationName(forKey key: String) -> Notification.Name {
-		return Notification.Name("DefaultsBasedPreferences-\(key)")
-	}
-}
-
-public extension UserDefaults {
-	func hasValueForKey(key: String) -> Bool {
-		return self.object(forKey: key) != nil
-	}
-	
-	func removeValue(forKey key: String) {
-		self.removeObject(forKey: key)
-	}
-	
-	func clearValue(forKey key: String) {
-		self.removeValue(forKey: key)
+		return Notification.Name("KeychainBasedPreferences-\(key)")
 	}
 }

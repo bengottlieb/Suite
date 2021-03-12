@@ -49,7 +49,6 @@ public class ViewStorage: ObservableObject {
 	public func store<Target: View>(_ view: Target, for key: ViewKey) {
 		views[key.keyValue] = StoredView(view: view.anyView())
 		self.objectWillChange.send()
-		self.objectWillChange.send()
 	}
 	
 	public func view(for key: ViewKey) -> AnyView? {
