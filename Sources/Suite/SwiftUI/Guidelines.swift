@@ -22,6 +22,15 @@ public struct GuideLinesShape: Shape {
 }
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
+public extension View {
+	func guideLines(_ guide: GuideLines, color: Color? = nil) -> some View {
+		let stroke = color ?? .gray
+		return self
+			.overlay(GuideLinesShape(guide).stroke(stroke, lineWidth: 0.5))
+	}
+}
+
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 public struct GuideLines {
 	var xMarks: [CGFloat] = []
 	var yMarks: [CGFloat] = []
