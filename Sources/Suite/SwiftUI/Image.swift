@@ -18,7 +18,10 @@ public extension Image {
 			.aspectRatio(contentMode: mode)
 			.frame(size: size)
 	}
+}
 
+@available(OSX 11, iOS 13.0, watchOS 6.0, *)
+public extension Image {
 	init(_ sfsymbol: SFSymbol) {
 		self.init(systemName: sfsymbol.rawValue)
 	}
