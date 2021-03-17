@@ -26,12 +26,14 @@ public struct URLImage: View {
 	let placeholder: Image?
 	let imageURL: URL?
 	let contentMode: ContentMode
+	let errorCallback: ((Error?) -> Void)?
 	@State var frameworkImage: FrameworkImage?
 	
-	public init(url: URL?, contentMode: ContentMode = .fit, placeholder: Image? = nil) {
+	public init(url: URL?, contentMode: ContentMode = .fit, placeholder: Image? = nil, errorCallback: ((Error?) -> Void)? = nil) {
 		imageURL = url
 		self.contentMode = contentMode
 		self.placeholder = placeholder
+		self.errorCallback = errorCallback
 		if let url = url, let image = ImageCache.instance.cachedValue(for: url) {
 			_frameworkImage = State(wrappedValue: image)
 		}
@@ -63,8 +65,14 @@ public struct URLImage: View {
 					ImageCache.instance.fetch(for: imageURL)
 						.receive(on: RunLoop.main)
 						.eraseToAnyPublisher()
-						.onSuccess { image in
-							frameworkImage = image
+						.onCompletion { result in
+							switch result {
+							case .success(let image):
+								frameworkImage = image
+								
+							case .failure(let err):
+								errorCallback?(err)
+							}
 						}
 				}
 			}
