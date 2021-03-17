@@ -70,10 +70,11 @@ public extension Date {
 		}
 		
 		public func timeInterval(since other: Date.Time) -> TimeInterval {
+			if self == other { return 0 }
 			let otherSeconds = other.timeInterval
 			let mySeconds = self.timeInterval
 			
-			if otherSeconds < mySeconds {
+			if otherSeconds <= mySeconds {
 				return mySeconds - otherSeconds
 			}
 			
