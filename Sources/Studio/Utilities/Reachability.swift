@@ -6,17 +6,17 @@ import Foundation
 	import UIKit
 #endif
 
-#if canImport(SwiftUI)
+#if canImport(Combine)
 	import SwiftUI
 
 	@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 	extension Reachability: ObservableObject {
 		func objectChanged() {
-			
+			self.objectWillChange.send()
 		}
 	}
 #else
-extension Reachability: ObservableObject {
+extension Reachability {
 	func objectChanged() {
 	
 	}
