@@ -164,6 +164,10 @@ public extension Date {
 	var minute: Int { self.components(which: .minute).minute ?? 0 }
 	var second: Int { self.components(which: .second).second ?? 0 }
 	var dayOfWeek: DayOfWeek { DayOfWeek(rawValue: self.components(which: .weekday).weekday!) ?? .sunday }
+	var dayOfMonth: Int {
+		let date = Calendar.current.component(.day, from: self)
+		return date
+	}
 	func dayOfWeekString(length: StringLength = .short) -> String {
 		let day = self.dayOfWeek
 		

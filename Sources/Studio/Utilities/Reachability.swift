@@ -6,6 +6,23 @@ import Foundation
 	import UIKit
 #endif
 
+#if canImport(SwiftUI)
+	import SwiftUI
+
+	@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+	extension Reachability: ObservableObject {
+		func objectChanged() {
+			
+		}
+	}
+#else
+extension Reachability: ObservableObject {
+	func objectChanged() {
+	
+	}
+}
+#endif
+
 public extension URLSessionTask {
 	@discardableResult
 	func start(andWarnIfOffline warn: Bool = true) -> Bool {
@@ -189,6 +206,9 @@ extension Reachability {
 			callback(self)
 		}
 		Notifications.reachabilityChanged.notify(self)
+		if #available(OSX 10.13, iOS 13, watchOS 6, *) {
+			objectChanged()
+		}
 	}
 }
 
