@@ -12,6 +12,17 @@ import CoreGraphics
 	import UIKit
 #endif
 
+public func roundcgf(value: CGFloat) -> CGFloat { return CGFloat(floorf(Float(value))) }
+
+public func -(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+    return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+}
+
+public func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+    return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+}
+
+
 extension CGRect {
 	#if os(iOS)
 		public typealias Placement = UIView.ContentMode
@@ -30,124 +41,6 @@ public extension CGRect.Placement {
 	var isBottom: Bool { self == .bottomLeft || self == .bottom || self == .bottomRight }
 }
 
-
-public func roundcgf(value: CGFloat) -> CGFloat { return CGFloat(floorf(Float(value))) }
-
-public extension CGPoint {
-	var size: CGSize { CGSize(width: x, height: y )}
-
-	func centeredRect(size: CGSize) -> CGRect {
-		return CGRect(x: self.x - size.width / 2, y: self.y - size.height / 2, width: size.width, height: size.height)
-	}
-	
-	func square(side: CGFloat) -> CGRect { return self.centeredRect(size: CGSize(width: side, height: side)) }
-	
-	func adjustX(_ deltaX: CGFloat) -> CGPoint {  return CGPoint(x: self.x + deltaX, y: self.y) }
-	func adjustY(_ deltaY: CGFloat) -> CGPoint {  return CGPoint(x: self.x, y: self.y + deltaY) }
-	
-	func round() -> CGPoint { return CGPoint(x: roundcgf(value: self.x), y: roundcgf(value: self.y) )}
-
-	func distance(to other: CGPoint) -> CGFloat {
-		return sqrt(pow(self.x - other.x, 2) + pow(self.y - other.y, 2))
-	}
-
-	static func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-		 return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
-	}
-
-	static func -(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-		 return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
-	}
-
-	init(_ x: CGFloat, _ y: CGFloat) {
-		self.init(x: x, y: y)
-	}
-}
-
-public func -(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-	return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
-}
-
-public func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-	return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
-}
-
-public extension CGSize {
-	var dimString: String { "\(Int(width)) x \(Int(height))" }
-
-	var largestDimension: CGFloat { max(width, height) }
-	var smallestDimension: CGFloat { min(width, height) }
-
-	enum AspectRatioType: Int { case portrait, landscape, square }
-	func scaled(within limit: CGSize) -> CGSize {
-		let myAspectRatio = self.width / self.height
-		let theirAspectRatio = limit.width / limit.height
-		var computed = limit
-		
-		if myAspectRatio < theirAspectRatio {
-			computed.width = limit.height * myAspectRatio
-		} else {
-			computed.height = limit.width / myAspectRatio
-		}
-		return computed
-	}
-	
-	var isSquare: Bool { return self.width > 0 && self.width == self.height }
-	var rect: CGRect { return CGRect(x: 0, y: 0, width: self.width, height: self.height) }
-
-	func round() -> CGSize { return CGSize(width: roundcgf(value: self.width), height: roundcgf(value: self.height) )}
-
-	var aspectRatio: CGFloat { return self.width / self.height }
-	var aspectRatioType: AspectRatioType {
-		switch self.aspectRatio {
-		case ..<1: return .portrait
-		case 1: return .square
-		default: return .landscape
-		}
-	}
-	
-	var point: CGPoint { CGPoint(x: width, y: height )}
-	
-	func scaled(by factor: CGFloat) -> CGSize {
-		return CGSize(width: self.width * factor, height: self.height * factor)
-	}
-	
-	func scaleDown(toWidth maxWidth: CGFloat?, height maxHeight: CGFloat?) -> CGSize {
-		var heightGood = false, widthGood = false
-		
-		if let maxH = maxHeight, maxH < self.height {
-			heightGood = true
-		}
-
-		if let maxW = maxWidth, maxW < self.width {
-			heightGood = true
-		}
-		
-		if heightGood && widthGood { return self }
-		
-		let aspect = self.aspectRatio
-		
-		if heightGood && maxWidth != nil {
-			return CGSize(width: maxWidth!, height: maxWidth! / aspect)
-		}
-		
-		if widthGood && maxHeight != nil {
-			return CGSize(width: maxHeight! * aspect, height: maxHeight!)
-		}
-		
-		if let maxHeight = maxHeight, let maxWidth = maxWidth {
-			let calcWidth = min(maxWidth, maxHeight * aspect)
-			let calcHeight = min(maxHeight, maxWidth / aspect)
-			
-			if (calcHeight / maxHeight) > (calcWidth / maxWidth) {		//height is better match
-				return CGSize(width: calcHeight * aspect, height: calcHeight)
-			} else {
-				return CGSize(width: calcWidth, height: calcWidth / aspect)
-			}
-		}
-		return CGSize(width: maxWidth ?? self.width, height: maxHeight ?? self.height)
-	}
-}
 
 public extension CGRect {
 	var largestDimension: CGFloat { max(width, height) }
