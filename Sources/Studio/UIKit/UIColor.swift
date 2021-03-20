@@ -101,6 +101,7 @@ public extension UIColor {
 		}
 	}
 	
+	@available(iOS 10.0, *)
 	func swatch(of size: CGSize = CGSize(width: 100, height: 100)) -> UIImage {
 		UIGraphicsImageRenderer(size: size).image { ctx in
 			self.setFill()

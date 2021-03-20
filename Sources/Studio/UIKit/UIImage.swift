@@ -138,6 +138,7 @@ public extension UIImage {
 
 }
 
+@available(iOS 10.0, *)
 public extension UIImage {
 	static func randomEmojiImage(face: Bool = false, ofSize size: CGSize, background color: UIColor = .white) -> UIImage? {
 		return UIGraphicsImageRenderer(size: size).image { ctx in

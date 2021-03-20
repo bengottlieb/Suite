@@ -103,6 +103,7 @@ extension String {
 	}
 }
 
+@available(iOS 10.0, *)
 public extension JSONEncoder {
 	static var iso8601Encoder: JSONEncoder {
 		let encoder = JSONEncoder()
@@ -112,6 +113,7 @@ public extension JSONEncoder {
 	}
 }
 
+@available(iOS 10.0, *)
 public extension JSONDecoder {
 	enum DecodingError: Error { case unknownKey(String) }
 
@@ -123,6 +125,7 @@ public extension JSONDecoder {
 	}
 }
 
+@available(iOS 10.0, *)
 public extension Encodable where Self: Decodable {
 	func duplicate(using encoder: JSONEncoder = .iso8601Encoder, and decoder: JSONDecoder = .iso8601Decoder) throws -> Self {
 		let data = try encoder.encode(self)
