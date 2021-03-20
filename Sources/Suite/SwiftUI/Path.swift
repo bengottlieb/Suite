@@ -5,8 +5,10 @@
 //  Created by Ben Gottlieb on 3/20/21.
 //
 
+#if canImport(Combine)
 import SwiftUI
 
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 public extension Path {
     mutating func addCurve(to end: CGPoint, control1 cp1: CGPoint, control2 cp2: CGPoint, showingControlPoints: Bool) {
         if showingControlPoints, let current = currentPoint {
@@ -30,3 +32,4 @@ public extension Path {
         addEllipse(in: CGRect(x: current.x - radius / 2, y: current.y - radius / 2, width: radius, height: radius))
     }
 }
+#endif
