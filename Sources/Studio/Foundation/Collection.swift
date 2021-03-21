@@ -7,6 +7,10 @@
 
 import Foundation
 
+public extension Collection {
+    var isNotEmpty: Bool { !isEmpty }
+}
+
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 public extension CollectionDifference {
 	var inserted: [ChangeElement] {

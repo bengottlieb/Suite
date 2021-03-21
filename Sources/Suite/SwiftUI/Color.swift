@@ -11,6 +11,13 @@ import SwiftUI
 import Studio
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+public extension View {
+    func backgroundColor(_ color: Color) -> some View {
+        self.background(color)
+    }
+}
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension Color {
 	init?(hex: String?) {
 		guard let values = hex?.extractedHexValues else {
