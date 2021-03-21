@@ -20,6 +20,7 @@ import SwiftUI
 
 */
 
+@available(iOS 10.0, *)
 open class URLImporter {
 
 	public init() { }
