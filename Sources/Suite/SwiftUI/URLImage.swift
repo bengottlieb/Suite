@@ -49,7 +49,7 @@ public struct URLImage: View {
 		}
 		
 		if let placeholder = placeholder { return placeholder }
-		if #available(OSX 11.0, *) {
+		if #available(OSX 10.16, *) {
 			return Image(systemName: "square")
 		} else {
 			return Image("")

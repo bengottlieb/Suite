@@ -10,7 +10,7 @@
 import SwiftUI
 import Combine
 
-@available(OSX 11, iOS 14.0, tvOS 13, watchOS 7, *)
+@available(OSX 10.16, iOS 14.0, tvOS 13, watchOS 7, *)
 public enum AppRunMode { case app, widget, siri, `extension` }
 
 #endif

@@ -6,7 +6,6 @@
 //
 
 #if canImport(Combine)
-#if canImport(UIKit)
 import SwiftUI
 import Studio
 
@@ -20,7 +19,7 @@ public extension Image {
 	}
 }
 
-@available(OSX 11, iOS 13.0, watchOS 6.0, *)
+@available(OSX 10.16, iOS 13.0, watchOS 6.0, *)
 public extension Image {
 	init(_ sfsymbol: SFSymbol) {
 		self.init(systemName: sfsymbol.rawValue)
@@ -32,5 +31,4 @@ public extension Image {
 }
 
 
-#endif
 #endif

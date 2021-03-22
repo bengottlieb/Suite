@@ -206,7 +206,7 @@ extension Reachability {
 			callback(self)
 		}
 		Notifications.reachabilityChanged.notify(self)
-		if #available(OSX 10.13, iOS 13, watchOS 6, *) {
+		if #available(OSX 10.15, iOS 13, watchOS 6, *) {
 			objectChanged()
 		}
 	}
