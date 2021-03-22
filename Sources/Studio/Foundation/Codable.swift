@@ -86,9 +86,9 @@ extension Decodable {
 		return try decoder.decode(self, from: data)
 	}
 	
-	public static func loadJSON(from url: URL) throws -> Self {
+	public static func loadJSON(from url: URL, using decoder: JSONDecoder = .init()) throws -> Self {
 		let data = try Data(contentsOf: url)
-		return try self.load(fromJSONData: data)
+		return try self.load(fromJSONData: data, using: decoder)
 	}
 	
 	public static func loadJSON(fromUserDefaults key: String) throws -> Self {

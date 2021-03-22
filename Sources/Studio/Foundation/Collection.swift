@@ -8,7 +8,13 @@
 import Foundation
 
 public extension Collection {
-    var isNotEmpty: Bool { !isEmpty }
+	 var isNotEmpty: Bool { !isEmpty }
+}
+
+public extension Collection {
+	func compactMap<Result>() -> [Result] {
+		compactMap() { $0 as? Result }
+	}
 }
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
