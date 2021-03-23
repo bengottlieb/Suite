@@ -21,25 +21,27 @@ public struct RefreshableScrollView<Content: View>: View {
 	@Binding var refreshing: Bool
 	let content: Content
 	let showsIndicators: Bool
-
+    let isEnabled: Bool
+    
 	@State private var previousScrollOffset: CGFloat = 0
 	@State private var scrollOffset: CGFloat = 0
 	@State private var isLockedToTop: Bool = false
 	@State private var percentDown: CGFloat = 0
 	
-	public init(headerHeight: CGFloat = 50, color: Color = .gray, showsIndicators indicators: Bool = true, refreshing: Binding<Bool>, @ViewBuilder content builder: () -> Content) {
+    public init(isEnabled enabled: Bool = true, headerHeight: CGFloat = 50, color: Color = .gray, showsIndicators indicators: Bool = true, refreshing: Binding<Bool>, @ViewBuilder content builder: () -> Content) {
 		scrollHeaderHeight = headerHeight
 		spinnerColor = color
 		_refreshing = refreshing
 		showsIndicators = indicators
 		content = builder()
+        isEnabled = enabled
 	}
 	
 	public var body: some View {
 		return
 			ScrollView(showsIndicators: showsIndicators) {
 				ZStack(alignment: .top) {
-					ScrollTrackingView()
+                    if isEnabled { ScrollTrackingView() }
 					
 					VStack { content }.alignmentGuide(.top, computeValue: { d in (refreshing && isLockedToTop) ? -scrollHeaderHeight : 0.0 })
 					
@@ -78,14 +80,15 @@ public struct RefreshableScrollView<Content: View>: View {
 	}
 	
 	struct HeaderView: View {
-		var color: Color
-		var offset: CGFloat = 0
-		var height: CGFloat
-		var loading: Bool
+		let color: Color
+        let offset: CGFloat
+        let height: CGFloat
+        let loading: Bool
 		
 		var body: some View {
 			ActivityIndicatorView(color, fixed: loading ? nil : Double(min(offset / height, 1)))
 				.medium()
+                .padding((height - ActivityIndicatorView.mediumHeight))
 				.offset(y: -offset)
 		}
 	}
