@@ -312,6 +312,10 @@ public extension Date {
 }
 
 public extension Date {
+	func formatted(as format: String) -> String {
+		DateFormatter(format: format).string(from: self)
+	}
+	
 	static func ageString(age: TimeInterval, style: DateFormatter.Style = .short) -> String {
 		let seconds = abs(Int(age))
 		let minutes = seconds / 60
