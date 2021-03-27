@@ -33,6 +33,7 @@ private let formatter: NumberFormatter = {
 	let formatter = NumberFormatter()
 	formatter.numberStyle = .decimal
 	formatter.maximumFractionDigits = 2
+	formatter.minimumFractionDigits = 2
 	return formatter
 }()
 
