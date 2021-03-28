@@ -47,4 +47,17 @@ public extension NSManagedObject {
 			{ newValue in self.setValue(newValue, forKey: field)} )
 	}
 }
+
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
+public extension NSManagedObject {
+    func binding<Entity: NSManagedObject>(forRelationship key: String) -> Binding<[Entity]> {
+        Binding<[Entity]>(get: {
+            guard let result = self.value(forKey: key) as? Set<Entity> else { return [] }
+            return Array(result)
+        }) { new in
+            let obj = NSMutableSet(array: new)
+            self.setValue(obj, forKey: key)
+        }
+    }
+}
 #endif
