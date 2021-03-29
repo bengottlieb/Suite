@@ -8,7 +8,29 @@
 
 import Foundation
 
+public protocol JSONDataType: Codable { }
+
+extension String: JSONDataType { }
+extension Int: JSONDataType { }
+extension Double: JSONDataType { }
+extension Date: JSONDataType { }
+extension Data: JSONDataType { }
+extension Dictionary: JSONDataType where Key == String, Value: JSONDataType { }
+extension Array: JSONDataType where Element: JSONDataType { }
+
 public typealias JSONDictionary = [String: Any]
+
+public extension JSONDictionary {
+	var plist: PropertyListDictionary { self as? PropertyListDictionary ?? [:] }
+}
+
+extension Dictionary where Key == String {
+	public var jsonDictionary: JSONDictionary {
+		self.compactMapValues { value in
+			value as? JSONDataType
+		}
+	}
+}
 
 public protocol JSONExportable {
 	func asJSON() throws -> JSONDictionary
