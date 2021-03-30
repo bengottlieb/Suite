@@ -58,7 +58,7 @@ public class JSONExpandedDecoder: JSONDecoder {
 	}
 }
 
-extension Encodable {
+public extension Encodable {
 	var stringValue: String? {
 		stringValue(from: JSONEncoder())
 	}
@@ -69,26 +69,26 @@ extension Encodable {
 		return String(data: data, encoding: .utf8)
 	}
 
-	public func asJSON() throws -> JSONDictionary {
+	func asJSON() throws -> JSONDictionary {
 		let data = try asJSONData()
 		return try JSONSerialization.jsonObject(with: data, options: []) as? JSONDictionary ?? [:]
 	}
 
-	public func asJSONData(using encoder: JSONEncoder = .init()) throws -> Data {
+	func asJSONData(using encoder: JSONEncoder = .init()) throws -> Data {
 		try encoder.encode(self)
 	}
 	
-	public func saveJSON(to url: URL, using encoder: JSONEncoder = .init()) throws {
+	func saveJSON(to url: URL, using encoder: JSONEncoder = .init()) throws {
 		let data = try encoder.encode(self)
 		try data.write(to: url)
 	}
 	
-	public func saveJSON(toUserDefaults key: String, using encoder: JSONEncoder = .init()) throws {
+	func saveJSON(toUserDefaults key: String, using encoder: JSONEncoder = .init()) throws {
 		let data = try encoder.encode(self)
 		UserDefaults.standard.set(data, forKey: key)
 	}
 	
-	public func logg(level: Logger.Level = .mild) {
+	func logg(level: Logger.Level = .mild) {
 		do {
 			let data = try self.asJSONData()
 			guard let raw = String(data: data, encoding: .utf8) else {
@@ -117,6 +117,13 @@ extension Decodable {
 		let data = UserDefaults.standard.data(forKey: key) ?? Data()
 		return try self.load(fromJSONData: data)
 	}
+	
+	@available(iOS 10.0, *)
+	public static func load(fromString string: String, using decoder: JSONDecoder = .init()) throws -> Self {
+		guard let data = string.data(using: .utf8) else { throw JSONDecoder.DecodingError.badString }
+		
+		return try decoder.decode(Self.self, from: data)
+	}
 }
 
 extension String {
@@ -137,7 +144,7 @@ public extension JSONEncoder {
 
 @available(iOS 10.0, *)
 public extension JSONDecoder {
-	enum DecodingError: Error { case unknownKey(String) }
+	enum DecodingError: Error { case unknownKey(String), badString, jsonDecodFailed }
 
 	static var iso8601Decoder: JSONDecoder {
 		let decoder = JSONExpandedDecoder()
