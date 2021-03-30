@@ -79,6 +79,14 @@ public extension Date {
 	var nearestSecond: Date {
 		return Date(timeIntervalSinceReferenceDate: floor(self.timeIntervalSinceReferenceDate))
 	}
+	
+	var isInFuture: Bool {
+		timeIntervalSinceNow > 0
+	}
+	
+	var isInPast: Bool {
+		timeIntervalSinceNow < 0
+	}
 }
 
 infix operator ≈≈ : ComparisonPrecedence
