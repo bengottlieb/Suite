@@ -4,15 +4,19 @@
 //  Created by Ben Gottlieb on 3/16/19.
 //
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(watchOS)
 import Foundation
 import AVFoundation
-import OpenAL
-import AudioToolbox
 
 #if os(OSX)
 	import AppKit
-#else
+	import OpenAL
+	import AudioToolbox
+#elseif os(iOS)
+	import UIKit
+	import OpenAL
+	import AudioToolbox
+#elseif os(watchOS)
 	import UIKit
 #endif
 
@@ -20,7 +24,7 @@ import AudioToolbox
 public class SoundEffect: Equatable {
 	private static var cachedSounds: [String: SoundEffect] = [:]
 	private static var playingSounds: [SoundEffect] = []
-    private static var isAmbient = false
+	private static var hasMadeAmbient = false
 	public static var disableAllSounds = Gestalt.isOnSimulator
 	var internalPlayer: AVAudioPlayer!
 	var original: SoundEffect?
@@ -60,6 +64,7 @@ public class SoundEffect: Equatable {
 	}
 	
 	public init?(url: URL, preload: Bool = true, uncached: Bool = false) {
+		SoundEffect.makeAmbient()
 		if let original = SoundEffect.cachedSounds[url.absoluteString] {
 			self.original = original
 		} else {
@@ -70,12 +75,10 @@ public class SoundEffect: Equatable {
 	}
 	
 	public init?(data: Data?, preload: Bool = true, uncached: Bool = false) {
+		SoundEffect.makeAmbient()
 		guard let data = data else { return nil }
 		
 		self.data = data
-		#if os(iOS)
-        	self.makeAmbient()
-		#endif
 		if preload { self.preload() }
 	}
 	
@@ -83,20 +86,19 @@ public class SoundEffect: Equatable {
 		actualPlayer?.prepareToPlay()
 	}
 	
-	#if os(iOS)
-    func makeAmbient() {
+	 static func makeAmbient() {
 		if #available(iOS 10.0, iOSApplicationExtension 10.0, *) {
-        	if !SoundEffect.isAmbient {
-            	SoundEffect.isAmbient = true
+			if !SoundEffect.hasMadeAmbient {
+				SoundEffect.hasMadeAmbient = true
 				try? AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
 				try? AVAudioSession.sharedInstance().setActive(true)
 			}
-        }
-    }
-	#endif
+		  }
+	 }
 	
 	@available(iOS 9.0, iOSApplicationExtension 9.0, OSX 10.11, *)
 	convenience public init?(named name: String, in bundle: Bundle? = nil, preload: Bool = true, uncached: Bool = false) {
+		SoundEffect.makeAmbient()
 		if let existing = SoundEffect.cachedSounds[name] {
 			self.init(original: existing)
 		} else {

@@ -64,8 +64,10 @@ public extension DecimalFormattable {
 
 extension String {
 	var decimalPlaces: Int {
-		if !contains(".") { return 0 }
-		let components = self.components(separatedBy: ".")
+		var radix = "."
+		if !contains(radix) { radix = "," }
+		if !contains(radix) { return 0 }
+		let components = self.components(separatedBy: radix)
 		return components.last?.count ?? 0
 	}
 }
