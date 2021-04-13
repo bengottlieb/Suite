@@ -51,7 +51,7 @@ public extension DecimalFormattable {
 		}
 		
 		if padded {
-			while result.decimalPlaces < decimalPlaces {
+			while result.decimalPlaces < decimalPlaces, result.count < 500 {
 				result += "0"
 			}
 		} else {

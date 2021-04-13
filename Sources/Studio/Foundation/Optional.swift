@@ -26,17 +26,17 @@ public extension Optional {
 }
 
 public extension Optional where Wrapped: Collection {
-    var isEmpty: Bool {
-        switch self {
-        case .none: return true
-        case .some(let wrapped): return wrapped.isEmpty
-        }
-    }
+	 var isEmpty: Bool {
+		  switch self {
+		  case .none: return true
+		  case .some(let wrapped): return wrapped.isEmpty
+		  }
+	 }
 
-    var isNotEmpty: Bool {
-        switch self {
-        case .none: return false
-        case .some(let wrapped): return wrapped.isNotEmpty
-        }
-    }
+	 var isNotEmpty: Bool {
+		  switch self {
+		  case .none: return false
+		  case .some(let wrapped): return wrapped.isNotEmpty
+		  }
+	 }
 }

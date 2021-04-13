@@ -19,5 +19,4 @@ public extension Shape {
     }
 
 }
-
 #endif
