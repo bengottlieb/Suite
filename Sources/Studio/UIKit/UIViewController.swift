@@ -60,9 +60,9 @@ public extension UIViewController {
 }
 
 public extension UIViewController {
-	func share(something: Any?, fromItem barButtonItem: UIBarButtonItem? = nil, fromView: UIView? = nil) {
-		guard let item = something else { return }
-		let activityVC = UIActivityViewController(activityItems: [item], applicationActivities: nil)
+	func share(something: [Any], fromItem barButtonItem: UIBarButtonItem? = nil, fromView: UIView? = nil) {
+		guard !something.isEmpty else { return }
+		let activityVC = UIActivityViewController(activityItems: something, applicationActivities: nil)
 		if let barButtonItem = barButtonItem {
 			activityVC.popoverPresentationController?.barButtonItem = barButtonItem
 		} else if let view = view {
