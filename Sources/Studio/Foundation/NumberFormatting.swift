@@ -64,11 +64,16 @@ public extension DecimalFormattable {
 
 public extension String {
 	var decimalPlaces: Int {
-        var radix = NumberFormatter.radix
-		if !contains(radix) { radix = "," }
+		let radix = NumberFormatter.radix
 		if !contains(radix) { return 0 }
 		let components = self.components(separatedBy: radix)
 		return components.last?.count ?? 0
+	}
+	
+	var droppingDecimal: String {
+		let components = self.components(separatedBy: NumberFormatter.radix)
+		if components.count != 2 { return self }
+		return components[0]
 	}
 }
 
