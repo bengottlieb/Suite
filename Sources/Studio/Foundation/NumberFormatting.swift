@@ -62,12 +62,26 @@ public extension DecimalFormattable {
 	}
 }
 
-extension String {
+public extension String {
 	var decimalPlaces: Int {
-		var radix = "."
+        var radix = NumberFormatter.radix
 		if !contains(radix) { radix = "," }
 		if !contains(radix) { return 0 }
 		let components = self.components(separatedBy: radix)
 		return components.last?.count ?? 0
 	}
+}
+
+extension NumberFormatter {
+    static var radix: String = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        guard let result = formatter.string(from: NSNumber(1.1)) else { return "." }
+        if result.contains(".") { return "." }
+        if result.contains(",") { return "," }
+        if let last = result.trimmingCharacters(in: .alphanumerics).first {
+            return String(last)
+        }
+        return "."
+    }()
 }
