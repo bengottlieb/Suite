@@ -53,7 +53,7 @@ public extension FileManager {
 		return isDir.boolValue
 	}
 
-	static func uniqueURL(in directory: URL, base: String) -> URL {
+	func uniqueURL(in directory: URL, base: String) -> URL {
 		var count = 0
 		var name = base
 		
