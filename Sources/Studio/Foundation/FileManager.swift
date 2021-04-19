@@ -52,6 +52,22 @@ public extension FileManager {
 		
 		return isDir.boolValue
 	}
+
+	static func uniqueURL(in directory: URL, base: String) -> URL {
+		var count = 0
+		var name = base
+		
+		while true {
+			let url = directory.appendingPathComponent(name)
+			if !fileExists(at: url) { return url }
+			count += 1
+			if count == 1 {
+				name = base + " \(NSLocalizedString("count", comment: "file copy name"))"
+			} else {
+				name = base + " \(NSLocalizedString("count", comment: "file copy name")) \(count)"
+			}
+		}
+	}
 	
 	func fileNotDirectoryExists(at url: URL) -> Bool {
 		var isDir: ObjCBool = false
