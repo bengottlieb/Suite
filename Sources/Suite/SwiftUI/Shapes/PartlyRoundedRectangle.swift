@@ -50,7 +50,7 @@ public struct PartlyRoundedRectangle: Shape {
 		path.addLine(to: CGPoint(rect.midX, rect.maxY))
 
 		if corners.contains(.bottomLeading) {
-			path.addLine(to: CGPoint(rect.minX + radius, rect.minY))
+			path.addLine(to: CGPoint(rect.minX + radius, rect.maxY))
 			path.addArc(center: CGPoint(rect.minX + radius, rect.maxY - radius), radius: radius, startAngle: .sixOClock, endAngle: .nineOClock, clockwise: false)
 		} else {
 			path.addLine(to: CGPoint(rect.minX, rect.maxY))
