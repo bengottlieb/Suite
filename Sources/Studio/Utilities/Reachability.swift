@@ -160,6 +160,7 @@ public extension Reachability {
 		}
 		)
 		
+        SCNetworkReachabilityScheduleWithRunLoop(reachabilityRef, CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue)
 		if !SCNetworkReachabilitySetCallback(reachabilityRef, callback, &context) {
 			stopNotifier()
 			return self
