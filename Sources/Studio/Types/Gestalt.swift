@@ -115,12 +115,24 @@ public struct Gestalt {
 			}
 			return info
 		}
-	
 		public static var simulatorMachineName: String? { return self.getSimulatorHostInfo(which: .Nodename) }
 		public static var simulatorSystemName: String? { return self.getSimulatorHostInfo(which: .Sysname) }
 		public static var simulatorReleaseName: String? { return self.getSimulatorHostInfo(which: .Release) }
 		public static var simulatorVersionName: String? { return self.getSimulatorHostInfo(which: .Version) }
 		public static var simulatorCPUName: String? { return self.getSimulatorHostInfo(which: .Machine) }
+
+		public static var simulatorInfo: String {
+			let pieces: [SimulatorHostInfo] = [.Nodename, .Sysname, .Release, .Version, .Machine ]
+			var result = ""
+			for piece in pieces {
+				if let info = self.getSimulatorHostInfo(which: piece) { result += (result.isEmpty ? "" : "- ") + info }
+			}
+			return result
+		}
+
+	#endif
+	
+	#if os(iOS) || os(watchOS)
 		public static var rawDeviceType: String {
 			var			systemInfo = utsname()
 			uname(&systemInfo)
@@ -216,40 +228,31 @@ public struct Gestalt {
 			}
 		}
 	
-		public static var deviceType: String = {
-			let raw = Gestalt.rawDeviceType
-			switch raw {
-			case "i386", "x86_64":
-				let screenSize = UIScreen.main.bounds.size
-				let size = (Int(screenSize.width), Int(screenSize.height))
-				let scale = Int(UIScreen.main.scale)
-
-				switch size {
-				case (320, 480): return "Simulator, iPhone 4"
-				case (320, 568):
-					return "Simulator, iPhone 5" + (raw == "x86_64" ? "s" : "")
-				case (375, 667): return "Simulator, iPhone 7"
-				case (414, 736): return "Simulator, iPhone 7+"
-				case (768, 1024):
-					if raw == "x86_64" { return "Simulator, iPad air" }
-					return "Simulator, iPad " + (scale == 1 ? "2" : "4")
-				case (1024, 1366): return "Simulator, iPad Pro"
-				default: return "Simulator, \(size.0)x\(size.1) @\(scale)x"
-				}
-				
-				
-			default: return Gestalt.convertRawDeviceTypeToModelName(raw) ?? raw
-			}
-		}()
-	
-		public static var simulatorInfo: String {
-			let pieces: [SimulatorHostInfo] = [.Nodename, .Sysname, .Release, .Version, .Machine ]
-			var result = ""
-			for piece in pieces {
-				if let info = self.getSimulatorHostInfo(which: piece) { result += (result.isEmpty ? "" : "- ") + info }
-			}
-			return result
-		}
+//		public static var deviceType: String = {
+//			let raw = Gestalt.rawDeviceType
+//			switch raw {
+//			case "i386", "x86_64":
+//				let screenSize = UIScreen.main.bounds.size
+//				let size = (Int(screenSize.width), Int(screenSize.height))
+//				let scale = Int(UIScreen.main.scale)
+//
+//				switch size {
+//				case (320, 480): return "Simulator, iPhone 4"
+//				case (320, 568):
+//					return "Simulator, iPhone 5" + (raw == "x86_64" ? "s" : "")
+//				case (375, 667): return "Simulator, iPhone 7"
+//				case (414, 736): return "Simulator, iPhone 7+"
+//				case (768, 1024):
+//					if raw == "x86_64" { return "Simulator, iPad air" }
+//					return "Simulator, iPad " + (scale == 1 ? "2" : "4")
+//				case (1024, 1366): return "Simulator, iPad Pro"
+//				default: return "Simulator, \(size.0)x\(size.1) @\(scale)x"
+//				}
+//
+//
+//			default: return Gestalt.convertRawDeviceTypeToModelName(raw) ?? raw
+//			}
+//		}()
 	
 		public static var isRunningUITests: Bool {
 			return ProcessInfo.processInfo.arguments.contains("-ui_testing")
