@@ -62,9 +62,11 @@ import Foundation
 				guard let key = child.label, key == keyPath else { continue }
 				
 				let keychainKey = key
-				if let value = change?[.newKey] as? String {
-					Keychain.instance.set(value, forKey: keychainKey)
-				} else {
+                if let value = change?[.newKey] as? String {
+                    Keychain.instance.set(value, forKey: keychainKey)
+                } else if let value = change?[.newKey] as? Int {
+                    Keychain.instance.set("\(value)", forKey: keychainKey)
+                } else {
 					Keychain.instance.delete(keychainKey)
 				}
 				Notification.postOnMainThread(name: self.notificationName(forKey: key))
