@@ -23,11 +23,13 @@ public extension UIView {
 	static var frontSafeAreaInsets: UIEdgeInsets {
 		if #available(iOS 13.0, *) {
 			return UIApplication.shared.currentScene?.frontWindow?.rootViewController?.view.safeAreaInsets ?? .zero
-		} else if #available(iOS 11.0, *) {
-			return UIApplication.shared.keyWindow?.rootViewController?.view.safeAreaInsets ?? .zero
-		} else {
-			return .zero
 		}
+        
+        if #available(iOS 11.0, *) {
+			return UIApplication.shared.keyWindow?.rootViewController?.view.safeAreaInsets ?? .zero
+		}
+        
+        return .zero
 	}
 
 	var viewController: UIViewController? {
