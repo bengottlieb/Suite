@@ -54,12 +54,16 @@ public extension TimeInterval {
 		}
 	}
 	
-	func durationWords(includingSeconds: Bool = true) -> String {
+	func durationWords(includingSeconds: Bool = true, abbreviated: Bool = false) -> String {
 		var components: [String] = []
 		
-		if hours != 0 { components.append(Pluralizer.instance.pluralize(hours, NSLocalizedString("hour", comment: "hour"))) }
-		if leftoverMinutes != 0 { components.append(Pluralizer.instance.pluralize(leftoverMinutes, NSLocalizedString("minute", comment: "minute"))) }
-		if includingSeconds, leftoverSeconds != 0 { components.append(Pluralizer.instance.pluralize(leftoverSeconds, NSLocalizedString("second", comment: "second"))) }
+		let hourString = abbreviated ? NSLocalizedString("hr", comment: "hr") : NSLocalizedString("hour", comment: "hour")
+		let minuteString = abbreviated ? NSLocalizedString("min", comment: "min") : NSLocalizedString("minute", comment: "minute")
+		let secondString = abbreviated ? NSLocalizedString("sec", comment: "sec") : NSLocalizedString("second", comment: "second")
+
+		if hours != 0 { components.append(Pluralizer.instance.pluralize(hours, hourString)) }
+		if leftoverMinutes != 0 { components.append(Pluralizer.instance.pluralize(leftoverMinutes, minuteString)) }
+		if includingSeconds, leftoverSeconds != 0 { components.append(Pluralizer.instance.pluralize(leftoverSeconds, secondString)) }
 		
 		return components.joined(separator: ", ")
 	}
