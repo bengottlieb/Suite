@@ -90,8 +90,10 @@ public class SoundEffect: Equatable {
 		if #available(iOS 10.0, iOSApplicationExtension 10.0, *) {
 			if !SoundEffect.hasMadeAmbient {
 				SoundEffect.hasMadeAmbient = true
-				try? AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
-				try? AVAudioSession.sharedInstance().setActive(true)
+                #if os(iOS) || os(watchOS)
+                    try? AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
+                    try? AVAudioSession.sharedInstance().setActive(true)
+                #endif
 			}
 		  }
 	 }
