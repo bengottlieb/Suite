@@ -122,3 +122,15 @@ public extension URL {
     }
 }
 #endif
+
+public extension Array where Element == URL {
+	func sortedChronologically(oldestFirst: Bool = false) -> [Element] {
+		self.sorted {
+			guard let d1 = $0.createdAt else { return oldestFirst }
+			guard let d2 = $1.createdAt else { return !oldestFirst }
+			
+			if oldestFirst { return d1 < d2 }
+			return d1 > d2
+		}
+	}
+}

@@ -49,4 +49,11 @@ public extension Date {
 		
 		return result
 	}
+	
+	var filesystemRepresentation: String {
+		let formatter = DateFormatter(format: "yyyy-MM-dd'T'HH;mm")
+		
+		return formatter.string(from: self)
+	}
+
 }
