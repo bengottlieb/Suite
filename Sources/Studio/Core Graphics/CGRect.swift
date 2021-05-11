@@ -27,8 +27,46 @@ extension CGRect {
 	#if os(iOS)
 		public typealias Placement = UIView.ContentMode
 	#else
-		public enum Placement { case scaleToFill, scaleAspectFit, scaleAspectFill, none, center, top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight }
+        public enum Placement: Int { case scaleToFill, scaleAspectFit, scaleAspectFill, none, center, top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight }
 	#endif
+}
+
+extension CGRect.Placement: Codable {
+    public enum PlacementError: Error { case invalidIntegerValue, invalidStringValue, noValue }
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let int = try? container.decode(Int.self) {
+            if let value = CGRect.Placement(rawValue: int) {
+                self = value
+            } else {
+                throw PlacementError.invalidIntegerValue
+            }
+        } else if let string = try? container.decode(String.self) {
+            switch string {
+            case "center": self = .center
+            case "top": self = .top
+            case "bottom": self = .bottom
+            case "left": self = .left
+            case "right": self = .right
+            case "topLeft": self = .topLeft
+            case "topRight": self = .topRight
+            case "bottomLeft": self = .bottomLeft
+            case "bottomRight": self = .bottomRight
+            default: throw PlacementError.invalidStringValue
+            }
+        } else {
+            throw PlacementError.noValue
+        }
+
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        
+        try container.encode(rawValue)
+    }
+    
+    
 }
 
 public extension CGRect.Placement {
