@@ -1,13 +1,14 @@
 //
-//  SwiftUIView.swift
+//  SwipeActions.swift
 //  
 //
 //  Created by Ben Gottlieb on 5/14/21.
 //
 
+#if canImport(Combine)
 import SwiftUI
 
-@available(macOS 10.15, iOS 13.0, *)
+@available(macOS 10.15, iOS 13.0, watchOS 7.0, *)
 public extension View {
     func addSwipeActions<TrailingViews: View>(trailing: TrailingViews, id: String) -> some View {
         SwipeActions(content: self, leading: EmptyView(), trailing: trailing, id: id)
@@ -18,7 +19,7 @@ private var currentCellCollapseBlock: (() -> Void)?
 private var currentCellID: String?
 private var activeCellID: String?
 
-@available(macOS 10.15, iOS 13.0, *)
+@available(macOS 10.15, iOS 13.0, watchOS 7.0, *)
 struct SwipeActions<Content: View, LeadingViews: View, TrailingViews: View>: View {
     let content: Content
     let leading: LeadingViews
@@ -131,24 +132,27 @@ struct SwipeActions<Content: View, LeadingViews: View, TrailingViews: View>: Vie
     }
 }
 
-@available(macOS 10.15, iOS 13.0, *)
-struct SwipeActions_Previews: PreviewProvider {
-    struct Row: View {
-        var body: some View {
-            ZStack() {
-                Text("My Row")
-                VStack() {
-                    Spacer()
-                    Rectangle().fill(Color.gray)
-                        .frame(height: 1)
-                }
-            }
-            .frame(height: 50)
-            .background(Color.systemBackground)
-        }
-    }
-    
-    static var previews: some View {
-        SwipeActions(content: Row(), leading: EmptyView(), trailing: Button("Delete", action: { print("Delete") }).padding().frame(maxHeight: .infinity).backgroundColor(.red).foregroundColor(.white), id: "none").frame(height: 50)
-    }
-}
+#if os(iOS) || os(macOS)
+	@available(macOS 10.15, iOS 13.0, *)
+	struct SwipeActions_Previews: PreviewProvider {
+			struct Row: View {
+					var body: some View {
+							ZStack() {
+									Text("My Row")
+									VStack() {
+											Spacer()
+											Rectangle().fill(Color.gray)
+													.frame(height: 1)
+									}
+							}
+							.frame(height: 50)
+							.background(Color.systemBackground)
+					}
+			}
+			
+			static var previews: some View {
+					SwipeActions(content: Row(), leading: EmptyView(), trailing: Button("Delete", action: { print("Delete") }).padding().frame(maxHeight: .infinity).backgroundColor(.red).foregroundColor(.white), id: "none").frame(height: 50)
+			}
+	}
+#endif
+#endif
