@@ -5,7 +5,7 @@
 //  Created by Ben Gottlieb on 12/7/19.
 //
 
-#if canImport(UIKit) && !os(watchOS)
+#if canImport(UIKit)
 import UIKit
 
 public enum ImageFormat: String { case PNG = "png", JPEG = "jpeg"
@@ -18,7 +18,7 @@ public enum ImageFormat: String { case PNG = "png", JPEG = "jpeg"
 }
 
 
-@available(iOS 13.0, *)
+@available(iOS 13.0, watchOS 6.0, *)
 public extension UIImage {
 	convenience init?(_ sfsymbol: SFSymbol) {
 		self.init(systemName: sfsymbol.rawValue)
@@ -44,6 +44,7 @@ public extension UIImage {
 		self.init(data: data)
 	}
 	
+	#if os(iOS)
 	class func create(size: CGSize, closure: (CGContext) -> Void) -> UIImage? {
 		if #available(iOS 10.0, iOSApplicationExtension 10.0, *) {
 			return UIGraphicsImageRenderer(size: size).image { renderer in
@@ -67,6 +68,7 @@ public extension UIImage {
 			return image
 		}
 	}
+	#endif
 	
 	func tintedImage(tint: UIColor) -> UIImage? {
 		let frame = self.size.rect
@@ -86,7 +88,7 @@ public extension UIImage {
         
         UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
         self.draw(in: frame)
-        overlay.resizedImage(size: self.size, trimmed: true)?.draw(in: frame)
+        overlay.resized(to: self.size, trimmed: true)?.draw(in: frame)
         let result = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
@@ -101,7 +103,8 @@ public extension UIImage {
 		return self
 	}
 	
-	func resizedImage(size: CGSize, trimmed: Bool = true, changeScaleTo: CGFloat? = nil) -> UIImage? {
+	func resized(to size: CGSize?, trimmed: Bool = true, changeScaleTo: CGFloat? = nil) -> UIImage? {
+		guard let size = size else { return self }
 		var frame = self.size.rect.within(limit: size.rect, placed: .scaleAspectFit).round()
 
 		if frame.origin.x > 0 {
@@ -112,7 +115,12 @@ public extension UIImage {
 			if (!trimmed) { frame.size.height = size.height; }
 		}
 		
-		let scale = changeScaleTo ?? UIScreen.main.scale
+		#if os(iOS)
+			let scale = changeScaleTo ?? UIScreen.main.scale
+		#else
+			let scale = changeScaleTo ?? 2
+		#endif
+		
 		UIGraphicsBeginImageContextWithOptions(frame.size, false, scale)
 		
 		self.draw(in: frame)
@@ -138,6 +146,7 @@ public extension UIImage {
 
 }
 
+#if os(iOS)
 @available(iOS 10.0, *)
 public extension UIImage {
 	static func randomEmojiImage(face: Bool = false, ofSize size: CGSize, background color: UIColor = .white) -> UIImage? {
@@ -150,4 +159,5 @@ public extension UIImage {
 		}
 	}
 }
+#endif
 #endif
