@@ -60,14 +60,18 @@ public extension UIViewController {
 }
 
 public extension UIViewController {
-	func share(something: [Any], fromItem barButtonItem: UIBarButtonItem? = nil, fromView: UIView? = nil) {
+	func share(something: [Any], fromItem barButtonItem: UIBarButtonItem? = nil, fromView: UIView? = nil, position: CGRect.Placement = .topRight) {
 		guard !something.isEmpty else { return }
 		let activityVC = UIActivityViewController(activityItems: something, applicationActivities: nil)
 		if let barButtonItem = barButtonItem {
 			activityVC.popoverPresentationController?.barButtonItem = barButtonItem
-		} else if let view = view {
+		} else if let view = fromView {
 			activityVC.popoverPresentationController?.sourceView = view
 			activityVC.popoverPresentationController?.sourceRect = view.bounds
+		} else if let root = UIApplication.shared.currentWindow?.rootViewController?.presentedest.view {
+			activityVC.popoverPresentationController?.sourceView = root
+			activityVC.popoverPresentationController?.sourceRect = CGRect.zero.within(limit: root.frame, placed: position)
+			
 		}
 		self.present(activityVC, animated: true, completion: nil)
 	}
