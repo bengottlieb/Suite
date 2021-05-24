@@ -3,22 +3,22 @@ import SystemConfiguration
 import Foundation
 
 #if canImport(UIKit) && !os(watchOS)
-	import UIKit
+import UIKit
 #endif
 
 #if canImport(Combine)
-	import SwiftUI
+import SwiftUI
 
-	@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
-	extension Reachability: ObservableObject {
-		func objectChanged() {
-			self.objectWillChange.send()
-		}
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+extension Reachability: ObservableObject {
+	func objectChanged() {
+		self.objectWillChange.send()
 	}
+}
 #else
 extension Reachability {
 	func objectChanged() {
-	
+		
 	}
 }
 #endif
@@ -71,17 +71,17 @@ public class Reachability {
 	}
 	
 	#if canImport(UIKit) && !os(watchOS)
-		public var alertDisplayController: UIViewController?
-		public func showOfflineWarning(in controller: UIViewController? = nil) {
-			guard self.isOffline, let presenter = controller ?? self.alertDisplayController else { return }
-			let alert = UIAlertController(title: NSLocalizedString("Offline", comment: "Offline"), message: NSLocalizedString("You're not connected to the internet.", comment: "You're not connected to the internet."))
-			
-			presenter.presentedest.present(alert, animated: true, completion: nil)
-		}
-	#else
-		public func showOfflineWarning() {
+	public var alertDisplayController: UIViewController?
+	public func showOfflineWarning(in controller: UIViewController? = nil) {
+		guard self.isOffline, let presenter = controller ?? self.alertDisplayController else { return }
+		let alert = UIAlertController(title: NSLocalizedString("Offline", comment: "Offline"), message: NSLocalizedString("You're not connected to the internet.", comment: "You're not connected to the internet."))
 		
-		}
+		presenter.presentedest.present(alert, animated: true, completion: nil)
+	}
+	#else
+	public func showOfflineWarning() {
+		
+	}
 	#endif
 	
 	public var allowsCellularConnection: Bool
@@ -147,29 +147,26 @@ public extension Reachability {
 				let unmanagedWeakifiedReachability = Unmanaged<ReachabilityWeakifier>.fromOpaque(info)
 				_ = unmanagedWeakifiedReachability.retain()
 				return UnsafeRawPointer(unmanagedWeakifiedReachability.toOpaque())
-		},
+			},
 			release: { info in
 				let unmanagedWeakifiedReachability = Unmanaged<ReachabilityWeakifier>.fromOpaque(info)
 				unmanagedWeakifiedReachability.release()
-		},
+			},
 			copyDescription: { info in
 				let unmanagedWeakifiedReachability = Unmanaged<ReachabilityWeakifier>.fromOpaque(info)
 				let weakifiedReachability = unmanagedWeakifiedReachability.takeUnretainedValue()
 				let description = weakifiedReachability.reachability?.description ?? "nil"
 				return Unmanaged.passRetained(description as CFString)
-		}
+			}
 		)
 		
-        SCNetworkReachabilityScheduleWithRunLoop(reachabilityRef, CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue)
+		SCNetworkReachabilityScheduleWithRunLoop(reachabilityRef, CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue)
 		if !SCNetworkReachabilitySetCallback(reachabilityRef, callback, &context) {
 			stopNotifier()
 			return self
 		}
 		
-		if !SCNetworkReachabilitySetDispatchQueue(reachabilityRef, reachabilitySerialQueue) {
-			stopNotifier()
-			return self
-		}
+		SCNetworkReachabilitySetDispatchQueue(reachabilityRef, reachabilitySerialQueue)
 		
 		setReachabilityFlags()
 		
@@ -219,31 +216,31 @@ extension SCNetworkReachabilityFlags {
 	var connection: Connection {
 		guard isReachableFlagSet else { return .unavailable }
 		#if targetEnvironment(simulator)
-			return .wifi
+		return .wifi
 		#else
-			var connection = Connection.unavailable
-			
-			if !isConnectionRequiredFlagSet {
-				connection = .wifi
-			}
-			
-			if isConnectionOnTrafficOrDemandFlagSet, !isInterventionRequiredFlagSet {
-				connection = .wifi
-			}
-			
-			if isOnWWANFlagSet {
-				connection = .cellular
-			}
-			
-			return connection
+		var connection = Connection.unavailable
+		
+		if !isConnectionRequiredFlagSet {
+			connection = .wifi
+		}
+		
+		if isConnectionOnTrafficOrDemandFlagSet, !isInterventionRequiredFlagSet {
+			connection = .wifi
+		}
+		
+		if isOnWWANFlagSet {
+			connection = .cellular
+		}
+		
+		return connection
 		#endif
 	}
 	
 	var isOnWWANFlagSet: Bool {
 		#if os(iOS)
-			return contains(.isWWAN)
+		return contains(.isWWAN)
 		#else
-			return false
+		return false
 		#endif
 	}
 	var isReachableFlagSet: Bool {
