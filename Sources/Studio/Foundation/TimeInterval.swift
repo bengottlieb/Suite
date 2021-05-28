@@ -28,7 +28,11 @@ public extension TimeInterval {
 
 	enum DurationStyle { case hours, minutes, seconds, centiseconds, milliseconds }
 	
-	func durationString(style: DurationStyle = .seconds, showLeadingZero: Bool = false) -> String {
+	func durationString(style: DurationStyle = .seconds, showLeadingZero: Bool = false, roundUp: Bool = true) -> String {
+		if roundUp {
+			return self.rounded(.up).durationString(style: style, showLeadingZero: showLeadingZero, roundUp: false)
+		}
+
 		var leading = showLeadingZero ? "%02d" : "%d"
 		if self < 0 { leading = "-" + leading }
 
@@ -37,13 +41,10 @@ public extension TimeInterval {
 			return String(format: leading, hours)
 			
 		case .minutes:
-			let minutes = abs(Int((self / .minute).rounded(.up)))
 			return String(format: leading + ":%02d", hours, minutes % 60)
 
 		case .seconds:
-			let seconds = abs(Int(self.rounded(.up))) % 60
-			let minutes = seconds == 0 ? abs(Int((self / .minute).rounded(.up))) : self.minutes
-			if hours > 0 { return String(format: leading + ":%02d:%02d", hours, minutes % 60, seconds) }
+			if hours > 0 { return String(format: leading + ":%02d:%02d", hours, minutes % 60, seconds % 60) }
 			return String(format: leading + ":%02d", minutes % 60, seconds % 60)
 
 		case .centiseconds:
