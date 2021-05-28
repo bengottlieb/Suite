@@ -41,8 +41,9 @@ public extension TimeInterval {
 			return String(format: leading + ":%02d", hours, minutes % 60)
 
 		case .seconds:
-			let seconds = abs(Int(self.rounded(.up)))
-			if hours > 0 { return String(format: leading + ":%02d:%02d", hours, minutes % 60, seconds % 60) }
+			let seconds = abs(Int(self.rounded(.up))) % 60
+			let minutes = seconds == 0 ? abs(Int((self / .minute).rounded(.up))) : self.minutes
+			if hours > 0 { return String(format: leading + ":%02d:%02d", hours, minutes % 60, seconds) }
 			return String(format: leading + ":%02d", minutes % 60, seconds % 60)
 
 		case .centiseconds:
