@@ -33,6 +33,10 @@ struct TouchRepeatingView<Content: View>: View {
 	var body: some View {
 		content
 			.touchActions(touchDown: touchDown, touchUp: touchUp)
+			.onDisappear() {
+				timer?.invalidate()
+				timer = nil
+			}
 	}
 	
 	func touchDown() {
