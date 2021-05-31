@@ -59,12 +59,20 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	}
 
 	public var body: some View {
+		#if os(iOS)
+			rawField
+				.keyboardType(.decimalPad)
+		#else
+			rawField
+		#endif
+	}
+	
+	var rawField: some View {
 		TextField(placeholder, text: $text.onChange { newText in
 			if let newNumber = formatter.number(from: newText) as? Number {
 				number = newNumber
 			}
 		})
-			
 	}
 }
 

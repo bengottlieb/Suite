@@ -114,4 +114,22 @@ public extension FileManager {
 		#endif
 		
 	}
+
+	static func documentURL(at path: String) -> URL {
+		let url = documentsDirectory.appendingPathComponent(path)
+		try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
+		return url
+	}
+
+	static func cacheURL(at path: String) -> URL {
+		let url = cachesDirectory.appendingPathComponent(path)
+		try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
+		return url
+	}
+
+	static func libraryURL(at path: String) -> URL {
+		let url = libraryDirectory.appendingPathComponent(path)
+		try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
+		return url
+	}
 }
