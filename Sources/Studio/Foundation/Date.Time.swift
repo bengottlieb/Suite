@@ -7,6 +7,12 @@
 
 import Foundation
 
+#if canImport(SwiftUI)
+extension Date.Time: Identifiable {
+    public var id: TimeInterval { timeInterval }
+}
+#endif
+
 public extension Date {
 	struct Time: Codable, Comparable, Equatable, CustomStringConvertible {
 		public let hour: Int
@@ -27,6 +33,20 @@ public extension Date {
 		public static func ==(lhs: Time, rhs: Time) -> Bool {
 			lhs.timeInterval == rhs.timeInterval
 		}
+
+        public func allHours(until end: Date.Time) -> [Date.Time] {
+            var times: [Date.Time] = []
+            
+            if minute == 0 {
+                times.append(Date.Time(hour: hour, minute: 0))
+            }
+            
+            for hour in (hour + 1)...(end.hour) {
+                times.append(Date.Time(hour: hour, minute: 0))
+            }
+            
+            return times
+        }
 		
 		public func byAdding(hours: Int = 0, minutes: Int = 0, seconds: TimeInterval = 0) -> Time {
 			var second = self.second + seconds
