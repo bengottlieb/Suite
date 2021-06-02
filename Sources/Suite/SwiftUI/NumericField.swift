@@ -47,15 +47,17 @@ extension NSNumber {
 public struct NumericField<Number: NumericFieldNumber>: View {
 	public var placeholder: String
 	@Binding public var number: Number
-	@State var text: String
 	public var formatter: NumberFormatter
-	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil) {
+	public var onChange: (Bool) -> Void
+	public var onCommit: () -> Void
+	
+	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
 		self.placeholder = placeholder
 		self._number = number
+		self.onCommit = onCommit
+		self.onChange = onChange
 		
-		let actualFormatter = formatter ?? NumberFormatter.formatter(for: number.wrappedValue)
-		self.formatter = actualFormatter
-		_text = State(initialValue: actualFormatter.string(from: NSNumber(value: number.wrappedValue)) ?? "")
+		self.formatter = formatter ?? NumberFormatter.formatter(for: number.wrappedValue)
 	}
 
 	public var body: some View {
@@ -67,12 +69,18 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 		#endif
 	}
 	
-	var rawField: some View {
-		TextField(placeholder, text: $text.onChange { newText in
+	var textBinding: Binding<String> {
+		Binding<String>(get: {
+			formatter.string(from: NSNumber(value: number)) ?? ""
+		}) { newText in
 			if let newNumber = formatter.number(from: newText) as? Number {
 				number = newNumber
 			}
-		})
+		}
+	}
+	
+	var rawField: some View {
+		TextField(placeholder, text: textBinding, onEditingChanged: onChange, onCommit: onCommit)
 	}
 }
 
