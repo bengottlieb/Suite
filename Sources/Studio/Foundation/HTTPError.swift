@@ -27,6 +27,19 @@ public enum HTTPError: Error, LocalizedError {
         default: return false
         }
     }
+
+	public var data: Data? {
+		switch self {
+		case .nonHTTPResponse(_, let data): return data
+		case .requestFailed(_, _, let data): return data
+		case .redirectError(_, _, let data): return data
+		case .serverError(_, _, let data): return data
+		case .networkError: return nil
+		case .unknownError(_, _, let data): return data
+		case .decodingError: return nil
+		case .offline: return nil
+		}
+	}
     
     public var errorDescription: String? {
         switch self {
