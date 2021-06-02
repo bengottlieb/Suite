@@ -54,7 +54,7 @@ public extension Publisher where Output == Data, Failure == HTTPError {
 				if error is DecodingError {
 					return HTTPError.decodingError(nil, error as! DecodingError)
 				} else {
-					return error as! HTTPError			// we're already restricting errors to HTTPError
+					return error as? HTTPError ?? .unknownError(nil, 0, nil)			// we're already restricting errors to HTTPError
 				}
 			}
 			.eraseToAnyPublisher()
