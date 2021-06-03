@@ -48,14 +48,16 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	public var placeholder: String
 	@Binding public var number: Number
 	public var formatter: NumberFormatter
+    public var useKeypad = true
 	public var onChange: (Bool) -> Void
 	public var onCommit: () -> Void
 	
-	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
+    public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
 		self.placeholder = placeholder
 		self._number = number
 		self.onCommit = onCommit
 		self.onChange = onChange
+        self.useKeypad = useKeypad
 		
 		self.formatter = formatter ?? NumberFormatter.formatter(for: number.wrappedValue)
 	}
@@ -63,7 +65,7 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	public var body: some View {
 		#if os(iOS)
 			rawField
-				.keyboardType(.decimalPad)
+                .keyboardType(useKeypad ? .decimalPad : .asciiCapable)
 		#else
 			rawField
 		#endif
