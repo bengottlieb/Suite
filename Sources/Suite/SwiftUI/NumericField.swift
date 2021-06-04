@@ -75,7 +75,9 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 		Binding<String>(get: {
 			formatter.string(from: NSNumber(value: number)) ?? ""
 		}) { newText in
-			if let newNumber = formatter.number(from: newText) as? Number {
+            let radix = Locale.current.decimalSeparator ?? "."
+            let numbersOnly = newText.filter { $0.isNumber || $0 == radix.first }
+			if let newNumber = formatter.number(from: String(numbersOnly)) as? Number {
 				number = newNumber
 			}
 		}
