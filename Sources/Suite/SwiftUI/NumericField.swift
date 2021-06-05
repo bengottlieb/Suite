@@ -48,43 +48,57 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	public var placeholder: String
 	@Binding public var number: Number
 	public var formatter: NumberFormatter
-    public var useKeypad = true
+	public var useKeypad = true
 	public var onChange: (Bool) -> Void
 	public var onCommit: () -> Void
-	
-    public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
+	@State var text = ""
+	let radix = Locale.current.decimalSeparator?.first ?? "."
+	let groupSeparator = Locale.current.groupingSeparator?.first ?? ","
+
+	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
 		self.placeholder = placeholder
 		self._number = number
 		self.onCommit = onCommit
 		self.onChange = onChange
-        self.useKeypad = useKeypad
+		self.useKeypad = useKeypad
 		
 		self.formatter = formatter ?? NumberFormatter.formatter(for: number.wrappedValue)
-	}
-
-	public var body: some View {
-		#if os(iOS)
-			rawField
-                .keyboardType(useKeypad ? .decimalPad : .asciiCapable)
-		#else
-			rawField
-		#endif
+		_text = State(initialValue: self.formatter.string(from: NSNumber(value: number.wrappedValue)) ?? "")
 	}
 	
-	var textBinding: Binding<String> {
-		Binding<String>(get: {
-			formatter.string(from: NSNumber(value: number)) ?? ""
-		}) { newText in
-            let radix = Locale.current.decimalSeparator ?? "."
-            let numbersOnly = newText.filter { $0.isNumber || $0 == radix.first }
+	public var body: some View {
+		#if os(iOS)
+		rawField
+			.keyboardType(useKeypad ? .decimalPad : .asciiCapable)
+		#else
+		rawField
+		#endif
+	}
+//
+//	var textBinding: Binding<String> {
+//		Binding<String>(get: {
+//			formatter.string(from: NSNumber(value: number)) ?? ""
+//		}) { newText in
+//			let numbersOnly = newText.filter { $0.isNumber || $0 == radix.first }
+//			if let newNumber = formatter.number(from: String(numbersOnly)) as? Number {
+//				number = newNumber
+//			}
+//		}
+//	}
+	
+	var rawField: some View {
+		TextField(placeholder, text: $text.willChange { newText in
+			let oldText = text
+			let noLetters = newText.filter { $0.isNumber || $0 == radix || $0 == groupSeparator }
+			if noLetters != newText {
+				DispatchQueue.main.async { text = oldText }
+				return
+			}
+			let numbersOnly = newText.filter { $0.isNumber || $0 == radix }
 			if let newNumber = formatter.number(from: String(numbersOnly)) as? Number {
 				number = newNumber
 			}
-		}
-	}
-	
-	var rawField: some View {
-		TextField(placeholder, text: textBinding, onEditingChanged: onChange, onCommit: onCommit)
+		}, onEditingChanged: onChange, onCommit: onCommit)
 	}
 }
 

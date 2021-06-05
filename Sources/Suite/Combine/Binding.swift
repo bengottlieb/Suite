@@ -18,6 +18,13 @@ public extension Binding {
 			completion(newValue)
 		})
 	}
+
+	func willChange(_ completion: @escaping (Value) -> Void) -> Binding<Value> {
+		Binding<Value>(get: { self.wrappedValue }, set: { newValue in
+			completion(newValue)
+			self.wrappedValue = newValue
+		})
+	}
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
