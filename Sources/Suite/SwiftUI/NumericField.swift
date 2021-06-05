@@ -11,11 +11,19 @@
 import SwiftUI
 import CoreGraphics
 
-public protocol NumericFieldNumber { }
+public protocol NumericFieldNumber {
+	func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool
+}
 
-extension Double: NumericFieldNumber {}
-extension Int: NumericFieldNumber {}
-extension Float: NumericFieldNumber {}
+extension Double: NumericFieldNumber {
+	public func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool { self < (number as? Double ?? 0) }
+}
+extension Int: NumericFieldNumber {
+	public func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool { self < (number as? Int ?? 0) }
+}
+extension Float: NumericFieldNumber {
+	public func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool { self < (number as? Float ?? 0) }
+}
 
 extension NSNumber {
 	convenience init(value: NumericFieldNumber) {
@@ -51,16 +59,20 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	public var useKeypad = true
 	public var onChange: (Bool) -> Void
 	public var onCommit: () -> Void
+	let minimum: Number?
+	let maximum: Number?
 	@State var text = ""
 	let radix = Locale.current.decimalSeparator?.first ?? "."
 	let groupSeparator = Locale.current.groupingSeparator?.first ?? ","
 
-	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
+	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, maximum: Number? = nil, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
 		self.placeholder = placeholder
 		self._number = number
 		self.onCommit = onCommit
 		self.onChange = onChange
 		self.useKeypad = useKeypad
+		self.minimum = minimum
+		self.maximum = maximum
 		
 		self.formatter = formatter ?? NumberFormatter.formatter(for: number.wrappedValue)
 		_text = State(initialValue: self.formatter.string(from: NSNumber(value: number.wrappedValue)) ?? "")
@@ -96,6 +108,16 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 			}
 			let numbersOnly = newText.filter { $0.isNumber || $0 == radix }
 			if let newNumber = formatter.number(from: String(numbersOnly)) as? Number {
+				if let min = minimum, newNumber.isLessThan(numericFieldNumber: min) {
+					DispatchQueue.main.async { text = oldText }
+					return
+				}
+
+				if let max = maximum, max.isLessThan(numericFieldNumber: newNumber) {
+					DispatchQueue.main.async { text = oldText }
+					return
+				}
+
 				number = newNumber
 			}
 		}, onEditingChanged: onChange, onCommit: onCommit)
