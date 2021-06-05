@@ -9,6 +9,10 @@
 import UIKit
 
 public extension UIView {
+    static func resignFirstResponder() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+
 	func toImage() -> UIImage? {
 		let rect = self.bounds
         UIGraphicsBeginImageContextWithOptions(rect.size, false, UIScreen.main.scale)
