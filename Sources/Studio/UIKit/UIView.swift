@@ -9,7 +9,7 @@
 import UIKit
 
 public extension UIView {
-    static func resignFirstResponder() {
+    static func resignAllFirstResponders() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 
