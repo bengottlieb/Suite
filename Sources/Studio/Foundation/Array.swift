@@ -105,3 +105,9 @@ public extension Collection {
 		return groups.map { $0.1 }
 	}
 }
+
+public extension Array where Element: Equatable {
+	func removing(_ collection: [Element]) -> [Element] {
+		self.filter { !collection.contains($0) }
+	}
+}
