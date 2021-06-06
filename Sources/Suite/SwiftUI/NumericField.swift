@@ -13,16 +13,20 @@ import CoreGraphics
 
 public protocol NumericFieldNumber {
 	func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool
+	func isEqualTo(numericFieldNumber number: NumericFieldNumber?) -> Bool
 }
 
 extension Double: NumericFieldNumber {
 	public func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool { self < (number as? Double ?? 0) }
+	public func isEqualTo(numericFieldNumber number: NumericFieldNumber?) -> Bool { self == (number as? Double ?? 0) }
 }
 extension Int: NumericFieldNumber {
 	public func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool { self < (number as? Int ?? 0) }
+	public func isEqualTo(numericFieldNumber number: NumericFieldNumber?) -> Bool { self == (number as? Int ?? 0) }
 }
 extension Float: NumericFieldNumber {
 	public func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool { self < (number as? Float ?? 0) }
+	public func isEqualTo(numericFieldNumber number: NumericFieldNumber?) -> Bool { self == (number as? Float ?? 0) }
 }
 
 extension NSNumber {
@@ -62,6 +66,7 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	let minimum: Number?
 	let maximum: Number?
 	@State var text = ""
+	
 	let radix = Locale.current.decimalSeparator?.first ?? "."
 	let groupSeparator = Locale.current.groupingSeparator?.first ?? ","
 
@@ -86,28 +91,37 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 		rawField
 		#endif
 	}
-//
-//	var textBinding: Binding<String> {
-//		Binding<String>(get: {
-//			formatter.string(from: NSNumber(value: number)) ?? ""
-//		}) { newText in
-//			let numbersOnly = newText.filter { $0.isNumber || $0 == radix.first }
-//			if let newNumber = formatter.number(from: String(numbersOnly)) as? Number {
-//				number = newNumber
-//			}
-//		}
-//	}
+
+	var textBinding: Binding<String> {
+		Binding<String>(get: {
+			if !number.isEqualTo(numericFieldNumber: parsedNumber(from: text)) {
+				DispatchQueue.main.async {
+					self.text = self.formatter.string(from: NSNumber(value: number)) ?? ""
+				}
+			}
+			return self.text
+		}) { newText in
+			self.text = newText
+		}
+	}
+	
+	func parsedNumber(from newText: String) -> Number? {
+		let numbersOnly = newText.filter { $0.isNumber || $0 == radix }
+		if let newNumber = formatter.number(from: String(numbersOnly)) as? Number {
+			return newNumber
+		}
+		return nil
+	}
 	
 	var rawField: some View {
-		TextField(placeholder, text: $text.willChange { newText in
+		TextField(placeholder, text: textBinding.willChange { newText in
 			let oldText = text
 			let noLetters = newText.filter { $0.isNumber || $0 == radix || $0 == groupSeparator }
 			if noLetters != newText {
 				DispatchQueue.main.async { text = oldText }
 				return
 			}
-			let numbersOnly = newText.filter { $0.isNumber || $0 == radix }
-			if let newNumber = formatter.number(from: String(numbersOnly)) as? Number {
+			if let newNumber = parsedNumber(from: newText) {
 				if let min = minimum, newNumber.isLessThan(numericFieldNumber: min) {
 					DispatchQueue.main.async { text = oldText }
 					return
