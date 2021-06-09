@@ -112,24 +112,6 @@ public extension String {
 	}
 }
 
-public func +(left: String?, right: String) -> String {
-	return (left ?? "") + right
-}
-
-public func +(left: String, right: String?) -> String {
-	return left + (right ?? "")
-}
-
-public func ==(left: String, right: String?) -> Bool {
-	if right == nil { return false }
-	return left == right!
-}
-
-public func ==(left: String?, right: String) -> Bool {
-	if left == nil { return false }
-	return left! == right
-}
-
 public extension String {
 	static func randomEmoji(facesOnly: Bool = false) -> String {
 		var range = [UInt32](0x1F601...0x1F64F)
@@ -137,6 +119,25 @@ public extension String {
 		let ascii = range.randomElement()!
 		return UnicodeScalar(ascii)?.description ?? "🌈"
 	}
+
+	static func +(left: String?, right: String) -> String {
+		return (left ?? "") + right
+	}
+
+	static func +(left: String, right: String?) -> String {
+		return left + (right ?? "")
+	}
+
+	static func ==(left: String, right: String?) -> Bool {
+		if right == nil { return false }
+		return left == right!
+	}
+
+	static func ==(left: String?, right: String) -> Bool {
+		if left == nil { return false }
+		return left! == right
+	}
+
 }
 
 public extension Array where Element == String {

@@ -14,19 +14,23 @@ import CoreGraphics
 public protocol NumericFieldNumber {
 	func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool
 	func isEqualTo(numericFieldNumber number: NumericFieldNumber?) -> Bool
+	mutating func zeroOut()
 }
 
 extension Double: NumericFieldNumber {
 	public func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool { self < (number as? Double ?? 0) }
 	public func isEqualTo(numericFieldNumber number: NumericFieldNumber?) -> Bool { self == (number as? Double ?? 0) }
+	mutating public func zeroOut() { self = 0 }
 }
 extension Int: NumericFieldNumber {
 	public func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool { self < (number as? Int ?? 0) }
 	public func isEqualTo(numericFieldNumber number: NumericFieldNumber?) -> Bool { self == (number as? Int ?? 0) }
+	mutating public func zeroOut() { self = 0 }
 }
 extension Float: NumericFieldNumber {
 	public func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool { self < (number as? Float ?? 0) }
 	public func isEqualTo(numericFieldNumber number: NumericFieldNumber?) -> Bool { self == (number as? Float ?? 0) }
+	mutating public func zeroOut() { self = 0 }
 }
 
 extension NSNumber {
@@ -115,6 +119,10 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	
 	var rawField: some View {
 		TextField(placeholder, text: textBinding.willChange { newText in
+			if newText.isEmpty {
+				number.zeroOut()
+				return
+			}
 			let oldText = text
 			let noLetters = newText.filter { $0.isNumber || $0 == radix || $0 == groupSeparator }
 			if noLetters != newText {
