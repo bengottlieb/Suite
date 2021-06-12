@@ -8,7 +8,7 @@
 import Foundation
 
 extension Optional where Wrapped == URL {
-	public var absoluteString: String { self?.absoluteString ?? "Missing URL" }
+	public func absoluteString(replacement: String? = "Missing URL") -> String { self?.absoluteString ?? replacement ?? "" }
 }
 
 public enum HTTPError: Error, LocalizedError {
@@ -43,19 +43,34 @@ public enum HTTPError: Error, LocalizedError {
     
     public var errorDescription: String? {
         switch self {
-		  case .nonHTTPResponse(let url, let data): return "Non HTTP Response: \(url.absoluteString): \(String(data: data, encoding: .utf8) ?? "--")"
+		  case .nonHTTPResponse(let url, let data): return "Non HTTP Response: \(url.absoluteString(replacement: nil)): \(String(data: data, encoding: .utf8) ?? "--")"
         case .offline: return "The connection appears to be offline"
-        case .requestFailed(let url, let code, let data): return prettyString("Request failed", url, code, data)
-        case .redirectError(let url, let code, let data): return prettyString("Request failed", url, code, data)
-        case .serverError(let url, let code, let data): return prettyString("Request failed", url, code, data)
-        case .unknownError(let url, let code, let data): return prettyString("Request failed", url, code, data)
-		case .networkError(let url, let err): return url.absoluteString + ": " + err.localizedDescription
-        case .decodingError(let url, let err): return url.absoluteString + ": " + err.localizedDescription
+        case .requestFailed(_, let code, let data): return prettyString("Request failed", nil, code, data)
+        case .redirectError(_, let code, let data): return prettyString("Request failed", nil, code, data)
+        case .serverError(_, let code, let data): return prettyString("Request failed", nil, code, data)
+        case .unknownError(_, let code, let data): return prettyString("Request failed", nil, code, data)
+		  case .networkError(_, let err): return err.localizedDescription
+        case .decodingError(_, let err): return err.localizedDescription
         }
     }
+	
+	public var failureReason: String? {
+		switch self {
+		case .nonHTTPResponse(let url, let data): return "Non HTTP Response: \(url.absoluteString()): \(String(data: data, encoding: .utf8) ?? "--")"
+		case .offline: return "The connection appears to be offline"
+		case .requestFailed(let url, let code, let data): return prettyString("Request failed", url, code, data)
+		case .redirectError(let url, let code, let data): return prettyString("Request failed", url, code, data)
+		case .serverError(let url, let code, let data): return prettyString("Request failed", url, code, data)
+		case .unknownError(let url, let code, let data): return prettyString("Request failed", url, code, data)
+	 case .networkError(let url, let err): return url.absoluteString() + ": " + err.localizedDescription
+		case .decodingError(let url, let err): return url.absoluteString() + ": " + err.localizedDescription
+		}
+	}
+
 	func prettyString(_ title: String, _ url: URL?, _ code: Int, _ data: Data?) -> String {
-		if let data = data, let string = String(data: data, encoding: .utf8) { return "\(url.absoluteString): \(title) (\(code)): \(string)"}
-		return "\(url.absoluteString): \(title) (\(code))"
+		let prefix = url == nil ? "" : "\(url.absoluteString()): "
+		if let data = data, let string = String(data: data, encoding: .utf8) { return "\(prefix)\(title) (\(code)): \(string)"}
+		return "\(prefix)\(title) (\(code))"
     }
 
     public var isRetriable: Bool {
