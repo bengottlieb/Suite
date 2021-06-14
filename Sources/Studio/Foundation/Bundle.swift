@@ -36,6 +36,18 @@ public extension Bundle {
 		return Directory(bundle: self, name: named, extension: filteredFor)
 	}
 	
+	func data(named: String, extension ext: String? = nil) -> Data? {
+		guard let url = url(forResource: named, withExtension: ext) else { return nil }
+		
+		return try? Data(contentsOf: url)
+	}
+	
+	func decoded<Type: Decodable>(named: String, extension ext: String? = nil, decoder: JSONDecoder = .init()) -> Type? {
+		guard let data = data(named: named, extension: ext) else { return nil }
+		
+		return try? decoder.decode(Type.self, from: data)
+	}
+	
 	struct Directory {
 		public let urls: [URL]
 		init?(bundle: Bundle, name: String, extension ext: String? = nil) {

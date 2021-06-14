@@ -135,7 +135,6 @@ public extension CGRect {
 		let child = self
 		var newSize = self.size
 		var newRect = (child.width < parent.width && child.height < parent.height) ? child : child.size.scaled(within: parent.size).rect
-		var delta: CGFloat = 0.0
 
 		newRect.origin = parent.origin
 		
@@ -143,31 +142,22 @@ public extension CGRect {
 		case .scaleToFill: return parent
 		case .scaleAspectFill:
 			newRect = parent
-			newSize = child.size.scaled(within: parent.size)
-			if (newSize.height < parent.height) {			//image is too short to fit.
-				delta = newSize.width * (parent.height / newSize.height) - newSize.width
-				newSize.width = parent.width + delta
-				newSize.height = parent.height
-				newRect.origin.x = delta / 2
-			} else if (newSize.width < parent.width) {
-				delta = newSize.height * (parent.width / newSize.width) - newSize.height
-				newSize.height = parent.height + delta
-				newSize.width = parent.width
-				newRect.origin.y -= delta / 2
+			if child.aspectRatio < parent.aspectRatio {
+				newSize = CGSize(width: parent.width, height: parent.width / child.aspectRatio)
+			} else {
+				newSize = CGSize(width: parent.height * child.aspectRatio, height: parent.height)
 			}
+			newRect = CGRect(x: (parent.width - newSize.width) / 2, y: (parent.height - newSize.height) / 2, width: newSize.width, height: newSize.height)
+			
 		case .scaleAspectFit:
 			newRect = parent
-			newSize = child.size.scaled(within: parent.size)
-			if (newSize.height < parent.height) {			//image is too short to fit.
-				delta = parent.height - newSize.height
-				newRect.origin.y += delta / 2
-				newRect.size.height = newSize.height
-			} else if (newSize.width < parent.width) {
-				delta = parent.width - newSize.width
-				newRect.origin.x += delta / 2
-				newRect.size.width = newSize.width
+			if child.aspectRatio < parent.aspectRatio {
+				newSize = CGSize(width: parent.height * child.aspectRatio, height: parent.height)
+			} else {
+				newSize = CGSize(width: parent.height / child.aspectRatio, height: parent.height)
 			}
-			
+			newRect = CGRect(x: (parent.width - newSize.width) / 2, y: (parent.height - newSize.height) / 2, width: newSize.width, height: newSize.height)
+
 		case .center:
 			let insetX = (parent.width - newRect.width) / 2
 			let insetY = (parent.height - newRect.height) / 2
