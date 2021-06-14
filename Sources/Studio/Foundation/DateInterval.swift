@@ -9,6 +9,17 @@ import Foundation
 
 @available(iOS 10.0, watchOS 5.0, *)
 public extension Array where Element == DateInterval {
+	func overlaps(with new: DateInterval) -> Bool {
+		fullRange?.intersects(new) ?? false
+	}
+	
+	var fullRange: DateInterval? {
+		guard
+			let start = self.sorted(by: { $0.start < $1.start }).first?.start,
+			let end = self.sorted(by: { $0.end > $1.end }).last?.start else { return nil }
+		return DateInterval(start: start, end: end)
+	}
+	
 	mutating func add(_ new: DateInterval) {
 		for interval in self {
 			if interval.contains(new) { return }			// already contained within
@@ -50,5 +61,13 @@ public extension Array where Element == DateInterval {
 public extension DateInterval {
 	func contains(_ interval: DateInterval) -> Bool {
 		start <= interval.start && end >= interval.end
+	}
+	
+	static func +(lhs: DateInterval, rhs: DateInterval) -> DateInterval {
+		DateInterval(start: min(lhs.start, rhs.start), end: max(lhs.end, rhs.end))
+	}
+	
+	init(_ range: Range<Date>) {
+		self.init(start: range.lowerBound, end: range.upperBound)
 	}
 }
