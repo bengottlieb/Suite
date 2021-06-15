@@ -69,6 +69,12 @@ public extension Notification {
 			self.post(name: name, object: object, userInfo: userInfo)
 		}
 	}
+	
+	func resend(after delay: TimeInterval = 0) {
+		DispatchQueue.main.async(after: delay) {
+			NotificationCenter.default.post(self)
+		}
+	}
 
 	class Observation {
 		var token: NSObjectProtocol?
