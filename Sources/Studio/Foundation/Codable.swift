@@ -161,3 +161,14 @@ public extension Encodable where Self: Decodable {
 		return try decoder.decode(Self.self, from: data)
 	}
 }
+
+public extension Decodable where Self: Encodable {
+	func copyViaJSON(usingEncoder encoder: JSONEncoder = .init(), decoder: JSONDecoder = .init()) throws -> Self {
+		let data = try encoder.encode(self)
+		let result = try decoder.decode(Self.self, from: data)
+		
+		(result as? PostDecodeAwakable)?.awakeFromDecoder()
+		
+		return result
+	}
+}
