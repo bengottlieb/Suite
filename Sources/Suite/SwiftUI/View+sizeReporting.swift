@@ -29,6 +29,14 @@ public extension View {		// Tracks the size available for the view
     func sizeReporting(_ size: Binding<CGSize>) -> some View {
         self.modifier(SizeViewModifier(size: size))
     }
+    
+    func frameReporting(_ frame: Binding<CGRect>, in space: CoordinateSpace = .global) -> some View {
+        self
+            .background(GeometryReader() { geo -> Color in
+                DispatchQueue.main.async { frame.wrappedValue = geo.frame(in: space) }
+                return Color.clear
+            })
+    }
 	
 	func sizeReporting(_ callback: @escaping (CGSize) -> Void) -> some View {
 		self.background(
