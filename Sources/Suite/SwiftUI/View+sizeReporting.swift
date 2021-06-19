@@ -30,14 +30,17 @@ public extension View {		// Tracks the size available for the view
         self.modifier(SizeViewModifier(size: size))
     }
     
-    func frameReporting(_ frame: Binding<CGRect>, in space: CoordinateSpace = .global) -> some View {
-        self
-            .background(GeometryReader() { geo -> Color in
-                DispatchQueue.main.async { frame.wrappedValue = geo.frame(in: space) }
-                return Color.clear
-            })
-    }
-	
+	func frameReporting(_ frame: Binding<CGRect>, in space: CoordinateSpace = .global, firstTimeOnly: Bool = false) -> some View {
+			self
+					.background(GeometryReader() { geo -> Color in
+						let rect = geo.frame(in: space)
+						DispatchQueue.main.async {
+							if !firstTimeOnly || frame.wrappedValue == .zero { frame.wrappedValue = rect }
+						}
+						return Color.clear
+					})
+	}
+
 	func sizeReporting(_ callback: @escaping (CGSize) -> Void) -> some View {
 		self.background(
 			GeometryReader() { geo -> Color in
