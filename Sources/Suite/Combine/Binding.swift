@@ -80,5 +80,18 @@ public extension Binding where Value == Bool {
 	}) }
 }
 
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+public class Bound<Value> {
+	public init(_ initial: Value) {
+		value = initial
+	}
+	public var value: Value
+	
+	public var binding: Binding<Value> {
+		Binding<Value>(get: { self.value }, set: { self.value = $0 })
+	}
+}
+
+
 #endif
 #endif
