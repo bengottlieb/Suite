@@ -15,22 +15,31 @@ public protocol NumericFieldNumber {
 	func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool
 	func isEqualTo(numericFieldNumber number: NumericFieldNumber?) -> Bool
 	mutating func zeroOut()
+    var positive: NumericFieldNumber { get }
+    var negative: NumericFieldNumber { get }
 }
 
 extension Double: NumericFieldNumber {
 	public func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool { self < (number as? Double ?? 0) }
 	public func isEqualTo(numericFieldNumber number: NumericFieldNumber?) -> Bool { self == (number as? Double ?? 0) }
 	mutating public func zeroOut() { self = 0 }
+    public var positive: NumericFieldNumber { abs(self) }
+    public var negative: NumericFieldNumber { -1 * abs(self) }
 }
 extension Int: NumericFieldNumber {
 	public func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool { self < (number as? Int ?? 0) }
 	public func isEqualTo(numericFieldNumber number: NumericFieldNumber?) -> Bool { self == (number as? Int ?? 0) }
 	mutating public func zeroOut() { self = 0 }
+    public var positive: NumericFieldNumber { abs(self) }
+    public var negative: NumericFieldNumber { -1 * abs(self) }
 }
+
 extension Float: NumericFieldNumber {
 	public func isLessThan(numericFieldNumber number: NumericFieldNumber) -> Bool { self < (number as? Float ?? 0) }
 	public func isEqualTo(numericFieldNumber number: NumericFieldNumber?) -> Bool { self == (number as? Float ?? 0) }
 	mutating public func zeroOut() { self = 0 }
+    public var positive: NumericFieldNumber { abs(self) }
+    public var negative: NumericFieldNumber { -1 * abs(self) }
 }
 
 extension NSNumber {
@@ -61,6 +70,7 @@ extension NSNumber {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct NumericField<Number: NumericFieldNumber>: View {
+    public enum AllowedSigns { case negative, positive, both }
 	public var placeholder: String
 	@Binding public var number: Number
 	public var formatter: NumberFormatter
@@ -69,12 +79,13 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	public var onCommit: () -> Void
 	let minimum: Number?
 	let maximum: Number?
+    let allowedSigns: AllowedSigns
 	@State var text = ""
 	
 	let radix = Locale.current.decimalSeparator?.first ?? "."
 	let groupSeparator = Locale.current.groupingSeparator?.first ?? ","
 
-	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, maximum: Number? = nil, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
+    public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, maximum: Number? = nil, allowedSigns: AllowedSigns = .both, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
 		self.placeholder = placeholder
 		self._number = number
 		self.onCommit = onCommit
@@ -82,6 +93,7 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 		self.useKeypad = useKeypad
 		self.minimum = minimum
 		self.maximum = maximum
+        self.allowedSigns = allowedSigns
 		
 		self.formatter = formatter ?? NumberFormatter.formatter(for: number.wrappedValue)
 		_text = State(initialValue: self.formatter.string(from: NSNumber(value: number.wrappedValue)) ?? "")
@@ -110,8 +122,15 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	}
 	
 	func parsedNumber(from newText: String) -> Number? {
-		let numbersOnly = newText.filter { $0.isNumber || $0 == radix }
+		let numbersOnly = newText.filter {
+            if $0.isNumber { return true }
+            if $0 == radix { return true }
+            if (allowedSigns == .negative || allowedSigns == .both), $0 == "-" { return true }
+            return false
+        }
 		if let newNumber = formatter.number(from: String(numbersOnly)) as? Number {
+            if allowedSigns == .positive { return newNumber.positive as? Number }
+            if allowedSigns == .negative { return newNumber.negative as? Number }
 			return newNumber
 		}
 		return nil
