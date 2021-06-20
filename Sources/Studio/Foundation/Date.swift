@@ -308,11 +308,7 @@ public extension Date {
 //	func isBefore(date: Date) -> Bool { return self.earlierDate(date) == self && date != self }
 	
 	func isSameDay(as other: Date) -> Bool {
-		let cal = NSCalendar.current
-		let myComp = cal.dateComponents([.year, .month, .day], from: self)
-		let otherComp = cal.dateComponents([.year, .month, .day], from: other)
-		
-		return (myComp.day == otherComp.day && myComp.month == otherComp.month && myComp.year == otherComp.year)
+		Calendar.current.compare(self, to: other, toGranularity: .day) == .orderedSame
 	}
 	
 	
