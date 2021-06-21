@@ -80,6 +80,14 @@ public extension Date {
 		return Date(timeIntervalSinceReferenceDate: floor(self.timeIntervalSinceReferenceDate))
 	}
 	
+	var nearestHour: Date {
+		var components = Calendar.current.dateComponents([.hour, .year, .month, .day], from: self)
+		components.minute = 0
+		components.second = 0
+		
+		return Calendar.current.date(from: components) ?? self
+	}
+	
 	var isInFuture: Bool {
 		timeIntervalSinceNow > 0
 	}

@@ -14,6 +14,26 @@ extension Date.Time: Identifiable {
 #endif
 
 public extension Date {
+	func allHours(until end: Date) -> [Date] {
+		var times: [Date] = []
+		var date = self
+		
+		if self.minute == 0 {
+			date = self.nearestSecond
+		} else {
+			date = self.nearestHour.byAdding(hours: 1)
+		}
+		
+		
+		while true {
+			times.append(date)
+			date = date.nearestHour.byAdding(hours: 1)
+			if date > end { break }
+		}
+
+		return times
+	}
+
 	struct Time: Codable, Comparable, Equatable, CustomStringConvertible {
 		public let hour: Int
 		public let minute: Int
@@ -34,19 +54,19 @@ public extension Date {
 			lhs.timeInterval == rhs.timeInterval
 		}
 
-        public func allHours(until end: Date.Time) -> [Date.Time] {
-            var times: [Date.Time] = []
-            
-            if minute == 0 {
-                times.append(Date.Time(hour: hour, minute: 0))
-            }
-            
-            for hour in (hour + 1)...(end.hour) {
-                times.append(Date.Time(hour: hour, minute: 0))
-            }
-            
-            return times
-        }
+		public func allHours(until end: Date.Time) -> [Date.Time] {
+			var times: [Date.Time] = []
+			
+			if minute == 0 {
+				times.append(Date.Time(hour: hour, minute: 0))
+			}
+			
+			for hour in (hour + 1)...(end.hour) {
+				times.append(Date.Time(hour: hour, minute: 0))
+			}
+			
+			return times
+		}
 		
 		public func byAdding(hours: Int = 0, minutes: Int = 0, seconds: TimeInterval = 0) -> Time {
 			var second = self.second + seconds
