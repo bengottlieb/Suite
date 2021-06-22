@@ -248,7 +248,23 @@ public extension Date {
 		formatter.timeStyle = .short
 		return formatter.string(from: self)
 	}
+
+	var hourString: String {
+		let isIn24HourTimeMode = self.isIn24HourTimeMode
+		var hour = isIn24HourTimeMode ? self.hour : self.hour % 12
+		if !isIn24HourTimeMode, hour == 0 { hour = 12 }
+		
+		if isIn24HourTimeMode { return "\(hour)" }
+		
+		return "\(hour)" + (self.hour < 12 ? DateFormatter().amSymbol : DateFormatter().pmSymbol)
+	}
 	
+	var isIn24HourTimeMode: Bool {
+		guard let format = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: .current) else { return false }
+
+		return format.range(of: "a") == nil
+	}
+
 	func byAdding(seconds: Int? = nil, minutes: Int? = nil, hours: Int? = nil, days: Int? = nil, months: Int? = nil, years: Int? = nil) -> Date {
 		
 		let calendar = Calendar.current

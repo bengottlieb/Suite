@@ -22,6 +22,13 @@ extension URL: ExpressibleByStringLiteral {
 }
 
 public extension URL {
+	init?(_ string: String, _ query: [String: String]) {
+		guard var base = URL(string: string) else { return nil }
+		
+		base.queryDictionary = query
+		self = base
+	}
+
 	init(_ string: StaticString) {
 		self = URL(string: "\(string)")!
 	}
@@ -51,15 +58,24 @@ public extension URL {
     }
 	
 	var queryDictionary: [String: String] {
-		let pairs = self.query?.components(separatedBy: "&") ?? []
-		var dict: [String: String] = [:]
-		
-		for keyPair in pairs {
-			let split = keyPair.components(separatedBy: "=")
-			guard split.count == 2 else { continue }
-			dict[split[0]] = split[1]
+		get {
+			guard let components = URLComponents(url: self, resolvingAgainstBaseURL: true) else { return [:] }
+			var pairs: [String: String] = [:]
+			
+			for item in components.queryItems ?? [] {
+				pairs[item.name] = item.value
+			}
+			return pairs
 		}
-		return dict
+		
+		set {
+			guard var components = URLComponents(url: self, resolvingAgainstBaseURL: true) else { return }
+			
+			components.queryItems = newValue.keys.map { URLQueryItem(name: $0, value: newValue[$0]) }
+			if let newURL = components.url {
+				self = newURL
+			}
+		}
 	}
 	
 	var fileSize: UInt64 { FileManager.default.fileSize(at: self) }
