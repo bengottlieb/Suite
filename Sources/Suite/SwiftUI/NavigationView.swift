@@ -28,7 +28,60 @@ public struct OptionalNavigationLink<Check, Content: View, Dest: View>: View {
 	}
 }
 
+@available(OSX 10.15, iOS 14.0, watchOS 7.0, *)
+public extension View {
+    func navigationLink<Content: Equatable, Destination: View>(boundTo: Binding<Content?>, destination: @escaping (Content) -> Destination) -> some View {
+        ContainedContentNavigationLink(root: self, binding: boundTo, destination: destination)
+    }
 
+    func navigationLink<Destination: View>(boundTo: Binding<Bool>, destination: @escaping () -> Destination) -> some View {
+        ContainedOptionalNavigationLink(root: self, binding: boundTo, destination: destination)
+    }
+}
+
+@available(OSX 10.15, iOS 14.0, watchOS 7.0, *)
+struct ContainedOptionalNavigationLink<Root: View, Destination: View>: View {
+    let root: Root
+    @Binding var binding: Bool
+    let destination: () -> Destination
+    
+    var body: some View {
+        ZStack() {
+            root
+            NavigationLink(
+                destination: destination(),
+                isActive: $binding,
+                label: {
+                    EmptyView()
+                })
+        }
+    }
+}
+
+@available(OSX 10.15, iOS 14.0, watchOS 7.0, *)
+struct ContainedContentNavigationLink<Root: View, Content: Equatable, Destination: View>: View {
+    let root: Root
+    @State var isLinkActive = false
+    @Binding var binding: Content?
+    let destination: (Content) -> Destination
+    
+    var body: some View {
+        ZStack() {
+            root
+            if let contents = binding {
+                NavigationLink(
+                    destination: destination(contents),
+                    isActive: $isLinkActive,
+                    label: {
+                        EmptyView()
+                    })
+            }
+        }
+        .onChange(of: binding) { value in
+            isLinkActive = binding != nil
+        }
+    }
+}
 
 #endif
 #endif
