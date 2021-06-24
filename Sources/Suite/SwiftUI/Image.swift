@@ -30,5 +30,14 @@ public extension Image {
 	}
 }
 
+#if os(iOS)
+@available(iOS 13.0, *)
+public extension Image {
+	init(string: String) {
+		let image = UIImage.from(string: string)
+		self.init(uiImage: image ?? UIImage())
+	}
+}
+#endif
 
 #endif

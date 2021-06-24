@@ -149,14 +149,31 @@ public extension UIImage {
 #if os(iOS)
 @available(iOS 10.0, *)
 public extension UIImage {
-	static func randomEmojiImage(face: Bool = false, ofSize size: CGSize, background color: UIColor = .white) -> UIImage? {
+	static func from(string: String, ofSize size: CGSize = CGSize(width: 128, height: 128), background color: UIColor = .clear) -> UIImage? {
+		var fontSize = size.height
+		var attributedString = NSAttributedString(string: "")
+		var attributedStringSize: CGSize = .zero
+		
+		while true {
+			attributedString = NSAttributedString(string: string, attributes: [.font: UIFont.systemFont(ofSize: fontSize)])
+			attributedStringSize = attributedString.size()
+			
+			if attributedStringSize.height <= size.height, attributedStringSize.width < size.width { break }
+			fontSize -= 1
+		}
+		
 		return UIGraphicsImageRenderer(size: size).image { ctx in
-			let str = NSAttributedString(string: String.randomEmoji(facesOnly: face), attributes: [.font: UIFont.systemFont(ofSize: size.height * 0.8)])
-			let strSize = str.size()
 			color.setFill()
 			UIRectFill(size.rect)
-			str.draw(in: CGRect(x: (size.width - strSize.width) / 2, y: (size.height - strSize.height) / 2, width: strSize.width, height: strSize.height))
+			attributedString.draw(in: CGRect(x: (size.width - attributedStringSize.width) / 2, y: (size.height - attributedStringSize.height) / 2, width: attributedStringSize.width, height: attributedStringSize.height))
 		}
+	}
+}
+
+@available(iOS 10.0, *)
+public extension UIImage {
+	static func randomEmojiImage(face: Bool = false, ofSize size: CGSize, background color: UIColor = .white) -> UIImage? {
+		from(string: String.randomEmoji(facesOnly: face), ofSize: size, background: color)
 	}
 }
 #endif
