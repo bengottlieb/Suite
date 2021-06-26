@@ -69,7 +69,7 @@ public extension TimeInterval {
 		if leftoverMinutes != 0 { components.append(Pluralizer.instance.pluralize(leftoverMinutes, minuteString)) }
 		if includingSeconds, leftoverSeconds != 0 { components.append(Pluralizer.instance.pluralize(leftoverSeconds, secondString)) }
 		
-		return components.joined(separator: ", ")
+		return components.joined(separator: abbreviated ? " " : ", ")
 	}
 	
 	init?(string: String?) {
