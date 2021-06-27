@@ -62,9 +62,9 @@ public extension FileManager {
 			if !fileExists(at: url) { return url }
 			count += 1
 			if count == 1 {
-				name = base + " \(NSLocalizedString("count", comment: "file copy name"))"
+				name = base
 			} else {
-				name = base + " \(NSLocalizedString("count", comment: "file copy name")) \(count)"
+				name = base + " \(count)"
 			}
 		}
 	}
