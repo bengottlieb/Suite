@@ -75,6 +75,7 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	@Binding public var number: Number
 	public var formatter: NumberFormatter
 	public var useKeypad = true
+	public var showInitialZeroAsEmptyString = true
 	public var onChange: (Bool) -> Void
 	public var onCommit: () -> Void
 	let minimum: Number?
@@ -85,7 +86,7 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	let radix = Locale.current.decimalSeparator?.first ?? "."
 	let groupSeparator = Locale.current.groupingSeparator?.first ?? ","
 
-    public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, maximum: Number? = nil, allowedSigns: AllowedSigns = .both, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
+	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, showInitialZeroAsEmptyString: Bool = true, maximum: Number? = nil, allowedSigns: AllowedSigns = .both, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
 		self.placeholder = placeholder
 		self._number = number
 		self.onCommit = onCommit
@@ -93,10 +94,13 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 		self.useKeypad = useKeypad
 		self.minimum = minimum
 		self.maximum = maximum
-        self.allowedSigns = allowedSigns
+		self.allowedSigns = allowedSigns
+		self.showInitialZeroAsEmptyString = showInitialZeroAsEmptyString
 		
 		self.formatter = formatter ?? NumberFormatter.formatter(for: number.wrappedValue)
-		_text = State(initialValue: self.formatter.string(from: NSNumber(value: number.wrappedValue)) ?? "")
+		var newText = self.formatter.string(from: NSNumber(value: number.wrappedValue)) ?? ""
+		if showInitialZeroAsEmptyString, newText == "0" { newText = "" }
+		_text = State(initialValue: newText)
 	}
 	
 	public var body: some View {
