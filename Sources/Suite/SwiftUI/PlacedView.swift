@@ -11,10 +11,15 @@ import Studio
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 public struct PlacedView<Content: View>: View {
-	let content: Content
+	let content: () -> Content
 	let placement: CGRect.Placement
 	
 	public init(_ content: Content, _ placement: CGRect.Placement) {
+		self.content = { content }
+		self.placement = placement
+	}
+	
+	public init(_ placement: CGRect.Placement, _ content: @escaping () -> Content) {
 		self.content = content
 		self.placement = placement
 	}
@@ -26,7 +31,7 @@ public struct PlacedView<Content: View>: View {
 			HStack() {
 				if !placement.isLeft { Spacer() }
 				
-				content
+				content()
 				
 				if !placement.isRight { Spacer() }
 			}
