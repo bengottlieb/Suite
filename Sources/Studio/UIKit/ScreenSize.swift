@@ -44,7 +44,7 @@ public extension ScreenSize {
 	static let iPadPro11 = ScreenSize(834, 1194)
 	static let iPadPro10_5 = ScreenSize(834, 1112)
 	static let iPadPro12_9 = ScreenSize(1024, 1366)
-	static let iPadAir_4thGen = ScreenSize(820, 11080)
+	static let iPadAir_4thGen = ScreenSize(820, 1180)
 	static let iPad_7thGen = ScreenSize(810, 1080)
 	static let iPad = ScreenSize(768, 1024)
 
