@@ -45,6 +45,16 @@ public extension UIImage {
 	}
 	
 	#if os(iOS)
+	func byRoundingCorners(radius: CGFloat) -> UIImage {
+		UIImage.create(size: size) { context in
+			context.clear(size.rect)
+			let bezier = UIBezierPath(roundedRect: size.rect, cornerRadius: radius)
+			bezier.addClip()
+			self.draw(in: size.rect)
+		} ?? self
+		
+	}
+	
 	class func create(size: CGSize, closure: (CGContext) -> Void) -> UIImage? {
 		if #available(iOS 10.0, iOSApplicationExtension 10.0, *) {
 			return UIGraphicsImageRenderer(size: size).image { renderer in
@@ -102,7 +112,7 @@ public extension UIImage {
 		}
 		return self
 	}
-	
+
 	func resized(to size: CGSize?, trimmed: Bool = true, changeScaleTo: CGFloat? = nil) -> UIImage? {
 		guard let size = size else { return self }
 		var frame = self.size.rect.within(limit: size.rect, placed: .scaleAspectFit).round()
