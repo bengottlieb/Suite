@@ -30,7 +30,7 @@ extension Encodable {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 extension Decodable {
-	static func create(with data: Data) -> Any? { try? Self.load(fromJSONData: data) }
+	static func create(with data: Data) -> Any? { try? Self.loadJSON(data: data) }
 }
 
 #if canImport(UIKit)

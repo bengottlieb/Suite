@@ -74,16 +74,16 @@ public extension Encodable {
 		return try JSONSerialization.jsonObject(with: data, options: []) as? JSONDictionary ?? [:]
 	}
 
-	func asJSONData(using encoder: JSONEncoder = .init()) throws -> Data {
+	func asJSONData(using encoder: JSONEncoder = .default) throws -> Data {
 		try encoder.encode(self)
 	}
 	
-	func saveJSON(to url: URL, using encoder: JSONEncoder = .init()) throws {
+	func saveJSON(to url: URL, using encoder: JSONEncoder = .default) throws {
 		let data = try encoder.encode(self)
 		try data.write(to: url)
 	}
 	
-	func saveJSON(toUserDefaults key: String, using encoder: JSONEncoder = .init()) throws {
+	func saveJSON(toUserDefaults key: String, using encoder: JSONEncoder = .default) throws {
 		let data = try encoder.encode(self)
 		UserDefaults.standard.set(data, forKey: key)
 	}
@@ -104,22 +104,24 @@ public extension Encodable {
 }
 
 extension Decodable {
-	public static func load(fromJSONData data: Data, using decoder: JSONDecoder = .init()) throws -> Self {
+	public static func loadJSON(data: Data?, using decoder: JSONDecoder = .default) throws -> Self {
+		guard let data = data else { throw JSONDecoder.DecodingError.fileNotFound }
 		return try decoder.decode(self, from: data)
 	}
 	
-	public static func loadJSON(from url: URL, using decoder: JSONDecoder = .init()) throws -> Self {
+	public static func loadJSON(file url: URL?, using decoder: JSONDecoder = .default) throws -> Self {
+		guard let url = url else { throw JSONDecoder.DecodingError.fileNotFound }
 		let data = try Data(contentsOf: url)
-		return try self.load(fromJSONData: data, using: decoder)
+		return try self.loadJSON(data: data, using: decoder)
 	}
 	
-	public static func loadJSON(fromUserDefaults key: String) throws -> Self {
-		let data = UserDefaults.standard.data(forKey: key) ?? Data()
-		return try self.load(fromJSONData: data)
+	public static func loadJSON(userDefaults key: String) throws -> Self {
+		let data = UserDefaults.standard.data(forKey: key)
+		return try self.loadJSON(data: data)
 	}
 	
 	@available(iOS 10.0, *)
-	public static func load(fromString string: String, using decoder: JSONDecoder = .init()) throws -> Self {
+	public static func load(fromString string: String, using decoder: JSONDecoder = .default) throws -> Self {
 		guard let data = string.data(using: .utf8) else { throw JSONDecoder.DecodingError.badString }
 		
 		return try decoder.decode(Self.self, from: data)
@@ -132,6 +134,10 @@ extension String {
 	}
 }
 
+public extension JSONEncoder {
+	static var `default` = JSONEncoder()
+}
+
 @available(iOS 10.0, *)
 public extension JSONEncoder {
 	static var iso8601Encoder: JSONEncoder {
@@ -142,10 +148,14 @@ public extension JSONEncoder {
 	}
 }
 
+public extension JSONDecoder {
+	static var `default` = JSONDecoder()
+
+	enum DecodingError: Error { case unknownKey(String), badString, jsonDecodeFailed, fileNotFound }
+}
+
 @available(iOS 10.0, *)
 public extension JSONDecoder {
-	enum DecodingError: Error { case unknownKey(String), badString, jsonDecodFailed }
-
 	static var iso8601Decoder: JSONDecoder {
 		let decoder = JSONExpandedDecoder()
 		
@@ -163,7 +173,7 @@ public extension Encodable where Self: Decodable {
 }
 
 public extension Decodable where Self: Encodable {
-	func copyViaJSON(usingEncoder encoder: JSONEncoder = .init(), decoder: JSONDecoder = .init()) throws -> Self {
+	func copyViaJSON(usingEncoder encoder: JSONEncoder = .default, decoder: JSONDecoder = .default) throws -> Self {
 		let data = try encoder.encode(self)
 		let result = try decoder.decode(Self.self, from: data)
 		

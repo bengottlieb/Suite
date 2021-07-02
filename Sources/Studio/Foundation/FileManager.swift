@@ -87,17 +87,12 @@ public extension FileManager {
 		return self.tempDirectory.appendingPathComponent(name)
 	}
 
-	static func systemDirectoryURL(which: FileManager.SearchPathDirectory) -> URL? {
-		guard let path = NSSearchPathForDirectoriesInDomains(which, [.userDomainMask], true).first else { return nil }
-		return URL(fileURLWithPath: path)
-	}
-	
-	static var documentsDirectory: URL { return self.systemDirectoryURL(which: .documentDirectory)! }
-	static var applicationSupportDirectory: URL { return self.systemDirectoryURL(which: .applicationSupportDirectory)! }
-	static var libraryDirectory: URL { return self.systemDirectoryURL(which: .libraryDirectory)! }
-	static var cachesDirectory: URL { return self.systemDirectoryURL(which: .cachesDirectory)! }
-	static var applicationSpecificSupportDirectory: URL { return self.systemDirectoryURL(which: .applicationSupportDirectory)!.appendingPathComponent(Bundle.main.bundleIdentifier ?? Bundle.main.name) }
-	static var tempDirectory: URL { return URL(fileURLWithPath: NSTemporaryDirectory()) }
+	static var documentsDirectory: URL { .documents }
+	static var applicationSupportDirectory: URL { .applicationSupport }
+	static var libraryDirectory: URL { .library }
+	static var cachesDirectory: URL { .caches }
+	static var applicationSpecificSupportDirectory: URL { .applicationSpecificSupport }
+	static var tempDirectory: URL { return .temp }
 	
 	static var realHomeDirectory: URL {
 		#if os(OSX)
@@ -112,24 +107,9 @@ public extension FileManager {
         #else
             return self.documentsDirectory.deletingLastPathComponent()
 		#endif
-		
 	}
 
-	static func documentURL(at path: String) -> URL {
-		let url = documentsDirectory.appendingPathComponent(path)
-		try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
-		return url
-	}
-
-	static func cacheURL(at path: String) -> URL {
-		let url = cachesDirectory.appendingPathComponent(path)
-		try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
-		return url
-	}
-
-	static func libraryURL(at path: String) -> URL {
-		let url = libraryDirectory.appendingPathComponent(path)
-		try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
-		return url
-	}
+	static func documentURL(at path: String) -> URL { .document(named: path) }
+	static func cacheURL(at path: String) -> URL { .cache(named: path) }
+	static func libraryURL(at path: String) -> URL { .library(named: path) }
 }

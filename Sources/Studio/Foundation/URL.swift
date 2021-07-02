@@ -22,6 +22,28 @@ extension URL: ExpressibleByStringLiteral {
 }
 
 public extension URL {
+	static func +(lhs: URL, rhs: String) -> URL {
+		lhs.appendingPathComponent(rhs)
+	}
+	
+	func dropLast() -> URL {
+		deletingLastPathComponent()
+	}
+
+	var existingDirectory: URL? {
+		if !isFileURL { return nil }
+		
+		if FileManager.default.directoryExists(at: self) { return self }
+		
+		do {
+			try FileManager.default.createDirectory(at: self, withIntermediateDirectories: true, attributes: nil)
+			return self
+		} catch {
+			Studio.logg(error: error, "Unable to create directory at \(path)")
+			return nil
+		}
+	}
+	
 	init?(_ string: String, _ query: [String: String]) {
 		guard var base = URL(string: string) else { return nil }
 		
