@@ -13,7 +13,12 @@ import Studio
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public  struct SimpleOverlayModifer<Overlay: View>: ViewModifier {
 	@Binding var isPresented: Bool
-	@ViewBuilder var overlayBuilder: () -> Overlay
+	
+	#if swift(>=5.4)
+		@ViewBuilder var overlayBuilder: () -> Overlay
+	#else
+		var overlayBuilder: () -> Overlay
+	#endif
 	
 	init(isPresented: Binding<Bool>, @ViewBuilder overlay: @escaping () -> Overlay) {
 		self._isPresented = isPresented
@@ -28,7 +33,11 @@ public  struct SimpleOverlayModifer<Overlay: View>: ViewModifier {
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public  struct OverlayModifer<Overlay: View, Item>: ViewModifier {
 	@Binding var item: Item?
-	@ViewBuilder var overlayBuilder: (Item) -> Overlay
+	#if swift(>=5.4)
+		@ViewBuilder var overlayBuilder: (Item) -> Overlay
+	#else
+		var overlayBuilder: (Item) -> Overlay
+	#endif
 	
 	init(item: Binding<Item?>, @ViewBuilder overlay: @escaping (Item) -> Overlay) {
 		self._item = item
@@ -76,9 +85,9 @@ public extension View {
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct BottomSheet<Content: View, Background: View>: View {
 	var backgroundView: Background
-	@ViewBuilder var content: () -> Content
+	var content: () -> Content
 	
-	public init(_ background: Background, _ content: @escaping () -> Content) {
+	public init(_ background: Background, @ViewBuilder _ content: @escaping () -> Content) {
 		self.backgroundView = background
 		self.content = content
 	}
