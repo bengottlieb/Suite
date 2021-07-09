@@ -24,17 +24,20 @@ public extension URL {
 	
 	static func document(named path: String) -> URL {
 		let url = URL.documents + path
-		return url.dropLast().existingDirectory ?? url
+		_ = url.dropLast().existingDirectory
+		return url
 	}
 
 	static func cache(named path: String) -> URL {
 		let url = URL.caches + path
-		return url.dropLast().existingDirectory ?? url
+		_ = url.dropLast().existingDirectory
+		return url
 	}
 
 	static func library(named path: String) -> URL {
 		let url = URL.library + path
-		return url.dropLast().existingDirectory ?? url
+		_ = url.dropLast().existingDirectory
+		return url
 	}
 
 	static func bundled(in bundle: Bundle = .main, named name: String, withExtension ext: String? = nil) -> URL? {

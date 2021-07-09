@@ -19,6 +19,14 @@ public extension Binding {
 		})
 	}
 
+	func onChange(_ completion: @escaping (Value, Value) -> Void) -> Binding<Value> {
+		Binding<Value>(get: { self.wrappedValue }, set: { newValue in
+			let oldValue = self.wrappedValue
+			self.wrappedValue = newValue
+			completion(oldValue, newValue)
+		})
+	}
+
 	func willChange(_ completion: @escaping (Value) -> Void) -> Binding<Value> {
 		Binding<Value>(get: { self.wrappedValue }, set: { newValue in
 			completion(newValue)

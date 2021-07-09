@@ -33,6 +33,24 @@ public extension Date {
 
 		return times
 	}
+	
+	struct TimeRange {
+		public var start: Date.Time
+		public var end: Date.Time
+		
+		public init(_ start: Date.Time, _ end: Date.Time) {
+			self.start = start
+			self.end = end
+		}
+
+		public var duration: TimeInterval {
+			if start < end {
+				return end.timeInterval - start.timeInterval
+			}
+			
+			return (Date.Time.lastSecond.timeInterval - start.timeInterval) + (end.timeInterval)
+		}
+	}
 
 	struct Time: Codable, Comparable, Equatable, CustomStringConvertible {
 		public let hour: Int
@@ -121,7 +139,7 @@ public extension Date {
 			return Time.lastSecond.timeInterval(since: other) + self.timeInterval(since: .midnight)
 		}
 		
-		init(timeInterval: TimeInterval) {
+		public init(timeInterval: TimeInterval) {
 			hour = Int(timeInterval / 3600) % 24
 			minute = Int(timeInterval / 60) % 60
 			second = TimeInterval(Int(timeInterval) % 60)
@@ -159,7 +177,7 @@ public extension Date {
 		}
 		
 		public var hourMinuteString: String {
-			date.localTimeString(date: .none, time: .abbr)
+			date.localTimeString(date: .none, time: .short)
 		}
 	}
 
