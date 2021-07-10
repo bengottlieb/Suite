@@ -67,7 +67,7 @@ public struct SlideUpSheet<Content: View>: View {
 	@Binding var show: Bool
 	@State var dragOffset = CGSize.zero
 	@State var backgroundAlpha = 0.0
-	let content: Content
+	let content: () -> Content
 	let radius: CGFloat
 	
 	#if canImport(UIKit) && !os(watchOS)
@@ -83,11 +83,11 @@ public struct SlideUpSheet<Content: View>: View {
 		var screenHeight: CGFloat = 1024
 	#endif
 
-	public init(show: Binding<Bool>, dragStyle: DragStyle = .handle, blockBackground: Bool = true, @ViewBuilder content: () -> Content) {
+	public init(show: Binding<Bool>, dragStyle: DragStyle = .handle, blockBackground: Bool = true, @ViewBuilder content: @escaping () -> Content) {
 		_show = show
 		self.dragStyle = dragStyle
 		self.blockBackground = blockBackground
-		self.content = content()
+		self.content = content
 		self.radius = 10
 	}
 
@@ -104,7 +104,6 @@ public struct SlideUpSheet<Content: View>: View {
 			}
 			
 			ZStack() {
-				
 				VStack() {
 					Spacer()
 					ZStack() {
@@ -134,7 +133,7 @@ public struct SlideUpSheet<Content: View>: View {
 								.fill(Color.clear)
 								.frame(maxHeight: 1)
 							
-							content
+							content()
 						}
 						.padding([.bottom, .leading, .trailing])
 						.layoutPriority(1)
