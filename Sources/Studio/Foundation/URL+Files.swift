@@ -40,7 +40,7 @@ public extension URL {
 		return url
 	}
 
-	static func bundled(in bundle: Bundle = .main, named name: String, withExtension ext: String? = nil) -> URL? {
-		bundle.url(forResource: name, withExtension: ext)
+	static func bundled(in bundle: Bundle = .main, named name: String, withExtension ext: String? = nil, subDirectory: String? = nil) -> URL? {
+		bundle.url(forResource: name, withExtension: ext, subdirectory: subDirectory)
 	}
 }
