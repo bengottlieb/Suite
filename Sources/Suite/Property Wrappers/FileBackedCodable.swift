@@ -72,7 +72,7 @@ import Combine
 	}
 	
 	internal class Storage<Item: Codable>: ObservableObject {
-		init(url: URL, initial: Item?) {
+		init(url: URL, initial: Item? = nil) {
 			self.url = url
 			self.value = initial
 			do {
