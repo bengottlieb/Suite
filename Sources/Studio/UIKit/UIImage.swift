@@ -55,6 +55,26 @@ public extension UIImage {
 		
 	}
 	
+	@available(iOS 10.0, watchOS 6.0, *)
+	func clipped(to clip: CGRect) -> UIImage? {
+		guard let cgImage = self.cgImage else { return nil }
+		let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+		let renderer = UIGraphicsImageRenderer(size: CGSize(width: size.width * clip.width, height: size.height * clip.height))
+		let image = renderer.image { ctx in
+			UIColor.white.setFill()
+			ctx.fill(rect)
+			
+			ctx.cgContext.translateBy(x: 0, y: rect.height)
+			ctx.cgContext.scaleBy(x: 1, y: -1)
+			ctx.cgContext.translateBy(x: -clip.x * size.width, y: rect.height - (clip.maxY * rect.height) / scale)
+			ctx.cgContext.draw(cgImage, in: rect)
+		}
+		
+		return image
+	}
+	
+
+	
 	class func create(size: CGSize, closure: (CGContext) -> Void) -> UIImage? {
 		if #available(iOS 10.0, iOSApplicationExtension 10.0, *) {
 			return UIGraphicsImageRenderer(size: size).image { renderer in

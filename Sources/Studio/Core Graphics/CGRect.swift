@@ -22,12 +22,20 @@ public func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
     return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
 }
 
+extension CGRect: Comparable {
+	public static func <(lhs: CGRect, rhs: CGRect) -> Bool {
+		lhs.area < rhs.area
+	}
+}
 
-extension CGRect {
+public extension CGRect {
+	var area: CGFloat { width * height }
+	
+	static let unit = CGRect(x: 0, y: 0, width: 1, height: 1)
 	#if os(iOS)
-		public typealias Placement = UIView.ContentMode
+		typealias Placement = UIView.ContentMode
 	#else
-        public enum Placement: Int { case scaleToFill, scaleAspectFit, scaleAspectFill, none, center, top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight }
+		enum Placement: Int { case scaleToFill, scaleAspectFit, scaleAspectFill, none, center, top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight }
 	#endif
 }
 
