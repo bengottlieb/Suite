@@ -17,6 +17,7 @@ import Combine
 	}
 	
 	@ObservedObject private var storage: Storage<Item>
+	public var url: URL { storage.url }
 	
 	public func save() {
 		storage.startSave()
@@ -66,7 +67,8 @@ import Combine
 	public func save() {
 		storage.startSave()
 	}
-	
+	public var url: URL { storage.url }
+
 	public init(url: URL, initialValue: Item?) {
 		storage = Storage(url: url, initial: initialValue)
 	}
