@@ -26,7 +26,7 @@ extension DispatchQueue {
 		semaphore.signal()
 	}
 
-	public static func onMain(_ block: @escaping () -> Void) {
+	@inline(__always)  public static func onMain(_ block: @escaping () -> Void) {
 		if Thread.isMainThread {
 			block()
 		} else {
