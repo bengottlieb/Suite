@@ -12,6 +12,7 @@ import Combine
 import UIKit
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+@available(iOSApplicationExtension, unavailable)
 public class OrientationWatcher: ObservableObject, CustomStringConvertible {
 	public static var instance = OrientationWatcher()
 	
@@ -38,6 +39,7 @@ public class OrientationWatcher: ObservableObject, CustomStringConvertible {
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+@available(iOSApplicationExtension, unavailable)
 public struct InterfaceOrientedView<Contents: View>: View {
 	@ObservedObject var orientationWatcher = OrientationWatcher.instance
 	

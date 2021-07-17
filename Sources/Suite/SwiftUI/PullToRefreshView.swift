@@ -13,6 +13,7 @@ import UIKit
 
 #if os(iOS)
 @available(iOS 13.0, *)
+@available(iOSApplicationExtension, unavailable)
 public struct PullToRefreshIndicator: View {
 	let refresh: (@escaping () -> Void) -> Void
 	let spinnerColor: Color

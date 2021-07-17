@@ -12,6 +12,7 @@ import SwiftUI
 import Studio
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
+@available(iOSApplicationExtension, unavailable)
 public class CurrentDevice: ObservableObject {
 	public static let instance = CurrentDevice()
 

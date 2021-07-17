@@ -59,6 +59,7 @@ public extension UIViewController {
 	}
 }
 
+@available(iOSApplicationExtension, unavailable)
 public extension UIViewController {
 	func share(something: [Any], fromItem barButtonItem: UIBarButtonItem? = nil, fromView: UIView? = nil, position: CGRect.Placement = .topRight) {
 		guard !something.isEmpty else { return }

@@ -9,6 +9,7 @@
 import UIKit
 
 public extension UIView {
+	@available(iOSApplicationExtension, unavailable)
     static func resignAllFirstResponders() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
@@ -24,6 +25,7 @@ public extension UIView {
 		return capturedImage
 	}
 	
+	@available(iOSApplicationExtension, unavailable)
 	static var frontSafeAreaInsets: UIEdgeInsets {
 		if #available(iOS 13.0, *) {
 			return UIApplication.shared.currentScene?.frontWindow?.rootViewController?.view.safeAreaInsets ?? .zero

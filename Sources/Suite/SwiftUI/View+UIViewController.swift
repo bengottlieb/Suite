@@ -13,6 +13,7 @@ import UIKit
 import SwiftUI
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+@available(iOSApplicationExtension, unavailable)
 public class EnclosingViewControllerContainer: CustomStringConvertible {
 	weak var _viewController: UIViewController?
 	public init() { }
@@ -34,11 +35,13 @@ public class EnclosingViewControllerContainer: CustomStringConvertible {
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+@available(iOSApplicationExtension, unavailable)
 public struct EnclosingViewControllerKey: EnvironmentKey {
     public static var defaultValue = EnclosingViewControllerContainer()
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+@available(iOSApplicationExtension, unavailable)
 extension EnvironmentValues {
     public var enclosingViewControllerContainer: EnclosingViewControllerContainer {
         get { self[EnclosingViewControllerKey.self] }
@@ -47,11 +50,13 @@ extension EnvironmentValues {
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+@available(iOSApplicationExtension, unavailable)
 public protocol ContainedInViewController {
 	var enclosingViewControllerContainer: EnclosingViewControllerContainer { get }
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+@available(iOSApplicationExtension, unavailable)
 public extension View {
 	var enclosingViewController: UIViewController? {
 		return (self as? ContainedInViewController)?.enclosingViewControllerContainer.viewController
