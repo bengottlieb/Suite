@@ -93,7 +93,7 @@ public class InMemoryCache<Element: Cachable>: Cache<Element> {
 		return super.hasCachedValue(for: url)
 	}
 
-	func key(for url: URL) -> String { url.absoluteString.sha256 }
+	func key(for url: URL) -> String { url.normalizedString.sha256 }
 }
 
 #endif

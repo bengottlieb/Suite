@@ -62,7 +62,6 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 				return Fail(outputType: Element.self, failure: CacheError.failedToDecode(url, file, error)).eraseToAnyPublisher()
 			}
 		}
-
 		return super.fetch(for: url, caching: caching)
 	}
 	
@@ -79,7 +78,7 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 	}
 	
 	func location(for url: URL) -> URL {
-		let filename = url.absoluteString.sha256
+		let filename = url.normalizedString.sha256
 		
 		return root.appendingPathComponent(filename).appendingPathExtension(fileExtension)
 	}

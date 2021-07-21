@@ -118,6 +118,29 @@ public extension URL {
 	var modifiedAt: Date? {
 		fileAttributes?[.modificationDate] as? Date
 	}
+	
+	var normalizedString: String {
+		guard let components = URLComponents(url: self, resolvingAgainstBaseURL: true) else { return absoluteString }
+		
+		let queryItems = components.queryItems?.sorted() ?? []
+		let queryString = queryItems.map { $0.name + "=" + $0.value }.joined(separator: "&")
+		let scheme = components.scheme ?? "https"
+		let host = components.host ?? "sample.com"
+		let path = components.path
+		
+		var result = scheme + "://" + host
+		if let port = components.port { result += ":\(port)" }
+		result += path
+		if queryItems.isNotEmpty { result += "?" + queryString }
+		
+		return result
+	}
+}
+
+extension URLQueryItem: Comparable {
+	public static func <(lhs: URLQueryItem, rhs: URLQueryItem) -> Bool {
+		lhs.name < rhs.name
+	}
 }
 
 #if os(OSX)
