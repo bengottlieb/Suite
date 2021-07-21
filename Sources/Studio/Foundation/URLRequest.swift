@@ -8,6 +8,13 @@
 import Foundation
 
 public extension URLRequest {
+	enum RequestMethod: String { case get, put, post, delete, head, connect, patch, options, trace }
+	
+	var requestMethod: RequestMethod {
+		get { RequestMethod(rawValue: httpMethod?.lowercased() ?? "") ?? .get }
+		set { httpMethod = newValue.rawValue.uppercased() }
+	}
+	
 	var curl: String {
 		guard let url = url else { return "" }
 		var baseCommand = "curl \"\(url.absoluteString)\""
@@ -18,8 +25,8 @@ public extension URLRequest {
 		
 		var command = [baseCommand]
 		
-		if let method = httpMethod, method != "GET", method != "HEAD" {
-			command.append("-X \(method)")
+		if requestMethod != .get, requestMethod != .head {
+			command.append("-X \(requestMethod.rawValue)")
 		}
 		
 		if let headers = allHTTPHeaderFields {
