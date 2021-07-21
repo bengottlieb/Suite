@@ -69,8 +69,8 @@ public extension Encodable {
 		return String(data: data, encoding: .utf8)
 	}
 
-	func asJSON() throws -> JSONDictionary {
-		let data = try asJSONData()
+	func asJSON(using encoder: JSONEncoder = .default) throws -> JSONDictionary {
+		let data = try asJSONData(using: encoder)
 		return try JSONSerialization.jsonObject(with: data, options: []) as? JSONDictionary ?? [:]
 	}
 
