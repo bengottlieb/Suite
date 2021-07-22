@@ -21,12 +21,19 @@ public enum HTTPError: Error, LocalizedError {
     case networkError(URL?, Error)
     case decodingError(URL?, DecodingError)
 
-    var isOffline: Bool {
-        switch self {
-        case .offline: return true
-        default: return false
-        }
-    }
+	public var isOffline: Bool {
+		 switch self {
+		 case .offline: return true
+		 default: return false
+		 }
+	}
+
+	public var isServerError: Bool {
+		 switch self {
+		 case .serverError: return true
+		 default: return false
+		 }
+	}
 
 	public var data: Data? {
 		switch self {
