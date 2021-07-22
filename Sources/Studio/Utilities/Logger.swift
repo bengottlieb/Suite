@@ -126,8 +126,8 @@ public class Logger {
 	}
 	
 	public func log(error: Error?, _ msg: @autoclosure () -> String, level: Level = .mild) {
-		if level > self.level { return }
-		let message = "⚠️ \(msg()) \(error?.localizedDescription ?? "")"
+		guard level <= self.level, let err = error else { return }
+		let message = "⚠️ \(msg()) \(err)"
 		output(message)
 	}
 }
