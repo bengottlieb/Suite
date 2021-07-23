@@ -44,7 +44,7 @@ public class Reachability {
 	public enum ReachabilityError: Error { case offline }
 	
 	public struct Notifications {
-		static let reachabilityChanged = Notification.Name("Reachability.Notifications.reachabilityChanged")
+		public static let reachabilityChanged = Notification.Name("Reachability.Notifications.reachabilityChanged")
 	}
 	
 	public enum Connection: CustomStringConvertible {
