@@ -79,8 +79,9 @@ public extension Date {
 				times.append(Date.Time(hour: hour, minute: 0))
 			}
 			
-			for hour in (hour + 1)...(end.hour) {
-				times.append(Date.Time(hour: hour, minute: 0))
+			let end = end.hour <= hour ? end.hour + 12 : end.hour
+			for hour in (hour + 1)...(end) {
+				times.append(Date.Time(hour: hour % 24, minute: 0))
 			}
 			
 			return times
@@ -178,6 +179,10 @@ public extension Date {
 		
 		public var hourMinuteString: String {
 			date.localTimeString(date: .none, time: .short)
+		}
+
+		public var hourString: String {
+			DateFormatter(format: "h").string(from: date)
 		}
 	}
 
