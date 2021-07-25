@@ -12,6 +12,14 @@ import CoreData
 
 
 public extension NSManagedObjectContext {
+	var isEmpty: Bool {
+		guard let names = persistentStoreCoordinator?.managedObjectModel.entitiesByName.keys else { return true }
+		for name in names {
+			if self.count(of: name) > 0 { return false }
+		}
+		return true
+	}
+
 	func encapsulate<T: NSManagedObject>(_ object: T, perform: @escaping (T) -> Void) {
 		self.perform {
 			if let obj = self.instantiate(object) {
