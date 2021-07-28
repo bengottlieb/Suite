@@ -26,7 +26,7 @@ public extension TimeInterval {
 	var leftoverMinutes: Int { return Int(self / .minute) % 60 }
 	var leftoverSeconds: Int { return Int(self) % 60 }
 
-	enum DurationStyle { case hours, minutes, seconds, centiseconds, milliseconds }
+	enum DurationStyle { case hours, minutes, secondsNoHours, seconds, centiseconds, milliseconds }
 	
 	func durationString(style: DurationStyle = .seconds, showLeadingZero: Bool = false, roundUp: Bool = true) -> String {
 		if roundUp {
@@ -42,6 +42,9 @@ public extension TimeInterval {
 			
 		case .minutes:
 			return String(format: leading + ":%02d", hours, minutes % 60)
+
+		case .secondsNoHours:
+			return String(format: leading + ":%02d", minutes, seconds % 60)
 
 		case .seconds:
 			if hours > 0 { return String(format: leading + ":%02d:%02d", hours, minutes % 60, seconds % 60) }
