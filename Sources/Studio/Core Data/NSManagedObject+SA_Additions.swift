@@ -49,7 +49,7 @@ public extension NSManagedObject {
 		self.managedObjectContext?.refresh(self, mergeChanges: merge)
 	}
 
-	func save(wait: Bool = true, toDisk: Bool = true, completion: ((Error?) -> Void)? = nil) {
+	func save(wait: Bool = true, toDisk: Bool = true, completion: (ErrorCallback)? = nil) {
 		self.managedObjectContext?.saveContext(wait: wait, toDisk: toDisk, completion: completion)
 	}
 	

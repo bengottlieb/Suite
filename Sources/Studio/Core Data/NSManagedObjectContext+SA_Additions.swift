@@ -55,7 +55,7 @@ public extension NSManagedObjectContext {
 		return 0
 	}
 	
-	@objc func saveContext(wait: Bool = true, toDisk: Bool = false, ignoreHasChanges: Bool = false, completion: ((Error?) -> Void)? = nil) {
+	@objc func saveContext(wait: Bool = true, toDisk: Bool = false, ignoreHasChanges: Bool = false, completion: (ErrorCallback)? = nil) {
 		let context: NSManagedObjectContext? = self
 		var saveError: Error?
 		

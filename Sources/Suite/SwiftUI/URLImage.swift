@@ -26,10 +26,10 @@ public struct URLImage: View {
 	let placeholder: Image?
 	let imageURL: URL?
 	let contentMode: ContentMode
-	let errorCallback: ((Error?) -> Void)?
+	let errorCallback: ErrorCallback?
 	@State var frameworkImage: FrameworkImage?
 	
-	public init(url: URL?, contentMode: ContentMode = .fit, placeholder: Image? = nil, errorCallback: ((Error?) -> Void)? = nil) {
+	public init(url: URL?, contentMode: ContentMode = .fit, placeholder: Image? = nil, errorCallback: ErrorCallback? = nil) {
 		imageURL = url
 		self.contentMode = contentMode
 		self.placeholder = placeholder
