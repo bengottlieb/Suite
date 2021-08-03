@@ -80,7 +80,7 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 	func location(for url: URL) -> URL {
 		let filename = url.normalizedString.sha256
 		
-		return root.appendingPathComponent(filename).appendingPathExtension(fileExtension)
+		return root.appendingPathComponent(filename).appendingPathExtension(url.pathExtension.isEmpty ? fileExtension : url.pathExtension)
 	}
 	
 	public override func clear(itemFor url: URL) {
@@ -122,4 +122,23 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 	}
 }
 
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+extension DiskCache where Element == Data {
+	public func fetchFile(for url: URL, caching: CachePolicy = .normal) -> AnyPublisher<URL, Error> {
+		if url.isFileURL { return Just(url).setFailureType(to: Error.self).eraseToAnyPublisher() }
+		let file = location(for: url)
+		
+		if let info = cacheInfo(for: url), !caching.shouldIgnoreLocal(forDate: info.cachedAt) {
+			return Just(file).setFailureType(to: Error.self).eraseToAnyPublisher()
+		}
+		
+		return super.fetch(for: url, caching: caching)
+			.tryMap { data in
+				self.checkForRootDirectory()
+				try data.write(to: file)
+				return file
+			}
+			.eraseToAnyPublisher()
+	}
+}
 #endif
