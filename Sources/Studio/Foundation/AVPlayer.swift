@@ -36,4 +36,16 @@ import UIKit
 			self.init(url: url)
 		}
 	}
+
+@available(watchOS 6.0, *)
+public extension AVAudioPlayer {
+	func seekTo(seconds: TimeInterval) {
+		self.currentTime = seconds
+	}
+
+	func seekTo(percent: Double) {
+		let time = self.duration * percent
+		self.seekTo(seconds: time)
+	}
+}
 #endif
