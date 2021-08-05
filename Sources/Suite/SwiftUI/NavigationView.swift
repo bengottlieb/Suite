@@ -11,7 +11,7 @@
 import SwiftUI
 import Combine
 
-@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
+@available(OSX 11, iOS 13.0, watchOS 6.0, *)
 public struct OptionalNavigationLink<Check, Content: View, Dest: View>: View {
 	@Binding var check: Check?
 	var destination: (Check) -> Dest
@@ -28,7 +28,7 @@ public struct OptionalNavigationLink<Check, Content: View, Dest: View>: View {
 	}
 }
 
-@available(OSX 10.15, iOS 14.0, watchOS 7.0, *)
+@available(OSX 11, iOS 14.0, watchOS 7.0, *)
 public extension View {
     func navigationLink<Content: Equatable, Destination: View>(boundTo: Binding<Content?>, destination: @escaping (Content) -> Destination) -> some View {
         ContainedContentNavigationLink(root: self, binding: boundTo, destination: destination)
@@ -39,7 +39,7 @@ public extension View {
     }
 }
 
-@available(OSX 10.15, iOS 14.0, watchOS 7.0, *)
+@available(OSX 11, iOS 14.0, watchOS 7.0, *)
 struct ContainedOptionalNavigationLink<Root: View, Destination: View>: View {
     let root: Root
     @Binding var binding: Bool
@@ -58,7 +58,7 @@ struct ContainedOptionalNavigationLink<Root: View, Destination: View>: View {
     }
 }
 
-@available(OSX 10.15, iOS 14.0, watchOS 7.0, *)
+@available(OSX 11, iOS 14.0, watchOS 7.0, *)
 struct ContainedContentNavigationLink<Root: View, Content: Equatable, Destination: View>: View {
     let root: Root
     @State var isLinkActive = false
