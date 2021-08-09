@@ -22,16 +22,17 @@ public struct Gestalt {
 		#if DEBUG
 			return .development
 		#else
-		#if os(OSX)
-			let bundlePath = Bundle.main.bundleURL
-			let receiptURL = bundlePath.appendingPathComponent("Contents").appendingPathComponent("_MASReceipt").appendingPathComponent("receipt")
-			
-			return FileManager.default.fileExists(at: receiptURL) ? .appStore : .development
-		#endif
-			if isOnSimulator { return .development }
-			if Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt" && MobileProvisionFile.default?.properties["ProvisionedDevices"] == nil { return .testflight }
-			
-			return .appStore
+			#if os(OSX)
+				let bundlePath = Bundle.main.bundleURL
+				let receiptURL = bundlePath.appendingPathComponent("Contents").appendingPathComponent("_MASReceipt").appendingPathComponent("receipt")
+				
+				return FileManager.default.fileExists(at: receiptURL) ? .appStore : .development
+			#else
+				if isOnSimulator { return .development }
+				if Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt" && MobileProvisionFile.default?.properties["ProvisionedDevices"] == nil { return .testflight }
+				
+				return .appStore
+			#endif
 		#endif
 	}
 	public enum DebugLevel: Int, Comparable { case none, testFlight, internalTesting, debugging
