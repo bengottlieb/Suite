@@ -50,14 +50,17 @@ class KeyboardObserver: ObservableObject {
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 public struct KeyboardSpacer: View {
-	public init() { }
+	public init(offset: CGFloat = 0) {
+		self.offset = offset
+	}
 	
+	let offset: CGFloat
 	@ObservedObject var keyboard = KeyboardObserver.instance
 	public var body: some View {
 		Rectangle()
 			.fill(Color.clear)
 			.edgesIgnoringSafeArea(.bottom)
-			.frame(height: keyboard.visibleHeight)
+			.frame(height: max(keyboard.visibleHeight - offset, 0))
 			.animation(Animation.easeOut(duration: keyboard.animationDuration))
 	}
 }
