@@ -30,11 +30,13 @@ public extension Publisher where Output == (data: Data, response: URLResponse) {
 
 @available(iOS 13.0, watchOS 6.0, OSX 10.15, *)
 public extension Publisher where Output == (data: Data, response: HTTPURLResponse), Failure == HTTPError {
-	func responseData(logged: Bool = false) -> AnyPublisher<Data, HTTPError> {
+	func responseData(logLabel: String? = nil) -> AnyPublisher<Data, HTTPError> {
 		tryMap { data, response in
-			if logged {
-				logg((response.url?.absoluteString ?? "No URL") + "\n\n")
+			if let label = logLabel {
+				logg("--- " + label + " -------------------------------------------------------------")
+				logg("URL: " + (response.url?.absoluteString ?? "No URL") + "\n")
 				logg(String(data: data, encoding: .utf8) ?? "bad data")
+				logg("-------------------------------------------------------------\n\n")
 			}
 			
 			switch response.statusCode {
