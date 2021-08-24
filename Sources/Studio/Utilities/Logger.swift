@@ -42,6 +42,7 @@ public class Logger {
 	public var showTimestamps = true { didSet { self.timestampStart = Date() }}
 	public var timestampStart = Date()
 	public var logErrors: Bool { level > .mild }
+	var redirected: ((String) -> Void)?
 	
 	public func log(to url: URL, clearingFirst: Bool = true) {
 		fileURL = url
@@ -54,6 +55,11 @@ public class Logger {
 		}
 	}
 	
+	public func redirect(showingTimestamps: Bool = false, to block: ((String) -> Void)?) {
+		showTimestamps = showingTimestamps
+		redirected = block
+	}
+	
 	public enum Special { case `break` }
 	public enum Level: Int, Comparable {
 		case off, quiet, mild, loud, verbose
@@ -61,6 +67,10 @@ public class Logger {
 	}
 	
 	func output(_ string: String) {
+		if let redirect = redirected {
+			redirect(string)
+			return
+		}
 		print(string)
 		
 		if let url = fileURL, let data = string.data(using: .utf8) {
