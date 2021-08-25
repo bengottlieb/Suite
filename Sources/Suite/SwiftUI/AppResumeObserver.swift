@@ -6,10 +6,11 @@
 //
 
 #if canImport(Combine)
-import Foundation
+import UIKit
 import Combine
 
-@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
+#if os(iOS)
+@available(iOS 13.0, *)
 public class AppResumeObserver: ObservableObject {
 	public static let instance = AppResumeObserver()
 
@@ -18,8 +19,9 @@ public class AppResumeObserver: ObservableObject {
 	init() {
 		cancellable = UIApplication.willEnterForegroundNotification.publisher()
 			.sink { _ in
-				self.objectWillChange.send()
+				DispatchQueue.main.async { self.objectWillChange.send() }
 			}
 	}
 }
+#endif
 #endif
