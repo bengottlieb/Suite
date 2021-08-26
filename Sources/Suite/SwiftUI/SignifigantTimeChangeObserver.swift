@@ -7,6 +7,7 @@
 //
 
 #if canImport(Combine)
+#if canImport(UIKit)
 import UIKit
 import Combine
 
@@ -24,5 +25,6 @@ public class SignifigantTimeChangeObserver: ObservableObject {
 			}
 	}
 }
+#endif
 #endif
 #endif

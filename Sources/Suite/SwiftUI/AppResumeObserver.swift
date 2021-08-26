@@ -6,6 +6,7 @@
 //
 
 #if canImport(Combine)
+#if canImport(UIKit)
 import UIKit
 import Combine
 
@@ -23,5 +24,6 @@ public class AppResumeObserver: ObservableObject {
 			}
 	}
 }
+#endif
 #endif
 #endif
