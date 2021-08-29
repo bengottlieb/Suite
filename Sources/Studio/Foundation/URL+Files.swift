@@ -34,6 +34,12 @@ public extension URL {
 		return url
 	}
 
+	static func tempFile(named path: String) -> URL {
+		let url = URL.temp + path
+		_ = url.dropLast().existingDirectory
+		return url
+	}
+
 	static func library(named path: String) -> URL {
 		let url = URL.library + path
 		_ = url.dropLast().existingDirectory
