@@ -62,6 +62,22 @@ public extension Encodable {
 	var stringValue: String? {
 		stringValue(from: JSONEncoder())
 	}
+
+	var prettyJSON: String? {
+		do {
+			let json = try asJSON()
+			let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
+			return String(data: data, encoding: .utf8)
+		} catch {
+			return "\(error)"
+		}
+	}
+
+	func logJSON() {
+		if let json = prettyJSON {
+			print(json)
+		}
+	}
 	
 	func stringValue(from encoder: JSONEncoder) -> String? {
 		guard let data = try? encoder.encode(self) else { return nil }
