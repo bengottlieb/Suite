@@ -7,8 +7,12 @@
 
 import Foundation
 
+public protocol CondensableCondensate: Codable {
+	var version: Int { get set }
+}
+
 public protocol Condensable {
-	associatedtype Condensate: Codable
+	associatedtype Condensate: CondensableCondensate
 	
 	func reconstitute(condensed: Condensate) throws
 	var condensed: Condensate? { get }
@@ -39,6 +43,7 @@ public extension Condensable {
 	
 	func load(payload: JSONDictionary) throws {
 		let condensed = try Condensate.load(from: payload)
+		if let version = self.condensed?.version, version >= condensed.version { return }
 		try self.reconstitute(condensed: condensed)
 	}
 }
