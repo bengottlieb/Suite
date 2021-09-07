@@ -8,13 +8,13 @@
 import Foundation
 import CoreData
 
-public func logg(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
+public func logg(_ msg: @escaping @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
 public func logg<What: AnyObject>(raw: What, _ level: Logger.Level = .mild) { Logger.instance.log(raw: raw, level) }
 public func logg(_ special: Logger.Special, _ level: Logger.Level = .mild) { Logger.instance.log(special, level: level) }
-public func dlogg(_ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
-public func logg(error: Error?, _ msg: @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(error: error, msg(), level: level) }
+public func dlogg(_ msg: @escaping @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(msg(), level: level) }
+public func logg(error: Error?, _ msg: @escaping @autoclosure () -> String, _ level: Logger.Level = .mild) { Logger.instance.log(error: error, msg(), level: level) }
 public func dlogg(_ something: Any, _ level: Logger.Level = .mild) { Logger.instance.log("\(something)", level: level) }
-public func logg<T>(result: Result<T, Error>, _ msg: @autoclosure () -> String) {
+public func logg<T>(result: Result<T, Error>, _ msg: @escaping @autoclosure () -> String) {
 	switch result {
 	case .failure(let error): logg(error: error, msg())
 	default: break
@@ -24,7 +24,7 @@ public func logg<T>(result: Result<T, Error>, _ msg: @autoclosure () -> String) 
 #if canImport(Combine)
 import Combine
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
-public func logg<Failure>(completion: Subscribers.Completion<Failure>, _ msg: @autoclosure () -> String) {
+public func logg<Failure>(completion: Subscribers.Completion<Failure>, _ msg: @escaping @autoclosure () -> String) {
 	switch completion {
 	case .failure(let error): logg(error: error, msg())
 	default: break
@@ -37,6 +37,7 @@ public class Logger {
 	
 	private init() { }
 	
+	private var serializer = DispatchQueue(label: "logger", qos: .userInitiated)
 	public var fileURL: URL?
 	var logFileExists = false
 	public var showTimestamps = true { didSet { self.timestampStart = Date() }}
@@ -127,15 +128,17 @@ public class Logger {
 		self.log("\(Unmanaged.passUnretained(raw).toOpaque())", level: level)
 	}
 	
-	public func log(_ msg: @autoclosure () -> String, level: Level = .mild) {
-		if level > self.level { return }
-		var message = msg()
-		
-		if showTimestamps { message = String(format: "%.04f - ", Date().timeIntervalSince(timestampStart)) + message }
-		output(message)
+	public func log(_ msg: @escaping @autoclosure () -> String, level: Level = .mild) {
+		serializer.async {
+			if level > self.level { return }
+			var message = msg()
+			
+			if self.showTimestamps { message = String(format: "%.04f - ", Date().timeIntervalSince(self.timestampStart)) + message }
+			self.output(message)
+		}
 	}
 	
-	public func log(error: Error?, _ msg: @autoclosure () -> String, level: Level = .mild) {
+	public func log(error: Error?, _ msg: @escaping @autoclosure () -> String, level: Level = .mild) {
 		guard level <= self.level, let err = error else { return }
 		let message = "⚠️ \(msg()) \(err)"
 		output(message)
