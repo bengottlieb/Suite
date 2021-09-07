@@ -140,7 +140,7 @@ public class Logger {
 	
 	public func log(error: Error?, _ msg: @escaping @autoclosure () -> String, level: Level = .mild) {
 		guard level <= self.level, let err = error else { return }
-		let message = "⚠️ \(msg()) \(err)"
+		let message = "⚠️ \(msg()) \(err) \n\(err.localizedDescription)\n\n"
 		output(message)
 	}
 }
