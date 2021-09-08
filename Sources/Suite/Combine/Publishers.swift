@@ -74,7 +74,7 @@ public extension AnyPublisher {
 	func onSuccess(logError: Bool = Logger.instance.logErrors, _ completion: @escaping (Output) -> Void) {
 		subscribe(Subscribers.Sink(receiveCompletion: { (result: Subscribers.Completion<Failure>) in
 			if logError, case .failure(let err) = result {
-				logg("Publisher failed:\n=========================================\n \(err.localizedDescription)\n=========================================\n")
+				logg("Publisher failed:\n=========================================\n \(err)\n=========================================\n")
 			}
 		}, receiveValue: { (result: Output) in
 			completion(result)

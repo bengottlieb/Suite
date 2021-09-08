@@ -14,6 +14,7 @@ extension Optional where Wrapped == URL {
 public enum HTTPError: Error, LocalizedError {
     case nonHTTPResponse(URL?, Data)
     case offline
+	 case other(Error?)
     case requestFailed(URL?, Int, Data)
     case redirectError(URL?, Int, Data)
     case serverError(URL?, Int, Data)
@@ -21,6 +22,15 @@ public enum HTTPError: Error, LocalizedError {
     case networkError(URL?, Error)
     case decodingError(URL?, DecodingError)
 
+	public init(_ url: URL?, _ error: Error) {
+		if let err = error as? HTTPError {
+			self = err
+		} else if let decode = error as? DecodingError {
+			self = .decodingError(url, decode)
+		} else {
+			self = .networkError(url, error)
+		}
+	}
 	public var isOffline: Bool {
 		 switch self {
 		 case .offline: return true
@@ -45,6 +55,7 @@ public enum HTTPError: Error, LocalizedError {
 		case .unknownError(_, _, let data): return data
 		case .decodingError: return nil
 		case .offline: return nil
+		case .other: return nil
 		}
 	}
     
@@ -58,6 +69,7 @@ public enum HTTPError: Error, LocalizedError {
         case .unknownError(_, let code, let data): return prettyString("Request failed", nil, code, data)
 		  case .networkError(_, let err): return err.localizedDescription
         case .decodingError(_, let err): return err.localizedDescription
+		  case .other(let err): return err?.localizedDescription ?? "unknown error"
         }
     }
 	
@@ -69,8 +81,10 @@ public enum HTTPError: Error, LocalizedError {
 		case .redirectError(let url, let code, let data): return prettyString("Request failed", url, code, data)
 		case .serverError(let url, let code, let data): return prettyString("Request failed", url, code, data)
 		case .unknownError(let url, let code, let data): return prettyString("Request failed", url, code, data)
-	 case .networkError(let url, let err): return url.absoluteString() + ": " + err.localizedDescription
+	   case .networkError(let url, let err): return url.absoluteString() + ": " + err.localizedDescription
 		case .decodingError(let url, let err): return url.absoluteString() + ": " + err.localizedDescription
+		case .other(let err): return err?.localizedDescription ?? "unknown error"
+
 		}
 	}
 
@@ -82,6 +96,7 @@ public enum HTTPError: Error, LocalizedError {
 
     public var isRetriable: Bool {
         switch self {
+		  case .other: return false
         case .offline: return false
         case .redirectError: return false
         case .unknownError: return false
