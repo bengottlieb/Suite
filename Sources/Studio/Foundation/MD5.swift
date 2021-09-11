@@ -8,7 +8,7 @@
 import Foundation
 import CryptoKit
 
-@available(watchOS 6.0, iOS 13.0, *)
+@available(watchOS 6.0, iOS 13.0, macOS 10.15, *)
 public extension String {
 	var md5: String? {
 		guard let data = data(using: .utf8) else { return nil }
@@ -16,14 +16,14 @@ public extension String {
 	 }
 }
 
-@available(watchOS 6.0, iOS 13.0, *)
+@available(watchOS 6.0, iOS 13.0, macOS 10.15, *)
 public extension Data {
 	var md5: String? {
 		return Insecure.MD5.hash(data: self).map { String(format: "%02hhx", $0) }.joined()
 	 }
 }
 
-@available(watchOS 6.0, iOS 13.0, *)
+@available(watchOS 6.0, iOS 13.0, macOS 10.15, *)
 public extension URL {
 	var md5: String? {
 		guard isFileURL, let data = try? Data(contentsOf: self) else { return nil }
