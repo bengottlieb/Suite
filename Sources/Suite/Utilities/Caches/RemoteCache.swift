@@ -27,7 +27,7 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 		super.init(backingCache: nil)
 	}
 	
-	public override func cachedValue(for url: URL) -> Element? { nil }
+	public override func cachedValue(for url: URL, newerThan date: Date? = nil) -> Element? { nil }
 	
 	public override func fetch(for url: URL, caching: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
         if caching != .skipLocal, let inflight = inflightRequests[url] { return inflight }

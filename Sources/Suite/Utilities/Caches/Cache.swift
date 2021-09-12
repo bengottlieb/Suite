@@ -141,8 +141,8 @@ public class Cache<Element: Cachable>: NSObject {
 		backingCache?.store(element, for: url)
 	}
 	
-	public func cachedValue(for url: URL) -> Element? { backingCache?.cachedValue(for: url) }
-	public func hasCachedValue(for url: URL) -> Bool { backingCache?.hasCachedValue(for: url) ?? false }
+	public func cachedValue(for url: URL, newerThan date: Date?) -> Element? { backingCache?.cachedValue(for: url, newerThan: date) }
+	public func hasCachedValue(for url: URL, newerThan date: Date?) -> Bool { backingCache?.hasCachedValue(for: url, newerThan: date) ?? false }
 	
 	public func clear(itemFor url: URL) { backingCache?.clear(itemFor: url) }
 	

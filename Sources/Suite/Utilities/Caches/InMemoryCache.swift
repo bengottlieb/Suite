@@ -73,12 +73,15 @@ public class InMemoryCache<Element: Cachable>: Cache<Element> {
         super.store(element, for: url)
     }
 	
-	public override func cachedValue(for url: URL) -> Element? {
+	public override func cachedValue(for url: URL, newerThan: Date? = nil) -> Element? {
         let key = self.key(for: url)
         return serialize {
+				if let newerThan = newerThan, let date = self.cache[key]?.cachedAt, date < newerThan {
+					return backingCache?.cachedValue(for: url, newerThan: date)
+				}
             if let item = self.cache[key]?.item { return item }
             
-            if let cached = super.cachedValue(for: url) {
+				if let cached = super.cachedValue(for: url, newerThan: newerThan) {
                 storeInCache(cached, for: url)
                 return cached
             }
@@ -86,11 +89,16 @@ public class InMemoryCache<Element: Cachable>: Cache<Element> {
         }
 	}
 
-	public override func hasCachedValue(for url: URL) -> Bool {
+	public override func hasCachedValue(for url: URL, newerThan: Date? = nil) -> Bool {
 		let key = self.key(for: url)
 		
-        if serialize({ self.cache[key]?.item }) != nil { return true }
-		return super.hasCachedValue(for: url)
+		
+		if serialize({
+			if let newerThan = newerThan, let date = self.cache[key]?.cachedAt, date < newerThan { return nil }
+			
+			return self.cache[key]?.item
+		}) != nil { return true }
+		return super.hasCachedValue(for: url, newerThan: newerThan)
 	}
 
 	func key(for url: URL) -> String { url.normalizedString.sha256 }

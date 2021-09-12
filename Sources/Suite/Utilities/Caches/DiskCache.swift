@@ -89,20 +89,28 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 		try? FileManager.default.removeItem(at: file)
 	}
 
-	public override func cachedValue(for url: URL) -> Element? {
+	public override func cachedValue(for url: URL, newerThan: Date? = nil) -> Element? {
 		let file = location(for: url)
 		
-		if FileManager.default.fileExists(at: file), let data = try? Data(contentsOf: file), let item = Element.create(with: data) as? Element {
-			return item
+		if FileManager.default.fileExists(at: file) {
+			if let newerThan = newerThan, let createdAt = file.createdAt, createdAt < newerThan {
+				return super.cachedValue(for: url, newerThan: newerThan)
+			}
+			if let data = try? Data(contentsOf: file), let item = Element.create(with: data) as? Element {
+				return item
+			}
 		}
-		return super.cachedValue(for: url)
+		return super.cachedValue(for: url, newerThan: newerThan)
 	}
 
-	public override func hasCachedValue(for url: URL) -> Bool {
+	public override func hasCachedValue(for url: URL, newerThan: Date? = nil) -> Bool {
 		let file = location(for: url)
 		
+		if let newerThan = newerThan, let createdAt = file.createdAt, createdAt < newerThan {
+			return super.hasCachedValue(for: url, newerThan: newerThan)
+		}
 		if FileManager.default.fileExists(at: file) { return true }
-		return super.hasCachedValue(for: url)
+		return super.hasCachedValue(for: url, newerThan: newerThan)
 	}
 
 	public override func store(_ element: Element, for url: URL) {
