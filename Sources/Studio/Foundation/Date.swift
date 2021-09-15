@@ -335,6 +335,9 @@ public extension Date {
 		Calendar.current.compare(self, to: other, toGranularity: .day) == .orderedSame
 	}
 	
+	var iso8691String: String {
+		DateFormatter.iso8601.string(from: self)
+	}
 	
 	private func components(which: Calendar.Component) -> DateComponents { return Calendar.current.dateComponents([which], from: self) }
 }

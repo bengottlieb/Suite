@@ -10,13 +10,13 @@ import Foundation
 public extension DateFormatter {
 //	static let iso8601 = DateFormatter(format: "yyyy-MM-dd'T'HH:mm:ss'Z'")
 	
+	
 	static let iso8601: DateFormatter = {
-		let formatter = DateFormatter()
+		let formatter = DateFormatter(format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 		formatter.calendar = Calendar(identifier: .iso8601)
 		formatter.locale = Locale(identifier: "en_US_POSIX")
 		formatter.timeZone = TimeZone(abbreviation: "UTC")
 		
-		formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
 		return formatter
 	}()
 
