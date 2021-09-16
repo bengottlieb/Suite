@@ -15,6 +15,7 @@ public enum HTTPError: Error, LocalizedError {
     case nonHTTPResponse(URL?, Data)
     case offline
 	 case other(Error?)
+	 case message(String?)
     case requestFailed(URL?, Int, Data)
     case redirectError(URL?, Int, Data)
     case serverError(URL?, Int, Data)
@@ -49,6 +50,7 @@ public enum HTTPError: Error, LocalizedError {
 		switch self {
 		case .nonHTTPResponse(_, let data): return data
 		case .requestFailed(_, _, let data): return data
+		case .message: return nil
 		case .redirectError(_, _, let data): return data
 		case .serverError(_, _, let data): return data
 		case .networkError: return nil
@@ -64,6 +66,7 @@ public enum HTTPError: Error, LocalizedError {
 		  case .nonHTTPResponse(let url, let data): return "Non HTTP Response: \(url.absoluteString(replacement: nil)): \(String(data: data, encoding: .utf8) ?? "--")"
         case .offline: return "The connection appears to be offline"
         case .requestFailed(_, let code, let data): return prettyString("Request failed", nil, code, data)
+		  case .message(let msg): return msg
         case .redirectError(_, let code, let data): return prettyString("Request failed", nil, code, data)
         case .serverError(_, let code, let data): return prettyString("Request failed", nil, code, data)
         case .unknownError(_, let code, let data): return prettyString("Request failed", nil, code, data)
@@ -77,6 +80,7 @@ public enum HTTPError: Error, LocalizedError {
 		switch self {
 		case .nonHTTPResponse(let url, let data): return "Non HTTP Response: \(url.absoluteString()): \(String(data: data, encoding: .utf8) ?? "--")"
 		case .offline: return "The connection appears to be offline"
+		case .message(let msg): return msg
 		case .requestFailed(let url, let code, let data): return prettyString("Request failed", url, code, data)
 		case .redirectError(let url, let code, let data): return prettyString("Request failed", url, code, data)
 		case .serverError(let url, let code, let data): return prettyString("Request failed", url, code, data)
@@ -100,6 +104,7 @@ public enum HTTPError: Error, LocalizedError {
         case .offline: return false
         case .redirectError: return false
         case .unknownError: return false
+		  case .message: return false
         case .decodingError: return false
         case .requestFailed(_, let status, _):
             let timeoutStatus = 408
