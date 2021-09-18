@@ -29,13 +29,9 @@ public extension UIView {
 	static var frontSafeAreaInsets: UIEdgeInsets {
 		if #available(iOS 13.0, *) {
 			return UIApplication.shared.currentScene?.frontWindow?.rootViewController?.view.safeAreaInsets ?? .zero
-		}
-        
-        if #available(iOS 11.0, *) {
+		} else {
 			return UIApplication.shared.keyWindow?.rootViewController?.view.safeAreaInsets ?? .zero
 		}
-        
-        return .zero
 	}
 
 	var viewController: UIViewController? {

@@ -5,6 +5,7 @@
 //  Created by Ben Gottlieb on 9/10/21.
 //
 
+#if canImport(CryptoKit)
 import Foundation
 import CryptoKit
 
@@ -31,3 +32,4 @@ public extension URL {
 	 }
 }
 
+#endif

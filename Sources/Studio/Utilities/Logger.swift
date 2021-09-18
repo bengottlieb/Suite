@@ -99,7 +99,11 @@ public class Logger {
 				write("".data(using: .utf8)!, to: url)
 			}
 		} catch {
-			print("Failed to log to file: \(error)")
+			if (error as NSError).code == 4 {
+				logFileExists = false
+			} else {
+				print("Failed to log to file: \(error)")
+			}
 		}
 	}
 	
@@ -133,7 +137,7 @@ public class Logger {
 			if level > self.level { return }
 			var message = msg()
 			
-			if self.showTimestamps { message = String(format: "%.04f - ", Date().timeIntervalSince(self.timestampStart)) + message }
+			if self.showTimestamps { message = String(format: "• %.04f - ", Date().timeIntervalSince(self.timestampStart)) + message }
 			self.output(message)
 		}
 	}
