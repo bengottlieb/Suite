@@ -48,6 +48,8 @@ public extension Bundle {
 		return try? decoder.decode(Type.self, from: data)
 	}
 	
+	var versionString: VersionString { VersionString(version) }
+	
 	struct Directory {
 		public let urls: [URL]
 		init?(bundle: Bundle, name: String, extension ext: String? = nil) {
