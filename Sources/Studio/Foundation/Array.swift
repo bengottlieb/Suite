@@ -27,6 +27,10 @@ public extension Array where Element: Equatable {
 }
 
 public extension Array {
+	func indices(where check: (Element) -> Bool) -> [Int] {
+		indices.filter { check(self[$0]) }
+	}
+
 	func first(_ number: Int) -> [Element] {
 		if number >= count { return self }
 		
