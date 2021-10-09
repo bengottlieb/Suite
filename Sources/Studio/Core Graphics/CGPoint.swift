@@ -14,6 +14,8 @@ import CoreGraphics
 
 public extension CGPoint {
     var size: CGSize { CGSize(width: x, height: y )}
+	 var description: String { "(\(x.string(decimalPlaces: 2, padded: false)), \(y.string(decimalPlaces: 2, padded: false)))"}
+	 var debugDescription: String { "(\(x.string(decimalPlaces: 2, padded: false)), \(y.string(decimalPlaces: 2, padded: false)))"}
 
     func centeredRect(size: CGSize) -> CGRect {
         return CGRect(x: self.x - size.width / 2, y: self.y - size.height / 2, width: size.width, height: size.height)
