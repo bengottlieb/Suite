@@ -14,14 +14,6 @@ import CoreGraphics
 
 public func roundcgf(value: CGFloat) -> CGFloat { return CGFloat(floorf(Float(value))) }
 
-public func -(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-    return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
-}
-
-public func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-    return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
-}
-
 extension CGRect: Comparable {
 	public static func <(lhs: CGRect, rhs: CGRect) -> Bool {
 		lhs.area < rhs.area
