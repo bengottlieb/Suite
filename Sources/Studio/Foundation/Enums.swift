@@ -27,3 +27,10 @@ public extension CaseIterable where Self: Equatable {
 		return all[0]
 	}
 }
+
+public extension Equatable {
+	func next(in options: [Self]) -> Self {
+		guard let index = options.firstIndex(of: self), index < (options.count - 1) else { return options[0]}
+		return options[index + 1]
+	}
+}
