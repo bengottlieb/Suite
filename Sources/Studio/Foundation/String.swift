@@ -23,6 +23,13 @@ public extension String {
 			}
 		}
 	}
+
+	func removingOccurrencesWords(of remove: [String], caseInsensitive: Bool = true) -> String {
+		let components = components(separatedBy: .whitespacesAndNewlines)
+		let removeThese = caseInsensitive ? remove.map { $0.lowercased() } : remove
+		let results = components.filter { !(caseInsensitive ? removeThese.contains($0.lowercased()) : removeThese.contains($0)) }
+		return results.joined(separator: " ")
+	}
 	
 	var abbreviatingWithTildeInPath: String { return String(NSString(string: self).abbreviatingWithTildeInPath) }
 	var expandingTildeInPath: String { return String(NSString(string: self).expandingTildeInPath) }
