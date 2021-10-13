@@ -61,6 +61,8 @@ public extension URL {
 		return self.path.abbreviatingWithTildeInPath
 	}
 
+	var isInBundle: Bool { scheme == "bundle" }
+
 	static let blank: URL = URL(string: "about:blank")!
 	
 	init(withPathRelativeToHome path: String) {

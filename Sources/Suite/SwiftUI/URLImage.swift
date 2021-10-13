@@ -14,11 +14,11 @@ import SwiftUI
 import Combine
 
 #if canImport(UIKit)
-	import UIKit
-	typealias FrameworkImage = UIImage
+import UIKit
+typealias FrameworkImage = UIImage
 #elseif canImport(AppKit)
-	import AppKit
-	typealias FrameworkImage = NSImage
+import AppKit
+typealias FrameworkImage = NSImage
 #endif
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
@@ -34,49 +34,51 @@ public struct URLImage: View {
 		self.contentMode = contentMode
 		self.placeholder = placeholder
 		self.errorCallback = errorCallback
-		if let url = url, let image = ImageCache.instance.cachedValue(for: url) {
-			_frameworkImage = State(wrappedValue: image)
+		if let url = url {
+			if let image = ImageCache.instance.cachedValue(for: url) {
+				_frameworkImage = State(wrappedValue: image)
+			} else if url.isInBundle, let name = url.host?.removingPercentEncoding, let image = UIImage(named: name) {
+				_frameworkImage = State(wrappedValue: image)
+			}
 		}
 	}
 	
-	var imageView: Image {
+	var imageView: Image? {
 		if let image = frameworkImage {
 			#if os(OSX)
-			return Image(nsImage: image)
+				return Image(nsImage: image)
 			#else
-			return Image(uiImage: image)
+				return Image(uiImage: image)
 			#endif
 		}
 		
 		if let placeholder = placeholder { return placeholder }
-		if #available(OSX 10.16, *) {
-			return Image(systemName: "square")
-		} else {
-			return Image("")
-		}
+		return nil
 	}
 	
 	public var body: some View {
-		imageView
-			.resizable()
-			.aspectRatio(contentMode: contentMode)
-			.onAppear() {
-				if let imageURL = imageURL, frameworkImage == nil {
-					ImageCache.instance.fetch(for: imageURL)
-						.receive(on: RunLoop.main)
-						.eraseToAnyPublisher()
-						.onCompletion { result in
-							switch result {
-							case .success(let image):
-								frameworkImage = image
-								
-							case .failure(let err):
-								errorCallback?(err)
+		if let imageView = imageView {
+			imageView
+				.resizable()
+				.aspectRatio(contentMode: contentMode)
+				.onAppear() {
+					if let imageURL = imageURL, frameworkImage == nil {
+						ImageCache.instance.fetch(for: imageURL)
+							.receive(on: RunLoop.main)
+							.eraseToAnyPublisher()
+							.onCompletion { result in
+								switch result {
+								case .success(let image):
+									frameworkImage = image
+									
+								case .failure(let err):
+									errorCallback?(err)
+								}
 							}
-						}
+					}
 				}
-			}
-			.id(imageURL?.absoluteString ?? "--")
+				.id(imageURL?.absoluteString ?? "--")
+		}
 	}
 }
 
