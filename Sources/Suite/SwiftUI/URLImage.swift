@@ -28,6 +28,16 @@ public struct URLImage: View {
 	let contentMode: ContentMode
 	let errorCallback: ErrorCallback?
 	@State var frameworkImage: FrameworkImage?
+
+	func frameworkImage(named name: String) -> FrameworkImage? {
+		#if os(iOS)
+			return UIImage(named: name)
+		#elseif os(macOS)
+			return NSImage(named: name)
+		#else
+			return nil
+		#endif
+	}
 	
 	public init(url: URL?, contentMode: ContentMode = .fit, placeholder: Image? = nil, errorCallback: ErrorCallback? = nil) {
 		imageURL = url
@@ -37,7 +47,7 @@ public struct URLImage: View {
 		if let url = url {
 			if let image = ImageCache.instance.cachedValue(for: url) {
 				_frameworkImage = State(wrappedValue: image)
-			} else if url.isInBundle, let name = url.host?.removingPercentEncoding, let image = UIImage(named: name) {
+			} else if url.isInBundle, let name = url.host?.removingPercentEncoding, let image = frameworkImage(named: name) {
 				_frameworkImage = State(wrappedValue: image)
 			}
 		}

@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Suite",
      platforms: [
-              .macOS(.v11),
+              .macOS(.v10_15),
               .iOS(.v13),
               .watchOS(.v6)
          ],
