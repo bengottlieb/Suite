@@ -13,12 +13,13 @@ import SwiftUI
 import Combine
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
-class KeyboardObserver: ObservableObject {
-	static let instance = KeyboardObserver()
+public class KeyboardObserver: ObservableObject {
+	public static let instance = KeyboardObserver()
 	
-	@Published var visibleHeight: CGFloat = 0
-	@Published var animationDuration: TimeInterval = 0.2
+	@Published public var visibleHeight: CGFloat = 0
+	@Published public var animationDuration: TimeInterval = 0.2
 	var cancellables = Set<AnyCancellable>()
+	public var keyboardIsVisible: Bool { visibleHeight > 0 }
 
 	init() {
 		NotificationCenter.default
