@@ -28,7 +28,7 @@ public struct URLImage: View {
 	let contentMode: ContentMode
 	let errorCallback: ErrorCallback?
 	@State var frameworkImage: FrameworkImage?
-
+	
 	func frameworkImage(named name: String) -> FrameworkImage? {
 		#if os(iOS)
 			return UIImage(named: name)
@@ -67,29 +67,32 @@ public struct URLImage: View {
 	}
 	
 	public var body: some View {
-		if let imageView = imageView {
-			imageView
-				.resizable()
-				.aspectRatio(contentMode: contentMode)
-				.onAppear() {
-					if let imageURL = imageURL, frameworkImage == nil {
-						ImageCache.instance.fetch(for: imageURL)
-							.receive(on: RunLoop.main)
-							.eraseToAnyPublisher()
-							.onCompletion { result in
-								switch result {
-								case .success(let image):
-									frameworkImage = image
-									
-								case .failure(let err):
-									errorCallback?(err)
-								}
-							}
-					}
-				}
-				.id(imageURL?.absoluteString ?? "--")
+		HStack() {
+			if let imageView = imageView {
+				imageView
+					.resizable()
+					.aspectRatio(contentMode: contentMode)
+			}
 		}
+		.onAppear() {
+			if let imageURL = imageURL, frameworkImage == nil {
+				ImageCache.instance.fetch(for: imageURL)
+					.receive(on: RunLoop.main)
+					.eraseToAnyPublisher()
+					.onCompletion { result in
+						switch result {
+						case .success(let image):
+							frameworkImage = image
+							
+						case .failure(let err):
+							errorCallback?(err)
+						}
+					}
+			}
+		}
+		.id(imageURL?.absoluteString ?? "--")
 	}
+
 }
 
 
