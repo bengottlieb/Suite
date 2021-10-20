@@ -8,6 +8,7 @@ public class Reachability: ObservableObject {
 	private let pathMonitor = NWPathMonitor()
 	private var queue: DispatchQueue
 	private var isMonitoring = false
+	private var isStartingUp = false
 	init(queue: DispatchQueue = .main) {
 		self.queue = queue
 		start()
@@ -22,6 +23,8 @@ public class Reachability: ObservableObject {
 			Notifications.reachabilityChanged.notify()
 		}
 		isMonitoring = true
+		isStartingUp = true
+		DispatchQueue.main.async(after: 1.0) { self.isStartingUp = false }
 		pathMonitor.start(queue: queue)
 	}
 	
@@ -38,6 +41,7 @@ public extension Reachability {
 	}
 	
 	var connection: Connection {
+		if !isMonitoring || isStartingUp { return .other }
 		let path = pathMonitor.currentPath
 		if path.usesInterfaceType(.wiredEthernet) {
 			 return .ethernet
