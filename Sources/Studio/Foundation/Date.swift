@@ -338,6 +338,14 @@ public extension Date {
 	var iso8691String: String {
 		DateFormatter.iso8601.string(from: self)
 	}
+
+	init?(iso8691String: String) {
+		if let date = DateFormatter.iso8601.date(from: iso8691String) {
+			self = date
+		} else {
+			return nil
+		}
+	}
 	
 	private func components(which: Calendar.Component) -> DateComponents { return Calendar.current.dateComponents([which], from: self) }
 }
