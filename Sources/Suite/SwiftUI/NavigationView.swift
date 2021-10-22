@@ -24,7 +24,7 @@ public struct OptionalNavigationLink<Check, Content: View, Dest: View>: View {
 	}
 	
 	public var body: some View {
-		NavigationLink(destination: Deferred(destination(check!)), isActive: $check.bool, label: label)
+		NavigationLink(destination: Deferred( { destination(check!) }), isActive: $check.bool, label: label)
 	}
 }
 
