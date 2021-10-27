@@ -151,7 +151,7 @@ struct SwipeActions<Content: View, LeadingViews: View, TrailingViews: View>: Vie
 			}
 			
 			static var previews: some View {
-					SwipeActions(content: Row(), leading: EmptyView(), trailing: Button("Delete", action: { print("Delete") }).padding().frame(maxHeight: .infinity).backgroundColor(.red).foregroundColor(.white), id: "none").frame(height: 50)
+					SwipeActions(content: Row(), leading: EmptyView(), trailing: Button("Delete", action: { logg("Delete") }).padding().frame(maxHeight: .infinity).backgroundColor(.red).foregroundColor(.white), id: "none").frame(height: 50)
 			}
 	}
 #endif

@@ -36,6 +36,12 @@ public extension Array {
 		
 		return Array(self[0..<number])
 	}
+
+	func last(_ number: Int) -> [Element] {
+		if number >= count { return self }
+		
+		return Array(self[count - number..<count])
+	}
 }
 
 public extension Array where Element: Numeric {
