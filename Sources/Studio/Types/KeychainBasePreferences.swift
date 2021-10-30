@@ -36,12 +36,12 @@ import Foundation
 		
 		while true {
 			for child in mirror.children {
-				guard let key = key(from: child.label) else { continue }
+				guard let label = child.label, let key = key(from: child.label) else { continue }
 				
 				if let value = Keychain.instance.get(key) {
-					self.setValue(value, forKey: key)
+					self.setValue(value, forKey: label)
 				}
-				self.addObserver(self, forKeyPath: key, options: .new, context: nil)
+				self.addObserver(self, forKeyPath: label, options: .new, context: nil)
 			}
 			guard let sup = mirror.superclassMirror else { break }
 			mirror = sup

@@ -179,7 +179,7 @@ public extension URL {
         do {
             return try self.bookmarkData(options: [.withSecurityScope], includingResourceValuesForKeys: nil, relativeTo: nil)
         } catch {
-			  logg(error: error, "Unable to extract secore data: \(error)")
+            Studio.logg(error: error, "Unable to extract secure data: \(error)")
             return nil
         }
     }
