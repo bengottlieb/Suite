@@ -52,8 +52,12 @@ public extension Binding where Value: Equatable {
 
 public protocol OptionalType {
 	var isEmpty: Bool { get }
+	mutating func clear()
 }
 extension Optional: OptionalType {
+	public mutating func clear() {
+		self = .none
+	}
 	public var isEmpty: Bool {
 		switch self {
 		case .none: return true
@@ -65,7 +69,19 @@ extension Optional: OptionalType {
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension Binding where Value: OptionalType {
 	var bool: Binding<Bool> {
-		Binding<Bool>(get: { !wrappedValue.isEmpty }, set: { _ in })
+		Binding<Bool>(get: { !wrappedValue.isEmpty }, set: { newValue in
+			if !newValue { wrappedValue.clear() }
+		})
+	}
+	
+	func bool(default defaultValue: Value) -> Binding<Bool>{
+		Binding<Bool>(get: { !wrappedValue.isEmpty }, set: { newValue in
+			if newValue {
+				wrappedValue = defaultValue
+			} else {
+				wrappedValue.clear()
+			}
+		})
 	}
 }
 
