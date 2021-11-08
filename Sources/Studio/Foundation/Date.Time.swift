@@ -15,7 +15,6 @@ extension Date.Time: Identifiable {
 
 public extension Date {
 	func allHours(until end: Date) -> [Date] {
-		var times: [Date] = []
 		var date = self
 		
 		if self.minute == 0 {
@@ -24,14 +23,8 @@ public extension Date {
 			date = self.nearestHour.byAdding(hours: 1)
 		}
 		
-		
-		while true {
-			times.append(date)
-			date = date.nearestHour.byAdding(hours: 1)
-			if date > end { break }
-		}
-
-		return times
+		let count = Calendar.current.dateComponents([.hour], from: self, to: end).hour ?? 1
+		return (0..<count).map { date.addingTimeInterval(TimeInterval($0) * .hour)}
 	}
 	
 	struct TimeRange {

@@ -505,3 +505,23 @@ extension Set where Element == Calendar.Component {
 		[ .era, .year, .month, .day, .hour, .minute, .second, .weekday, .weekdayOrdinal, .quarter, .weekOfMonth, .weekOfYear, .yearForWeekOfYear, .nanosecond, .calendar, .timeZone ]
 	}
 }
+
+public extension Date {
+	enum Meridian { case am, pm }
+
+	var meridian: Meridian {
+		get { hour < 12 ? .am : .pm }
+		set {
+			if meridian == newValue { return }
+			var hour = self.hour
+			
+			if newValue == .pm {
+				hour += 12
+			} else {
+				hour -= 12
+			}
+			
+			self = byChanging(hour: hour)
+		}
+	}
+}
