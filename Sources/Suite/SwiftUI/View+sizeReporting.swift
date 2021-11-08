@@ -35,7 +35,7 @@ public extension View {		// Tracks the size available for the view
 					.background(GeometryReader() { geo -> Color in
 						let rect = geo.frame(in: space)
 						DispatchQueue.main.async {
-							if !firstTimeOnly || frame.wrappedValue == .zero { frame.wrappedValue = rect }
+							if (!firstTimeOnly || frame.wrappedValue == .zero) && frame.wrappedValue != rect  { frame.wrappedValue = rect }
 						}
 						return Color.clear
 					})
