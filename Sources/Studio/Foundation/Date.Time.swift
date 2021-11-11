@@ -180,8 +180,14 @@ public extension Date {
 	}
 
 	var time: Time {
-		let components = Calendar.current.dateComponents([.hour, .minute, .second, .nanosecond], from: self)
-		return Time(hour: components.hour ?? 0, minute: components.minute ?? 0, second: TimeInterval(components.second ?? 0) + min(1, TimeInterval(components.nanosecond ?? 0) / 1_000_000_000))
+		get {
+			let components = Calendar.current.dateComponents([.hour, .minute, .second, .nanosecond], from: self)
+			return Time(hour: components.hour ?? 0, minute: components.minute ?? 0, second: TimeInterval(components.second ?? 0) + min(1, TimeInterval(components.nanosecond ?? 0) / 1_000_000_000))
+		}
+		
+		set {
+			self = byChanging(second: Int(newValue.second), minute: newValue.minute, hour: newValue.hour)
+		}
 	}
 }
 
