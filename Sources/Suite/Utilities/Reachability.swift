@@ -19,12 +19,16 @@ public class Reachability: ObservableObject {
 	func start() {
 		if isMonitoring { return }
 		pathMonitor.pathUpdateHandler = { [weak self] path in
-			self?.objectWillChange.send()
+			self?.objectWillChange.sendOnMain()
 			Notifications.reachabilityChanged.notify()
 		}
 		isMonitoring = true
 		isStartingUp = true
-		DispatchQueue.main.async(after: 1.0) { self.isStartingUp = false }
+		objectWillChange.sendOnMain()
+		DispatchQueue.main.async(after: 1.0) {
+			self.objectWillChange.send()
+			self.isStartingUp = false
+		}
 		pathMonitor.start(queue: queue)
 	}
 	
