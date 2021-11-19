@@ -151,9 +151,9 @@ public extension CGRect {
 			
 		case .scaleAspectFit:
 			newRect = parent
-			if child.aspectRatio < parent.aspectRatio {
-				newSize = CGSize(width: parent.height * child.aspectRatio, height: parent.height)
-			} else if child.aspectRatio > parent.aspectRatio {
+			if child.aspectRatio < parent.aspectRatio {         // left and right letter boxing
+                newSize = CGSize(width: parent.width * (child.aspectRatio / parent.aspectRatio), height: parent.height)
+			} else if child.aspectRatio > parent.aspectRatio {  // top and bottom letter boxin
 				newSize = CGSize(width: parent.width, height: parent.height * (parent.aspectRatio / child.aspectRatio))
 			} else if newSize.width > parent.width {
 				newSize = parent.size
