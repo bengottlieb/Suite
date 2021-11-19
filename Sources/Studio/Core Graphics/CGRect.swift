@@ -154,10 +154,10 @@ public extension CGRect {
 			if child.aspectRatio < parent.aspectRatio {
 				newSize = CGSize(width: parent.height * child.aspectRatio, height: parent.height)
 			} else if child.aspectRatio > parent.aspectRatio {
-				newSize = CGSize(width: parent.height / child.aspectRatio, height: parent.height)
-            } else if newSize.width > parent.width {
-                newSize = parent.size
-            }
+				newSize = CGSize(width: parent.width, height: parent.height * (parent.aspectRatio / child.aspectRatio))
+			} else if newSize.width > parent.width {
+				newSize = parent.size
+			}
 			newRect = CGRect(x: (parent.width - newSize.width) / 2, y: (parent.height - newSize.height) / 2, width: newSize.width, height: newSize.height)
 
 		case .center:
