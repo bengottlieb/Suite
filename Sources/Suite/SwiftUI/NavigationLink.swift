@@ -17,8 +17,17 @@ public struct BoundNavigationLink<Bound, DestinationView: View>: View {
 	}
 	
 	public var body: some View {
-		if let bound = bound {
-			NavigationLink(isActive: .constant(true), destination: { destination(bound) }) { EmptyView() }
+		NavigationLink(isActive: Binding(get: { bound != nil }, set: { _ in }), destination: { Wrapped(parentBound: bound, destination: destination) }) { EmptyView() }
+	}
+	
+	struct Wrapped: View {
+		var parentBound: Bound?
+		@ViewBuilder var destination: (Bound) -> DestinationView
+
+		var body: some View {
+			if let bound = parentBound {
+				destination(bound)
+			}
 		}
 	}
 }
