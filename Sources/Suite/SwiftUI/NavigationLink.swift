@@ -17,10 +17,7 @@ public struct BoundNavigationLink<Bound, DestinationView: View>: View {
 	}
 	
 	public var body: some View {
-		NavigationLink(isActive: Binding(get: { bound != nil }, set: { _ in }), destination: {
-			Wrapped(parentBound: bound, destination: destination)
-				.onDisappear { bound = nil }
-		}) { EmptyView() }
+		NavigationLink(isActive: Binding(get: { bound != nil }, set: { _ in }), destination: { Wrapped(parentBound: bound, destination: destination) }) { EmptyView() }
 	}
 	
 	struct Wrapped: View {
