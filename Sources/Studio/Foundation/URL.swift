@@ -30,6 +30,10 @@ public extension URL {
 		deletingLastPathComponent()
 	}
 
+	var isAppStoreURL: Bool {
+		host?.contains("apps.apple.com") == true
+	}
+
 	var existingDirectory: URL? {
 		if !isFileURL { return nil }
 		
