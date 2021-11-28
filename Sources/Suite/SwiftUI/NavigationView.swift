@@ -24,7 +24,13 @@ public struct OptionalNavigationLink<Check, Content: View, Dest: View>: View {
 	}
 	
 	public var body: some View {
-		NavigationLink(destination: Deferred( { destination(check!) }), isActive: $check.bool, label: label)
+		NavigationLink(destination: Deferred( {
+			if let value = check {
+				destination(value)
+			} else {
+				EmptyView()
+			}
+		}), isActive: $check.bool, label: label)
 	}
 }
 
