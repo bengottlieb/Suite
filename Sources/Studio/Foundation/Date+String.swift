@@ -8,10 +8,11 @@
 import Foundation
 
 public extension Date {
-	enum DateStringStyle { case none, abbr, short, medium, long, full
+	enum DateStringStyle { case none, minimal, abbr, short, medium, long, full
 		var dateFormatterStyle: DateFormatter.Style {
 			switch self {
 			case .none: return .none
+			case .minimal: return .short
 			case .abbr: return .short
 			case .short: return .short
 			case .medium: return .medium
@@ -19,17 +20,15 @@ public extension Date {
 			case .full: return .full
 			}
 		}
-		
 	}
-	enum TimeStringStyle { case none, short, medium, long, full }
-
+	
 	func localTimeString(date dateStyle: DateStringStyle = .short, time timeStyle: DateStringStyle = .short) -> String {
 		let formatter = DateFormatter()
 		
 		let replaceableAMSymbol = "[_AM_]"
 		let replaceablePMSymbol = "[_PM_]"
 
-		if timeStyle == .abbr {
+		if timeStyle == .abbr || timeStyle == .minimal {
 			formatter.amSymbol = replaceableAMSymbol
 			formatter.pmSymbol = replaceablePMSymbol
 		}
@@ -39,7 +38,13 @@ public extension Date {
 		
 		var result = formatter.string(from: self)
 		
-		if timeStyle == .abbr {
+		if timeStyle == .minimal {
+			result = result.replacingOccurrences(of: ":00 \(replaceableAMSymbol)", with: "")
+			result = result.replacingOccurrences(of: ":00 \(replaceablePMSymbol)", with: "")
+
+			result = result.replacingOccurrences(of: replaceableAMSymbol, with: "")
+			result = result.replacingOccurrences(of: replaceablePMSymbol, with: "")
+		} else if timeStyle == .abbr {
 			result = result.replacingOccurrences(of: ":00 \(replaceableAMSymbol)", with: "a")
 			result = result.replacingOccurrences(of: ":00 \(replaceablePMSymbol)", with: "p")
 
