@@ -14,6 +14,11 @@ extension Date.Time: Identifiable {
 #endif
 
 public extension Date {
+	init?(time: Time?) {
+		guard let time = time else { return nil }
+		self.init(calendar: Calendar.current, hour: time.hour, minute: time.minute, second: Int(time.second), nanosecond: 0)
+	}
+
 	func allHours(until end: Date) -> [Date] {
 		var date = self
 		
