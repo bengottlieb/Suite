@@ -42,7 +42,7 @@ public class InMemoryCache<Element: Cachable>: Cache<Element> {
 	
 	public override func clearCache() { self.cache = [:] }
 	
-	public override func fetch(for url: URL, caching: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
+	public override func fetch(for url: URL, caching: URLRequest.CachePolicy = .default) -> AnyPublisher<Element, Error> {
 		let cacheKey = key(for: url)
 		
         if let result = serialize({ if let current = cache[cacheKey], !caching.shouldIgnoreLocal(forDate: current.cachedAt) { return current.item }; return nil }) { return self.just(result) }

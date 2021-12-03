@@ -36,7 +36,7 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 		try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
 	}
 	
-	public override func fetch(for url: URL, caching: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
+	public override func fetch(for url: URL, caching: URLRequest.CachePolicy = .default) -> AnyPublisher<Element, Error> {
 		if url.isFileURL {
 			do {
 				let data = try Data(contentsOf: url)
@@ -132,7 +132,7 @@ public class DiskCache<Element: Cachable>: Cache<Element> {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 extension DiskCache where Element == Data {
-	public func fetchFile(for url: URL, caching: CachePolicy = .normal) -> AnyPublisher<URL, Error> {
+	public func fetchFile(for url: URL, caching: URLRequest.CachePolicy = .default) -> AnyPublisher<URL, Error> {
 		if url.isFileURL { return Just(url).setFailureType(to: Error.self).eraseToAnyPublisher() }
 		let file = location(for: url)
 		

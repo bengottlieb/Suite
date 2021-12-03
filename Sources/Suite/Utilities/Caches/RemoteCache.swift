@@ -29,9 +29,9 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 	
 	public override func cachedValue(for url: URL, newerThan date: Date? = nil) -> Element? { nil }
 	
-	public override func fetch(for url: URL, caching: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
-        if caching != .skipLocal, let inflight = inflightRequests[url] { return inflight }
-		if caching == .skipRemote {
+	public override func fetch(for url: URL, caching: URLRequest.CachePolicy = .default) -> AnyPublisher<Element, Error> {
+        if caching != .reloadIgnoringLocalCacheData, let inflight = inflightRequests[url] { return inflight }
+		if caching == .reloadIgnoringLocalCacheData {
 			return Fail(outputType: Element.self, failure: CacheError.noLocalItemFound(url)).eraseToAnyPublisher()
 		}
 		

@@ -105,23 +105,17 @@ public enum CacheError: Error, LocalizedError { case noURL, notFound(URL), noLoc
 		}
 	}
 }
-public enum CachePolicy: Equatable { case normal, skipRemote, returnLocalIfNewerThan(Date), skipLocal
+public extension URLRequest.CachePolicy {
+	static let `default` = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
 	func shouldIgnoreLocal(forDate: Date?) -> Bool {
 		switch self {
-		case .normal: return false
-		case .skipRemote: return false
-		case .returnLocalIfNewerThan(let limit):
-			guard let date = forDate else { return true }
-			return date > limit
-		case .skipLocal: return true
-		}
-	}
-	
-	public static func ==(lhs: CachePolicy, rhs: CachePolicy) -> Bool {
-		switch (lhs, rhs) {
-		case (.normal, .normal), (.skipRemote, .skipRemote), (.skipLocal, .skipLocal): return true
-		case (.returnLocalIfNewerThan(let date1), .returnLocalIfNewerThan(let date2)): return date1 == date2
-		default: return false
+		case .useProtocolCachePolicy: return false
+		case .reloadIgnoringLocalCacheData: return true
+		case .reloadIgnoringLocalAndRemoteCacheData: return true
+		case .returnCacheDataElseLoad: return false
+		case .returnCacheDataDontLoad: return false
+		case .reloadRevalidatingCacheData: return false
+		@unknown default: return false
 		}
 	}
 }
@@ -132,7 +126,7 @@ public class Cache<Element: Cachable>: NSObject {
 		self.backingCache = backingCache
 		super.init()
 	}
-	public func fetch(for url: URL, caching: CachePolicy = .normal) -> AnyPublisher<Element, Error> {
+	public func fetch(for url: URL, caching: URLRequest.CachePolicy = .default) -> AnyPublisher<Element, Error> {
 		if let backing = backingCache { return backing.fetch(for: url, caching: caching) }
 		return .fail(with: CacheError.notFound(url))
 	}
