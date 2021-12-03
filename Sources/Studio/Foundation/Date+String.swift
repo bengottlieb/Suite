@@ -51,7 +51,7 @@ public extension Date {
 	}
 	
 	var filesystemRepresentation: String {
-		let formatter = DateFormatter(format: "yyyy-MM-dd'T'HH;mm")
+		let formatter = DateFormatter(format: "yyyy-MM-dd'T'HH;mm;ss")
 		
 		return formatter.string(from: self)
 	}
