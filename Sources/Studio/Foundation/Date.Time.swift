@@ -86,9 +86,9 @@ public extension Date {
 		}
 		
 		public func byAdding(hours: Int = 0, minutes: Int = 0, seconds: TimeInterval = 0) -> Time {
-			var second = self.second + seconds
-			var minute = self.minute + minutes
-			var hour = (self.hour + hours + 24) % 24
+			var second = self.second + TimeInterval(Int(seconds) % 60)
+			var minute = self.minute + minutes + Int(seconds / 60) % 60
+			var hour = (self.hour + hours + 24 + Int(seconds / 3600)) % 24
 			
 			if second < 0 {
 				minute -= 1
