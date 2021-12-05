@@ -30,6 +30,10 @@ public extension String {
 		let results = components.filter { !(caseInsensitive ? removeThese.contains($0.lowercased()) : removeThese.contains($0)) }
 		return results.joined(separator: " ")
 	}
+
+	func stripping(charactersIn set: CharacterSet) -> String {
+		String(unicodeScalars.filter { !set.contains($0) })
+	}
 	
 	var abbreviatingWithTildeInPath: String { return String(NSString(string: self).abbreviatingWithTildeInPath) }
 	var expandingTildeInPath: String { return String(NSString(string: self).expandingTildeInPath) }
