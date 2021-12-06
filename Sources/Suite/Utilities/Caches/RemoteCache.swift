@@ -31,7 +31,7 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 	
 	public override func fetch(for url: URL, caching: URLRequest.CachePolicy = .default) -> AnyPublisher<Element, Error> {
         if caching != .reloadIgnoringLocalCacheData, let inflight = inflightRequests[url] { return inflight }
-		if caching == .reloadIgnoringLocalCacheData {
+		if caching == .returnCacheDataDontLoad {
 			return Fail(outputType: Element.self, failure: CacheError.noLocalItemFound(url)).eraseToAnyPublisher()
 		}
 		
