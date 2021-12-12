@@ -10,12 +10,14 @@ import Foundation
 @propertyWrapper
 public struct DefaultsValue<T: Codable>: DynamicProperty {
 	private let key: String
-	@State private var current: T
+	private let defaultValue: T
+	//@State private var current: T
 	
 	public init(key: String, defaultValue: T, in defaults: UserDefaults = .standard) {
 		self.key = key
+		self.defaultValue = defaultValue
 		self.defaults = defaults
-		_current = State(initialValue: defaults.getCodable(for: key) ?? defaultValue)
+		//_current = State(initialValue: defaults.getCodable(for: key) ?? defaultValue)
 	}
 	
 	let defaults: UserDefaults
@@ -29,10 +31,11 @@ public struct DefaultsValue<T: Codable>: DynamicProperty {
 	}
 	
 	public var wrappedValue: T {
-		get { current }
+		get { defaults.getCodable(for: key) ?? defaultValue }
 		nonmutating set {
-			current = newValue
+		//	_current.wrappedValue = newValue
 			defaults.setCodable(value: newValue, for: key)
+		//	print(current)
 		}
 	}
 }
