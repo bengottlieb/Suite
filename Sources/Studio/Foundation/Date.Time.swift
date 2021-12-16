@@ -126,6 +126,10 @@ public extension Date {
 			}
 		}
 		
+		public var timeIntervalSinceNow: TimeInterval {
+			timeInterval(since: Date().time)
+		}
+		
 		public func timeInterval(since other: Date.Time) -> TimeInterval {
 			if self == other { return 0 }
 			let otherSeconds = other.timeInterval
