@@ -18,6 +18,10 @@ public extension Date {
 		guard let time = time else { return nil }
 		self.init(calendar: Calendar.current, hour: time.hour, minute: time.minute, second: Int(time.second), nanosecond: 0)
 	}
+	
+	func bySetting(time: Date.Time) -> Date {
+		self.byChanging(nanosecond: nil, second: Int(time.second), minute: time.minute, hour: time.hour, day: nil, month: nil, year: nil)
+	}
 
 	func allHours(until end: Date) -> [Date] {
 		var date = self
