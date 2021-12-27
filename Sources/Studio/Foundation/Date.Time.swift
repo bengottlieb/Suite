@@ -16,7 +16,8 @@ extension Date.Time: Identifiable {
 public extension Date {
 	init?(time: Time?) {
 		guard let time = time else { return nil }
-		self.init(calendar: Calendar.current, hour: time.hour, minute: time.minute, second: Int(time.second), nanosecond: 0)
+		let now = Date()
+		self.init(calendar: .current, timeZone: .current, year: now.year, month: now.month.rawValue, day: now.day, hour: time.hour, minute: time.minute, second: Int(time.second), nanosecond: 0)
 	}
 	
 	func bySetting(time: Date.Time) -> Date {
