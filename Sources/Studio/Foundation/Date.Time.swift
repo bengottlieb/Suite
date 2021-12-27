@@ -37,6 +37,14 @@ public extension Date {
 		return (0..<count).map { date.addingTimeInterval(TimeInterval($0) * .hour)}
 	}
 	
+	func next(time: Date.Time) -> Date {
+		let next = Date(time: time) ?? Date().previousDay
+		if next < Date() {
+			return next.nextDay
+		}
+		return next
+	}
+	
 	struct TimeRange {
 		public var start: Date.Time
 		public var end: Date.Time
