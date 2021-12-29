@@ -55,6 +55,14 @@ public class InMemoryCache<Element: Cachable>: Cache<Element> {
 			.eraseToAnyPublisher()
 	}
 	
+	public override func fetch(for url: URL, caching: URLRequest.CachePolicy = .default) async throws -> Element {
+		let cacheKey = key(for: url)
+		
+		if let result = serialize({ if let current = cache[cacheKey], !caching.shouldIgnoreLocal(forDate: current.cachedAt) { return current.item }; return nil }) { return result }
+		
+		return try await super.fetch(for: url, caching: caching)
+	}
+	
 	public override func clear(itemFor url: URL) {
 		let cacheKey = key(for: url)
 		cache.removeValue(forKey: cacheKey)

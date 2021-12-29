@@ -15,6 +15,10 @@ public protocol RemoteCacheRequestBuilder {
 	func request(from url: URL) -> AnyPublisher<URLRequest, Error>
 }
 
+public protocol AsyncRemoteCacheRequestBuilder {
+	func request(from url: URL) async throws -> URLRequest
+}
+
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public class RemoteCache<Element: Cachable>: Cache<Element> {
 	let session: URLSession
@@ -45,7 +49,22 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 		
 		return publisher(for: URLRequest(url: url))
 	}
-	
+
+	public override func fetch(for url: URL, caching: URLRequest.CachePolicy = .default) async throws -> Element {
+		if caching == .returnCacheDataDontLoad {
+			throw CacheError.noLocalItemFound(url)
+		}
+		
+		var request = URLRequest(url: url)
+		if let builder = requestBuilder as? AsyncRemoteCacheRequestBuilder {
+			request = try await builder.request(from: url)
+		}
+		
+		let result = try await session.data(for: request)
+		if let downloaded = Element.create(with: result.0) as? Element { return downloaded }
+		throw CacheError.failedToDownload(url, result.0)
+	}
+
 	func publisher(for request: URLRequest) -> AnyPublisher<Element, Error> {
         guard let url = request.url else { return Fail(outputType: Element.self, failure: CacheError.noURL).eraseToAnyPublisher() }
         let pub: AnyPublisher<Element, Error> = session.dataTaskPublisher(for: request)
