@@ -61,6 +61,7 @@ public extension Color {
 	@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 	public extension Color {
 		static var systemBackground: Color { Color(UIColor.systemBackground) }
+		static var systemLabel: Color { Color(UIColor.label) }
 		static var tertiaryText: Color { Color(UIColor.tertiaryLabel) }
 	}
 #endif

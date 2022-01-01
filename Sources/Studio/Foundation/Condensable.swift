@@ -25,7 +25,7 @@ public protocol Reconstitutable: Condensable {
 
 public extension Reconstitutable {
 	init(payload: JSONDictionary) throws {
-		let condensed = try Condensate.load(from: payload)
+		let condensed = try Condensate.loadJSON(dictionary: payload)
 		try self.init(condensed: condensed)
 	}
 }
@@ -42,7 +42,7 @@ public extension Condensable {
 	}
 	
 	func load(payload: JSONDictionary) throws {
-		let condensed = try Condensate.load(from: payload)
+		let condensed = try Condensate.loadJSON(dictionary: payload)
 		if let version = self.condensed?.version, version >= condensed.version { return }
 		try self.reconstitute(condensed: condensed)
 	}

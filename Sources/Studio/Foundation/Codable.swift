@@ -40,13 +40,6 @@ public protocol PostDecodeAwakable: AnyObject {
 	func awakeFromDecoder()
 }
 
-extension Decodable {
-	public static func load(from dictionary: JSONDictionary, using decoder: JSONDecoder = JSONExpandedDecoder()) throws -> Self {
-		let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
-		return try decoder.decode(Self.self, from: data)
-	}
-}
-
 public class JSONExpandedDecoder: JSONDecoder {
 	open override func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable {
 		let result = try super.decode(type, from: data)
@@ -123,6 +116,11 @@ extension Decodable {
 	public static func loadJSON(data: Data?, using decoder: JSONDecoder = .default) throws -> Self {
 		guard let data = data else { throw JSONDecoder.DecodingError.fileNotFound }
 		return try decoder.decode(self, from: data)
+	}
+	
+	public static func loadJSON(dictionary: [String: Any], using decoder: JSONDecoder = .default) throws -> Self {
+		let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+		return try decoder.decode(Self.self, from: data)
 	}
 	
 	public static func loadJSON(file url: URL?, using decoder: JSONDecoder = .default) throws -> Self {
