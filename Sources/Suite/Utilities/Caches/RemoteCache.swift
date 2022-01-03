@@ -61,7 +61,9 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 		}
 		
 		let result = try await session.data(for: request)
-		if let downloaded = Element.create(with: result.0) as? Element { return downloaded }
+		if let downloaded = Element.create(with: result.0) as? Element {
+			return downloaded
+		}
 		throw CacheError.failedToDownload(url, result.0)
 	}
 

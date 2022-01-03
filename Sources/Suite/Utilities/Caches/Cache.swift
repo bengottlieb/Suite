@@ -150,7 +150,11 @@ public class Cache<Element: Cachable>: NSObject {
 	var backingCache: Cache<Element>?
 	
 	public func fetch(for url: URL, caching: URLRequest.CachePolicy = .default) async throws -> Element {
-		if let backing = backingCache { return try await backing.fetch(for: url, caching: caching) }
+		if let backing = backingCache {
+			let result = try await backing.fetch(for: url, caching: caching)
+			store(result, for: url)
+			return result
+		}
 		throw CacheError.notFound(url)
 	}
 }
