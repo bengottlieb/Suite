@@ -25,11 +25,36 @@ public struct SizeViewModifier: ViewModifier {
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+fileprivate struct SizePreferenceKey: PreferenceKey {
+	static var defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) { }
+}
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+struct SizeReporter<Content: View>: View {
+	@Binding var size: CGSize
+	let content: Content
+	
+	var body: some View {
+		content
+			.background(
+				GeometryReader() { geo in
+					Color.clear
+						.preference(key: SizePreferenceKey.self, value: geo.size)
+				}
+			)
+			.onPreferenceChange(SizePreferenceKey.self) { newSize in
+				size = newSize
+			}
+	}
+}
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension View {		// Tracks the size available for the view
-    func sizeReporting(_ size: Binding<CGSize>) -> some View {
-        self.modifier(SizeViewModifier(size: size))
-    }
-    
+	func sizeReporting(_ size: Binding<CGSize>) -> some View {
+		SizeReporter(size: size, content: self)
+	}
+
 	func frameReporting(_ frame: Binding<CGRect>, in space: CoordinateSpace = .global, firstTimeOnly: Bool = false) -> some View {
 			self
 					.background(GeometryReader() { geo -> Color in
