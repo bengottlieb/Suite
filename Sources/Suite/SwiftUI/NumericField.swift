@@ -89,7 +89,7 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	let radix = Locale.current.decimalSeparator?.first ?? "."
 	let groupSeparator = Locale.current.groupingSeparator?.first ?? ","
 
-	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, showInitialZeroAsEmptyString: Bool = true, maximum: Number? = nil, allowedSigns: AllowedSigns = .both, maxNumberOfCharacters: Int? = nil, maximumFractionDigits: Int?, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
+	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, showInitialZeroAsEmptyString: Bool = true, maximum: Number? = nil, allowedSigns: AllowedSigns = .both, maxNumberOfCharacters: Int? = nil, maximumFractionDigits: Int? = nil, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
 		self.placeholder = placeholder
 		self._number = number
 		self.onCommit = onCommit
