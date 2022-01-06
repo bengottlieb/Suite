@@ -81,14 +81,15 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	let minimum: Number?
 	let maximum: Number?
 	let maxNumberOfCharacters: Int?
-    let allowedSigns: AllowedSigns
+	let allowedSigns: AllowedSigns
+	let maximumFractionDigits: Int?
 	@State var text = ""
 	@State var oldText = ""
 	
 	let radix = Locale.current.decimalSeparator?.first ?? "."
 	let groupSeparator = Locale.current.groupingSeparator?.first ?? ","
 
-	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, showInitialZeroAsEmptyString: Bool = true, maximum: Number? = nil, allowedSigns: AllowedSigns = .both, maxNumberOfCharacters: Int? = nil, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
+	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, showInitialZeroAsEmptyString: Bool = true, maximum: Number? = nil, allowedSigns: AllowedSigns = .both, maxNumberOfCharacters: Int? = nil, maximumFractionDigits: Int?, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
 		self.placeholder = placeholder
 		self._number = number
 		self.onCommit = onCommit
@@ -99,8 +100,9 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 		self.allowedSigns = allowedSigns
 		self.showInitialZeroAsEmptyString = showInitialZeroAsEmptyString
 		self.maxNumberOfCharacters = maxNumberOfCharacters
+		self.maximumFractionDigits = maximumFractionDigits
 		
-		self.formatter = formatter ?? NumberFormatter.formatter(for: number.wrappedValue)
+		self.formatter = formatter ?? NumberFormatter.formatter(for: number.wrappedValue, maximumFractionDigits: maximumFractionDigits)
 		var newText = self.formatter.string(from: NSNumber(value: number.wrappedValue)) ?? ""
 		if showInitialZeroAsEmptyString, newText == "0" { newText = "" }
 		_text = State(initialValue: newText)
@@ -117,9 +119,13 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 
 	var textBinding: Binding<String> {
 		Binding<String>(get: {
-			if !number.isEqualTo(numericFieldNumber: parsedNumber(from: text)) {
+			let newText = self.formatter.string(from: NSNumber(value: number)) ?? ""
+			//if !number.isEqualTo(numericFieldNumber: parsedNumber(from: text)) {
+			if oldText != newText {
 				DispatchQueue.main.async {
-					self.text = self.formatter.string(from: NSNumber(value: number)) ?? ""
+					self.text = newText
+					self.oldText = newText
+					print("Setting text to \(text)")
 				}
 			}
 			return self.text
@@ -178,11 +184,12 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 }
 
 extension NumberFormatter {
-	static func formatter(for number: NumericFieldNumber) -> NumberFormatter {
+	static func formatter(for number: NumericFieldNumber, maximumFractionDigits: Int?) -> NumberFormatter {
 		let formatter = NumberFormatter()
 		
 		if number is Double || number is Float {
 			formatter.numberStyle = .decimal
+			if let maximumFractionDigits = maximumFractionDigits { formatter.maximumFractionDigits = maximumFractionDigits }
 		} else {
 			formatter.numberStyle = .none
 		}
