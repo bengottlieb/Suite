@@ -80,13 +80,15 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	public var onCommit: () -> Void
 	let minimum: Number?
 	let maximum: Number?
+	let maxNumberOfCharacters: Int?
     let allowedSigns: AllowedSigns
 	@State var text = ""
+	@State var oldText = ""
 	
 	let radix = Locale.current.decimalSeparator?.first ?? "."
 	let groupSeparator = Locale.current.groupingSeparator?.first ?? ","
 
-	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, showInitialZeroAsEmptyString: Bool = true, maximum: Number? = nil, allowedSigns: AllowedSigns = .both, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
+	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, showInitialZeroAsEmptyString: Bool = true, maximum: Number? = nil, allowedSigns: AllowedSigns = .both, maxNumberOfCharacters: Int? = nil, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
 		self.placeholder = placeholder
 		self._number = number
 		self.onCommit = onCommit
@@ -96,6 +98,7 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 		self.maximum = maximum
 		self.allowedSigns = allowedSigns
 		self.showInitialZeroAsEmptyString = showInitialZeroAsEmptyString
+		self.maxNumberOfCharacters = maxNumberOfCharacters
 		
 		self.formatter = formatter ?? NumberFormatter.formatter(for: number.wrappedValue)
 		var newText = self.formatter.string(from: NSNumber(value: number.wrappedValue)) ?? ""
@@ -121,7 +124,12 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 			}
 			return self.text
 		}) { newText in
-			self.text = newText
+			if let max = maxNumberOfCharacters, newText.count > max {
+				self.text = oldText
+			} else {
+				self.text = newText
+				self.oldText = newText
+			}
 		}
 	}
 	
