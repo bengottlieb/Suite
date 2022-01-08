@@ -21,3 +21,8 @@ public extension Array where Element == Error {
 		  !isEmpty && self.count == self.filter { $0.isOffline }.count
 	 }
 }
+
+public protocol DisplayableError: Error {
+	var errorTitle: String { get }
+	var errorMessage: String { get }
+}
