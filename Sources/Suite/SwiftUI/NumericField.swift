@@ -83,6 +83,7 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	let maxNumberOfCharacters: Int?
 	let allowedSigns: AllowedSigns
 	let maximumFractionDigits: Int?
+	@State var hasModified = false
 	@State var text = ""
 	@State var oldText = ""
 	
@@ -119,6 +120,7 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 
 	var textBinding: Binding<String> {
 		Binding<String>(get: {
+			if NSNumber(value: number) == NSNumber(value: 0), !hasModified { return "" }
 			let newText = self.formatter.string(from: NSNumber(value: number)) ?? ""
 			//if !number.isEqualTo(numericFieldNumber: parsedNumber(from: text)) {
 			if oldText != newText {
@@ -135,6 +137,7 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 			} else {
 				self.text = newText
 				self.oldText = newText
+				self.hasModified = true
 			}
 		}
 	}
