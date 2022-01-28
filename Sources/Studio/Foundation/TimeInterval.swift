@@ -92,13 +92,23 @@ public extension TimeInterval {
 			default: return " "
 			}
 		}
+		
+		func pluralize(count: Int, unit: String) -> String {
+			switch self {
+			case .veryShort:
+				return "\(count)\(unit)"
+				
+			default:
+				return Pluralizer.instance.pluralize(count, unit)
+			}
+		}
 	}
 	func durationWords(includingSeconds: Bool = true, abbreviated: DurationAbbreviation = .none) -> String {
 		var components: [String] = []
 		
-		if hours != 0 { components.append(Pluralizer.instance.pluralize(hours, abbreviated.hour)) }
-		if leftoverMinutes != 0 { components.append(Pluralizer.instance.pluralize(leftoverMinutes, abbreviated.minute)) }
-		if includingSeconds, leftoverSeconds != 0 { components.append(Pluralizer.instance.pluralize(leftoverSeconds, abbreviated.second)) }
+		if hours != 0 { components.append(abbreviated.pluralize(count: hours, unit: abbreviated.hour)) }
+		if leftoverMinutes != 0 { components.append(abbreviated.pluralize(count: leftoverMinutes, unit: abbreviated.minute)) }
+		if includingSeconds, leftoverSeconds != 0 { components.append(abbreviated.pluralize(count: leftoverSeconds, unit: abbreviated.second)) }
 		
 		return components.joined(separator: abbreviated.separator)
 	}
