@@ -61,18 +61,46 @@ public extension TimeInterval {
 		}
 	}
 	
-	func durationWords(includingSeconds: Bool = true, abbreviated: Bool = false) -> String {
+	enum DurationAbbreviation { case none, short, veryShort
+		var hour: String {
+			switch self {
+			case .none: return "hour"
+			case .short: return "hr"
+			case .veryShort: return "h"
+			}
+		}
+
+		var minute: String {
+			switch self {
+			case .none: return "minute"
+			case .short: return "min"
+			case .veryShort: return "m"
+			}
+		}
+
+		var second: String {
+			switch self {
+			case .none: return "second"
+			case .short: return "sec"
+			case .veryShort: return "s"
+			}
+		}
+		
+		var separator: String {
+			switch self {
+			case .none: return ", "
+			default: return " "
+			}
+		}
+	}
+	func durationWords(includingSeconds: Bool = true, abbreviated: DurationAbbreviation = .none) -> String {
 		var components: [String] = []
 		
-		let hourString = abbreviated ? NSLocalizedString("hr", comment: "hr") : NSLocalizedString("hour", comment: "hour")
-		let minuteString = abbreviated ? NSLocalizedString("min", comment: "min") : NSLocalizedString("minute", comment: "minute")
-		let secondString = abbreviated ? NSLocalizedString("sec", comment: "sec") : NSLocalizedString("second", comment: "second")
-
-		if hours != 0 { components.append(Pluralizer.instance.pluralize(hours, hourString)) }
-		if leftoverMinutes != 0 { components.append(Pluralizer.instance.pluralize(leftoverMinutes, minuteString)) }
-		if includingSeconds, leftoverSeconds != 0 { components.append(Pluralizer.instance.pluralize(leftoverSeconds, secondString)) }
+		if hours != 0 { components.append(Pluralizer.instance.pluralize(hours, abbreviated.hour)) }
+		if leftoverMinutes != 0 { components.append(Pluralizer.instance.pluralize(leftoverMinutes, abbreviated.minute)) }
+		if includingSeconds, leftoverSeconds != 0 { components.append(Pluralizer.instance.pluralize(leftoverSeconds, abbreviated.second)) }
 		
-		return components.joined(separator: abbreviated ? " " : ", ")
+		return components.joined(separator: abbreviated.separator)
 	}
 	
 	init?(string: String?) {
