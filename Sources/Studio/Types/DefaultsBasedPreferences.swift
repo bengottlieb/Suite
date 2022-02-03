@@ -33,6 +33,10 @@ public protocol PreferencesKeyProvider: AnyObject {
 	public func refresh() {
 		load()
 	}
+
+	public func save() {
+		self.defaults.synchronize()
+	}
 	
 	func load() {
 		let defaults = self.defaults
