@@ -19,7 +19,7 @@ public struct IntPoint: Equatable {
 	public let x: Int
 	public let y: Int
 	
-	init(_ x: Int, _ y: Int) { self.x = x; self.y = y }
+	public init(_ x: Int, _ y: Int) { self.x = x; self.y = y }
 }
 
 extension IntSize {
