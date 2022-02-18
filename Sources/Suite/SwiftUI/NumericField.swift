@@ -90,7 +90,7 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	let radix = Locale.current.decimalSeparator?.first ?? "."
 	let groupSeparator = Locale.current.groupingSeparator?.first ?? ","
 
-	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, showInitialZeroAsEmptyString: Bool = true, maximum: Number? = nil, allowedSigns: AllowedSigns = .both, maxNumberOfCharacters: Int? = nil, maximumFractionDigits: Int? = nil, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
+	public init(_ placeholder: String, number: Binding<Number>, formatter: NumberFormatter? = nil, useKeypad: Bool = true, minimum: Number? = nil, showInitialZeroAsEmptyString: Bool = true, maximum: Number? = nil, allowedSigns: AllowedSigns = .both, maxNumberOfCharacters: Int? = nil, maximumFractionDigits: Int = 12, onChange: @escaping (Bool) -> Void = { _ in }, onCommit: @escaping () -> Void = { }) {
 		self.placeholder = placeholder
 		self._number = number
 		self.onCommit = onCommit
@@ -117,17 +117,23 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 		rawField
 		#endif
 	}
+	
+	func numberStringsAreEqual(oldText: String, newText: String) -> Bool {
+		if oldText == newText { return true }
+		
+		if Double(oldText) == Double(newText), oldText.hasSuffix(".") { return true }
+		return false
+	}
 
 	var textBinding: Binding<String> {
 		Binding<String>(get: {
 			if NSNumber(value: number) == NSNumber(value: 0), !hasModified { return "" }
 			let newText = self.formatter.string(from: NSNumber(value: number)) ?? ""
 			//if !number.isEqualTo(numericFieldNumber: parsedNumber(from: text)) {
-			if oldText != newText {
+			if !numberStringsAreEqual(oldText: oldText, newText: newText) {
 				DispatchQueue.main.async {
 					self.text = newText
 					self.oldText = newText
-					print("Setting text to \(text)")
 				}
 			}
 			return self.text
@@ -187,12 +193,12 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 }
 
 extension NumberFormatter {
-	static func formatter(for number: NumericFieldNumber, maximumFractionDigits: Int?) -> NumberFormatter {
+	static func formatter(for number: NumericFieldNumber, maximumFractionDigits: Int = 12) -> NumberFormatter {
 		let formatter = NumberFormatter()
 		
 		if number is Double || number is Float {
 			formatter.numberStyle = .decimal
-			if let maximumFractionDigits = maximumFractionDigits { formatter.maximumFractionDigits = maximumFractionDigits }
+			formatter.maximumFractionDigits = maximumFractionDigits
 		} else {
 			formatter.numberStyle = .none
 		}
