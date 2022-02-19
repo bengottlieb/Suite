@@ -7,7 +7,7 @@
 
 import CoreGraphics
 
-public struct IntSize: Equatable {
+public struct IntSize: Codable, Equatable {
 	public let width: Int
 	public let height: Int
 	
@@ -15,7 +15,7 @@ public struct IntSize: Equatable {
 	init(screenW w: Int, _ h: Int) { self.init(min(w, h), max(w, h)) }
 }
 
-public struct IntPoint: Equatable {
+public struct IntPoint: Codable, Equatable {
 	public let x: Int
 	public let y: Int
 	
