@@ -39,8 +39,12 @@ public struct SpinningModifier: ViewModifier {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension View {		// Tracks the size available for the view
-	func spinning(period: TimeInterval = 1) -> some View {
-		self.modifier(SpinningModifier(period: period))
+	@ViewBuilder func spinning(period: TimeInterval = 1) -> some View {
+		if period == 0 {
+			self
+		} else {
+			self.modifier(SpinningModifier(period: period))
+		}
 	}
 }
 

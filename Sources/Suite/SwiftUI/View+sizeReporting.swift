@@ -74,6 +74,15 @@ public extension View {		// Tracks the size available for the view
 			}
 		)
 	}
+
+	func sizeLogging(_ logString: String) -> some View {
+		self.background(
+			GeometryReader() { geo -> Color in
+				print("\(logString): \(geo.size)")
+				return Color.clear
+			}
+		)
+	}
 }
 
 #endif

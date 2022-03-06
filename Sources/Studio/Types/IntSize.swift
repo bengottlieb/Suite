@@ -13,6 +13,8 @@ public struct IntSize: Codable, Equatable {
 	
 	public init(_ w: Int, _ h: Int) { width = w; height = h }
 	init(screenW w: Int, _ h: Int) { self.init(min(w, h), max(w, h)) }
+	
+	public var area: Int { width * height }
 }
 
 public struct IntPoint: Codable, Equatable {
