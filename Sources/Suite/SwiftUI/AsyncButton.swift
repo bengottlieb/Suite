@@ -22,10 +22,10 @@ public struct AsyncButton<Label: View>: View {
 	
 	public var body: some View {
 		Button(action: {
-				Task {
+			Task.detached {
 					isPressed = true
 					await action()
-					isPressed = false
+					await MainActor.run { isPressed = false }
 				}
 			}) {
 				ZStack {
