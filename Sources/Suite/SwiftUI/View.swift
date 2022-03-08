@@ -14,15 +14,19 @@ import SwiftUI
 public extension View {
     #if os(iOS)
 	func toImage() -> UIImage? {
-		let host = UIHostingController(rootView: self.edgesIgnoringSafeArea(.all))
-		host.view.sizeToFit()
-		host.view.backgroundColor = .clear
-		let window = UIWindow(frame: host.view.bounds)
-		window.insetsLayoutMarginsFromSafeArea = false
-		window.rootViewController = host
-		window.makeKeyAndVisible()
-		let image = host.view.toImage()
-		window.removeFromSuperview()
+		let controller = UIHostingController(rootView: self.edgesIgnoringSafeArea(.all))
+		let view = controller.view
+
+		let targetSize = controller.view.intrinsicContentSize
+		view?.bounds = CGRect(origin: .zero, size: targetSize)
+		view?.backgroundColor = .clear
+
+		let renderer = UIGraphicsImageRenderer(size: targetSize)
+
+		let image = renderer.image { _ in
+			 view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
+		}
+//		window.removeFromSuperview()
 		return image
 	}
     #endif
