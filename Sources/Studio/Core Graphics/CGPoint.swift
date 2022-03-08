@@ -43,5 +43,9 @@ public extension CGPoint {
     init(_ x: CGFloat, _ y: CGFloat) {
         self.init(x: x, y: y)
     }
+	
+	static var randomUnitPoint: CGPoint {
+		CGPoint(x: CGFloat.random(in: 0...1), y: CGFloat.random(in: 0...1))
+	}
 }
 
