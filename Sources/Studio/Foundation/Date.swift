@@ -249,6 +249,16 @@ public extension Date {
 		return formatter.string(from: self)
 	}
 
+    var hourStringNoAMPM: String {
+        let isIn24HourTimeMode = self.isIn24HourTimeMode
+        var hour = isIn24HourTimeMode ? self.hour : self.hour % 12
+        if !isIn24HourTimeMode, hour == 0 { hour = 12 }
+        
+        if isIn24HourTimeMode { return "\(hour)" }
+        
+        return "\(hour)" + (self.hour < 12 ? DateFormatter().dateFormat : DateFormatter().dateFormat)
+    }
+    
 	var hourString: String {
 		let isIn24HourTimeMode = self.isIn24HourTimeMode
 		var hour = isIn24HourTimeMode ? self.hour : self.hour % 12
