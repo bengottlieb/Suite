@@ -248,7 +248,13 @@ public extension Date {
 		formatter.timeStyle = .short
 		return formatter.string(from: self)
 	}
-
+    
+    var hourStringMilitary: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h"
+        return formatter.string(from: self)
+    }
+    
     var hourStringNoAMPM: String {
         let isIn24HourTimeMode = self.isIn24HourTimeMode
         var hour = isIn24HourTimeMode ? self.hour : self.hour % 12
