@@ -8,21 +8,24 @@
 import CoreGraphics
 
 public struct IntSize: Codable, Equatable, CustomStringConvertible {
-	public let width: Int
-	public let height: Int
+	public var width: Int
+	public var height: Int
 	
 	public init(_ w: Int, _ h: Int) { width = w; height = h }
 	init(screenW w: Int, _ h: Int) { self.init(min(w, h), max(w, h)) }
 	
 	public var area: Int { width * height }
 	public var description: String { "(\(width) x \(height))" }
+
+	public static let zero = IntSize(0, 0)
 }
 
 public struct IntPoint: Codable, Equatable, CustomStringConvertible {
-	public let x: Int
-	public let y: Int
+	public var x: Int
+	public var y: Int
 	
 	public init(_ x: Int, _ y: Int) { self.x = x; self.y = y }
+	public static let zero = IntPoint(0, 0)
 	public var description: String { "(\(x), \(y))" }
 }
 
