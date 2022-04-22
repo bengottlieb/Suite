@@ -49,3 +49,27 @@ public extension JSONDecoder {
 		}
 	}
 }
+
+extension JSONDecoder.DateDecodingStrategy {
+    var encodingStrategy: JSONEncoder.DateEncodingStrategy {
+        switch self {
+        case .deferredToDate: return .deferredToDate
+        case .secondsSince1970: return .secondsSince1970
+        case .millisecondsSince1970: return .millisecondsSince1970
+        case .iso8601: return .iso8601
+        default: return .default
+        }
+    }
+}
+
+extension JSONEncoder.DateEncodingStrategy {
+    var decodingStrategy: JSONDecoder.DateDecodingStrategy {
+        switch self {
+        case .deferredToDate: return .deferredToDate
+        case .secondsSince1970: return .secondsSince1970
+        case .millisecondsSince1970: return .millisecondsSince1970
+        case .iso8601: return .iso8601
+        default: return .default
+        }
+    }
+}
