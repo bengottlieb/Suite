@@ -11,7 +11,7 @@ import SwiftUI
 import Studio
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
-public  struct SimpleOverlayModifer<Overlay: View>: ViewModifier {
+public struct SimpleOverlayModifer<Overlay: View>: ViewModifier {
 	@Binding var isPresented: Bool
 	
 	#if swift(>=5.4)
@@ -50,10 +50,19 @@ public  struct OverlayModifer<Overlay: View, Item>: ViewModifier {
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+extension OverlayModifer where Item == Int {
+	init(isPresented: Binding<Bool>, @ViewBuilder overlay: @escaping () -> Overlay) {
+		self._item = Binding<Int?>(get: { isPresented.wrappedValue ? 1 : nil }) { new in
+			isPresented.wrappedValue = (new != nil)
+		}
+		self.overlayBuilder = { _ in overlay() }
+	}
+}
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension View {
 	func presentDimmedOverlay<Content: View, Item>(item: Binding<Item?>, tapToDismiss: Bool = true, @ViewBuilder overlayBuilder: @escaping (Item) -> Content) -> some View {
 		self
-			//.blur(radius: item.wrappedValue == nil ? 0 : 3)
 			.overlay(
 				ZStack() {
 					if item.wrappedValue != nil {
@@ -69,7 +78,24 @@ public extension View {
 			.modifier(OverlayModifer(item: item, overlay: overlayBuilder))
 	}
 	
-	func presentBottomSheet<Content: View, Item>(item: Binding<Item?>, background: Color = .black, tapToDismiss: Bool = true, @ViewBuilder content: @escaping (Item) -> Content) -> some View {
+	func presentDimmedOverlay<Content: View>(isPresented: Binding<Bool>, tapToDismiss: Bool = true, @ViewBuilder overlayBuilder: @escaping () -> Content) -> some View {
+		self
+			.overlay(
+				ZStack() {
+					if isPresented.wrappedValue {
+						Rectangle().fill(Color.black.opacity(0.5))
+							.onTapGesture {
+								if tapToDismiss { withAnimation() { isPresented.wrappedValue = false } }
+							}
+							.transition(.opacity)
+					}
+				}
+				.animation(.linear)
+			)
+			.modifier(OverlayModifer(isPresented: isPresented, overlay: overlayBuilder))
+	}
+	
+	func presentBottomSheet<Content: View, Item>(item: Binding<Item?>, background: Color = .systemBackground, tapToDismiss: Bool = true, @ViewBuilder content: @escaping (Item) -> Content) -> some View {
 		presentDimmedOverlay(item: item, tapToDismiss: tapToDismiss) { item in
 			BottomSheet(background) { content(item) }
 		}
@@ -78,6 +104,12 @@ public extension View {
 	func presentBottomSheet<Content: View, Item, Background: View>(item: Binding<Item?>, background: Background, @ViewBuilder content: @escaping (Item) -> Content) -> some View {
 		presentDimmedOverlay(item: item) { item in
 			BottomSheet(background) { content(item) }
+		}
+	}
+
+	func presentBottomSheet<Content: View>(isPresented: Binding<Bool>, background: Color = .systemBackground, @ViewBuilder content: @escaping () -> Content) -> some View {
+		presentDimmedOverlay(isPresented: isPresented) {
+			BottomSheet(background) { content() }
 		}
 	}
 }
@@ -110,7 +142,7 @@ public struct BottomSheet<Content: View, Background: View>: View {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 extension BottomSheet where Background == Color {
-	public init(_ background: Color = .black, _ content: @escaping () -> Content) {
+	public init(_ background: Color = .systemBackground, _ content: @escaping () -> Content) {
 		self.backgroundView = background
 		self.content = content
 	}
