@@ -6,7 +6,7 @@
 //
 
 #if canImport(Combine)
-
+#if os(iOS)
 import SwiftUI
 import Studio
 
@@ -148,4 +148,5 @@ extension BottomSheet where Background == Color {
 	}
 }
 
+#endif
 #endif
