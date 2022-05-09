@@ -36,7 +36,7 @@ public extension Binding {
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
-func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
+public func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
     Binding(
         get: { lhs.wrappedValue ?? rhs },
         set: { lhs.wrappedValue = $0 }
