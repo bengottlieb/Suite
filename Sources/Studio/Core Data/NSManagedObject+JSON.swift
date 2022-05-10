@@ -50,9 +50,9 @@ public extension NSManagedObject {
 				value = URL(string: value as? String ?? "")
 			}
 			if let raw = value {
-				self.setPrimitiveValue(raw, forKey: name)
+				self.setValue(raw, forKey: name)
 			} else if !combining {
-				self.setPrimitiveValue(nil, forKey: name)
+				self.setValue(nil, forKey: name)
 			}
 		}
 	}
