@@ -97,7 +97,9 @@ public enum HTTPError: Error, LocalizedError {
 
 	func prettyString(_ title: String, _ url: URL?, _ code: Int, _ data: Data?) -> String {
 		let prefix = url == nil ? "" : "\(url.absoluteString()): "
-		if let data = data, let string = String(data: data, encoding: .utf8) { return "\(prefix)\(title) (\(code)): \(string)"}
+        if let data = data, let string = String(data: data, encoding: .utf8), string.isNotEmpty {
+            return "\(prefix)\(title) (\(code)): \(string)"
+        }
 		return "\(prefix)\(title) (\(code))"
     }
 

@@ -172,7 +172,7 @@ public extension NSManagedObjectContext {
 		return nil
 	}
 	
-	func delete(named entityName: String, matching predicate: NSPredicate, singleRecord: Bool = true) throws -> Bool {
+    @discardableResult func deleteObjects(named entityName: String, matching predicate: NSPredicate = NSPredicate(value: true), singleRecord: Bool = false) throws -> Bool {
 		let fetchRequest = self.generateFetchRequest(for: entityName)
 		fetchRequest.predicate = predicate
 		if singleRecord { fetchRequest.fetchLimit = 1 }
