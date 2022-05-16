@@ -21,7 +21,7 @@ extension URLSession {
 				} else if let data = data, let resp = response {
 					continuation.resume(returning: (data, resp))
 				} else {
-					continuation.resume(throwing: HTTPError.offline)
+					continuation.resume(throwing: NSError())
 				}
 			}
 			task.resume()

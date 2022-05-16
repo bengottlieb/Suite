@@ -71,15 +71,14 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
         guard let url = request.url else { return Fail(outputType: Element.self, failure: CacheError.noURL).eraseToAnyPublisher() }
         let pub: AnyPublisher<Element, Error> = session.dataTaskPublisher(for: request)
             .assumeHTTP()
-            .responseData()
 			.mapError { error -> Error in
                 self.inflightRequests.removeValue(forKey: url)
-                return error.isOffline ? error : CacheError.failedToDownloadServerError(request.url!, error)
+                return CacheError.failedToDownloadServerError(request.url!, error)
 			}
 			.tryMap { data in
                 self.inflightRequests.removeValue(forKey: url)
-				if let result = Element.create(with: data) as? Element { return result }
-				throw CacheError.failedToDownload(request.url!, data)
+                if let result = Element.create(with: data.data) as? Element { return result }
+                throw CacheError.failedToDownload(request.url!, data.data)
 			}
 			.eraseToAnyPublisher()
         
@@ -88,6 +87,15 @@ public class RemoteCache<Element: Cachable>: Cache<Element> {
 	}
 }
 
-
+@available(iOS 13.0, watchOS 6.0, OSX 10.15, *)
+fileprivate extension Publisher where Output == (data: Data, response: URLResponse) {
+   func assumeHTTP() -> AnyPublisher<(data: Data, response: HTTPURLResponse), Error> {
+      tryMap { data, response in
+          guard let http = response as? HTTPURLResponse else { throw CacheError.unknownResponse(response.url) }
+         return (data, http)
+      }
+      .eraseToAnyPublisher()
+   }
+}
 
 #endif

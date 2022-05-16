@@ -90,11 +90,12 @@ public class DataCache: Cache<Data> {
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
-public enum CacheError: Error, LocalizedError { case noURL, notFound(URL), noLocalItemFound(URL), failedToDecode(URL, URL, Error), failedToUnCache(URL), failedToUnCacheFromDisk(URL), failedToDownload(URL, Data), failedToDownloadServerError(URL, Error)
+public enum CacheError: Error, LocalizedError { case noURL, notFound(URL), unknownResponse(URL?), noLocalItemFound(URL), failedToDecode(URL, URL, Error), failedToUnCache(URL), failedToUnCacheFromDisk(URL), failedToDownload(URL, Data), failedToDownloadServerError(URL, Error)
 	public var errorDescription: String? {
 		switch self {
         case CacheError.noURL: return "no URL provided"
         case CacheError.notFound(let url): return "Item not found: \(url.absoluteString)"
+        case CacheError.unknownResponse(let url): return "Unknown response from \(url?.absoluteString ?? "the server")"
 		case CacheError.noLocalItemFound(let url): return "Local item not found: \(url.absoluteString)"
 		case CacheError.failedToUnCache(let url): return "Item not found: \(url.absoluteString)"
 		case CacheError.failedToDecode(let src, let local, let error): return "Failed to decode from \(local.path) (original location: \(src.absoluteString)): \(error)"
