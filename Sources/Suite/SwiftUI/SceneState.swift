@@ -51,12 +51,12 @@ public struct StateChange: OptionSet {
 }
 
 @available(iOS 13.0, *)
-struct ExitAppView: View {
+struct ExitSceneView: View {
 	let closure: () -> Void
 	
 	var body: some View {
 		EmptyView()
-			.onReceive(UIApplication.willResignActiveNotification.publisher()) { _ in
+			.onReceive(UIScene.didEnterBackgroundNotification.publisher()) { _ in
 				closure()
 			}
 	}
@@ -64,9 +64,9 @@ struct ExitAppView: View {
 
 @available(iOS 13.0, *)
 extension View {
-	public func onAppExit(closure: @escaping () -> Void) -> some View {
+	public func onSceneExit(closure: @escaping () -> Void) -> some View {
 		self
-			.background(ExitAppView(closure: closure))
+			.background(ExitSceneView(closure: closure))
 	}
 }
 
