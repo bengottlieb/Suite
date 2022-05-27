@@ -129,7 +129,7 @@ public class Logger {
 	}
 	
 	public func log<What: AnyObject>(raw: What, _ level: Logger.Level = .mild) {
-		self.log("\(Unmanaged.passUnretained(raw).toOpaque())", level: level)
+        self.log("\(address(of: raw))", level: level)
 	}
 	
 	public func log(_ msg: @escaping @autoclosure () -> String, level: Level = .mild) {
@@ -152,3 +152,5 @@ public class Logger {
 public extension NSManagedObject {
 	func logObject(_ level: Logger.Level = .mild) { dlogg("\(self)", level) }
 }
+
+public func  address(of obj: AnyObject) -> String { "\(Unmanaged.passUnretained(obj).toOpaque())" }
