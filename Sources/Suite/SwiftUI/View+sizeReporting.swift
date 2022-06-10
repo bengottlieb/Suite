@@ -85,5 +85,75 @@ public extension View {		// Tracks the size available for the view
 	}
 }
 
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+public extension View {
+	func sizeDisplaying() -> some View {
+		self
+			.overlay(SizeOverlay())
+	}
+}
+
+@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+struct SizeOverlay: View {
+	@State var size: CGSize?
+	
+	let dimensionsTextColor = Color.white
+	let dimensionsColor = Color.red
+	let dimensionThickness = 1.0
+	
+	var aspectRatioString: String {
+		if let size = size {
+			return String(format: "%.2f", size.width / size.height)
+		} else {
+			return ""
+		}
+	}
+	
+	var body: some View {
+		ZStack() {
+			GeometryReader { geo in
+				Color.clear
+					.preference(key: SizePreferenceKey.self, value: geo.size)
+			}
+			.onPreferenceChange(SizePreferenceKey.self) { newSize in
+				size = newSize
+			}
+			
+			if let size = size {
+				HStack(spacing: 0) {
+					ZStack() {
+						Text("\(Int(size.height))")
+							.foregroundColor(dimensionsTextColor)
+							.padding(.horizontal, 6)
+							.padding(.vertical, 3)
+							.background(Capsule().fill(dimensionsColor))
+							.rotationEffect(.degrees(270))
+							.padding(.leading, -5)
+					}
+					Color.clear
+				}
+
+				VStack(spacing: 0) {
+					ZStack() {
+						Text("\(Int(size.width)), \(aspectRatioString)")
+							.foregroundColor(dimensionsTextColor)
+							.padding(.horizontal, 6)
+							.padding(.vertical, 3)
+							.background(Capsule().fill(dimensionsColor))
+							.padding(1)
+					}
+					Color.clear
+				}
+			}
+		}
+		.overlay(dimension.padding(-dimensionThickness / 2))
+		.font(.system(size: 10, weight: .semibold))
+	}
+	
+	var dimension: some View {
+		Rectangle()
+			.strokeBorder(dimensionsColor, style: StrokeStyle(lineWidth: dimensionThickness, dash: [dimensionThickness]))
+	}
+}
 #endif
 #endif
