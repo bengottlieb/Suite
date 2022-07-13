@@ -121,7 +121,10 @@ public struct NumericField<Number: NumericFieldNumber>: View {
 	func numberStringsAreEqual(oldText: String, newText: String) -> Bool {
 		if oldText == newText { return true }
 		
-		if Double(oldText) == Double(newText), oldText.hasSuffix(".") { return true }
+		var filtered = oldText.contains(".") ? oldText.trimmingCharacters(in: CharacterSet(charactersIn: "0")) : oldText
+		if filtered == "." { filtered = "0." }
+		if Double(filtered) == Double(newText), filtered.hasSuffix(".") { return true }
+		
 		return false
 	}
 

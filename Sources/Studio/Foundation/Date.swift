@@ -318,7 +318,7 @@ public extension Date {
 	var midnightUTC: Date {
 		let mid = midnight
 		let offset = TimeZone.current.secondsFromGMT()
-		return mid.addingTimeInterval(offset)
+		return mid.addingTimeInterval(TimeInterval(offset))
 	}
 	var lastSecond: Date { self.byChanging(nanosecond: 0, second: 59, minute: 59, hour: 23) }
 	
