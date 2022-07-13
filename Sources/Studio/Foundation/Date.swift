@@ -315,6 +315,11 @@ public extension Date {
 	var noon: Date { self.hour(12) }
 	func hour(_ hour: Int) -> Date { self.byChanging(nanosecond: 0, second: 0, minute: 0, hour: hour) }
 	var midnight: Date { Calendar.current.startOfDay(for: self) }
+	var midnightUTC: Date {
+		let mid = midnight
+		let offset = TimeZone.current.secondsFromGMT()
+		return mid.addingTimeInterval(offset)
+	}
 	var lastSecond: Date { self.byChanging(nanosecond: 0, second: 59, minute: 59, hour: 23) }
 	
 	func allDays(until date: Date) -> [Date] {
