@@ -10,9 +10,9 @@ import UIKit
 
 
 extension UICollectionViewCell {
-	open class var identifier: String { return String(describing: self) }
-	open class var nib: UINib { return UINib(nibName: self.defaultNibName, bundle: Bundle(for: self)) }
-	open class var defaultNibName: String { return String(describing: self) }
+	public class var identifier: String { return String(describing: self) }
+	public class var nib: UINib { return UINib(nibName: self.defaultNibName, bundle: Bundle(for: self)) }
+	public class var defaultNibName: String { return String(describing: self) }
 }
 
 extension UICollectionView {

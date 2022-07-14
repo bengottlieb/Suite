@@ -18,7 +18,7 @@ extension NSPersistentStoreCoordinator {
 		
 	}
 
-	open subscript(key: String) -> Any? {
+	public subscript(key: String) -> Any? {
 		get {
 			guard let store = self.persistentStores.first else { return nil }
 			return self.metadata(for: store)[key]

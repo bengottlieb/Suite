@@ -89,42 +89,37 @@ public struct Gestalt {
 			return Int(UIDevice.current.systemVersion.components(separatedBy: ".").first ?? "") ?? 0
 		}()
 	
-		enum SimulatorHostInfo: Int32 { case Sysname = 0, Nodename, Release, Version, Machine }
+		enum SimulatorHostInfo: Int, CaseIterable { case sysname = 0, nodename, release, version, machine }
 		static func getSimulatorHostInfo(which: SimulatorHostInfo) -> String? {
 			let structSize = MemoryLayout<utsname>.size
-			let fieldSize = structSize / 5
+			let fieldSize = structSize / SimulatorHostInfo.allCases.count
 			var systemInfo = [UInt8](repeating: 0, count: structSize)
 			
 			let info = systemInfo.withUnsafeMutableBufferPointer { ( body: inout UnsafeMutableBufferPointer<UInt8>) -> String? in
 				var valid = false
-				body.baseAddress?.withMemoryRebound(to: utsname.self, capacity: 1) { data in
+				guard let base = body.baseAddress else { return nil }
+				base.withMemoryRebound(to: utsname.self, capacity: 1) { data in
 					valid = uname(data) == 0
 				}
 
 				if !valid { return nil }
 
-				var result: String? = nil
-				
-				body.baseAddress?.withMemoryRebound(to: CChar.self, capacity: 1) { data in
-					result = String(validatingUTF8: &data[Int(which.rawValue) * fieldSize])
-				}
-				return result
+				let all = Array(body)
+				let offset = which.rawValue * fieldSize
+				let chunk = Array(all[offset..<(offset + fieldSize)])
+				let count = chunk.firstIndex(where: { $0 == 0 }) ?? fieldSize
+				return String(bytes: chunk[0..<count], encoding: .utf8)
 			}
 			return info
 		}
-		public static var simulatorMachineName: String? { return self.getSimulatorHostInfo(which: .Nodename) }
-		public static var simulatorSystemName: String? { return self.getSimulatorHostInfo(which: .Sysname) }
-		public static var simulatorReleaseName: String? { return self.getSimulatorHostInfo(which: .Release) }
-		public static var simulatorVersionName: String? { return self.getSimulatorHostInfo(which: .Version) }
-		public static var simulatorCPUName: String? { return self.getSimulatorHostInfo(which: .Machine) }
+		public static var simulatorMachineName: String? { return self.getSimulatorHostInfo(which: .nodename) }
+		public static var simulatorSystemName: String? { return self.getSimulatorHostInfo(which: .sysname) }
+		public static var simulatorReleaseName: String? { return self.getSimulatorHostInfo(which: .release) }
+		public static var simulatorVersionName: String? { return self.getSimulatorHostInfo(which: .version) }
+		public static var simulatorCPUName: String? { return self.getSimulatorHostInfo(which: .machine) }
 
 		public static var simulatorInfo: String {
-			let pieces: [SimulatorHostInfo] = [.Nodename, .Sysname, .Release, .Version, .Machine ]
-			var result = ""
-			for piece in pieces {
-				if let info = self.getSimulatorHostInfo(which: piece) { result += (result.isEmpty ? "" : "- ") + info }
-			}
-			return result
+			SimulatorHostInfo.allCases.map { getSimulatorHostInfo(which: $0) }.compactMap { $0 }.joined(separator: "- ")
 		}
 
 	#endif
