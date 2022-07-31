@@ -25,6 +25,7 @@ public class SoundEffect: Equatable {
 	private static var cachedSounds: [String: SoundEffect] = [:]
 	private static var playingSounds: [SoundEffect] = []
 	private static var hasMadeAmbient = false
+	public static var hasActivated = false
 	public static var disableAllSounds = Gestalt.isOnSimulator
 	var internalPlayer: AVAudioPlayer!
 	var original: SoundEffect?
@@ -63,8 +64,8 @@ public class SoundEffect: Equatable {
 		return internalPlayer
 	}
 	
-	public init?(url: URL, preload: Bool = true, uncached: Bool = false) {
-		SoundEffect.makeAmbient()
+	public init?(url: URL, preload: Bool = true, uncached: Bool = false, ambient: Bool = true) {
+		if ambient { SoundEffect.makeAmbient() }
 		if let original = SoundEffect.cachedSounds[url.absoluteString] {
 			self.original = original
 		} else {
@@ -86,21 +87,31 @@ public class SoundEffect: Equatable {
 		actualPlayer?.prepareToPlay()
 	}
 	
-	 static func makeAmbient() {
+	public static func activateSession() {
+		if self.hasActivated { return }
+		self.hasActivated = true
+		#if os(iOS) || os(watchOS)
+			print("Activating AVAudioSession")
+			try? AVAudioSession.sharedInstance().setActive(true)
+		#endif
+	}
+	
+	static func makeAmbient() {
 		if #available(iOS 10.0, iOSApplicationExtension 10.0, *) {
 			if !SoundEffect.hasMadeAmbient {
 				SoundEffect.hasMadeAmbient = true
-                #if os(iOS) || os(watchOS)
-                    try? AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
-                    try? AVAudioSession.sharedInstance().setActive(true)
-                #endif
+				#if os(iOS) || os(watchOS)
+					print("Making sound effects ambient, setting up AVAudioSession")
+					try? AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
+					try? AVAudioSession.sharedInstance().setActive(true)
+				#endif
 			}
-		  }
-	 }
+		}
+	}
 	
 	@available(iOS 9.0, iOSApplicationExtension 9.0, OSX 10.11, *)
-	convenience public init?(named name: String, in bundle: Bundle? = nil, preload: Bool = true, uncached: Bool = false) {
-		SoundEffect.makeAmbient()
+	convenience public init?(named name: String, in bundle: Bundle? = nil, preload: Bool = true, uncached: Bool = false, ambient: Bool = true) {
+		if ambient { SoundEffect.makeAmbient() }
 		if let existing = SoundEffect.cachedSounds[name] {
 			self.init(original: existing)
 		} else {
@@ -175,8 +186,18 @@ extension SoundEffect {
 	public var duration: TimeInterval? { return actualPlayer?.duration }
 	var actualPlayer: AVAudioPlayer? { return self.original?.internalPlayer ?? self.setupPlayer() }
 	@discardableResult public func play(fadingInOver fadeIn: TimeInterval = 0, completion: (() -> Void)? = nil) -> Bool {
-		guard !SoundEffect.disableAllSounds, let player = actualPlayer else { return false }
-
+		guard !SoundEffect.disableAllSounds else {
+			print("Sound effects disabled, not playing \(url?.lastPathComponent ?? "sound")")
+			completion?()
+			return false
+		}
+		guard let player = actualPlayer else {
+			completion?()
+			return false
+		}
+		
+		Self.activateSession()
+		
 		self.completion = completion
 		if let startedAt = self.startedAt, let pausedAt = self.pausedAt {
 			let elapsed = pausedAt.timeIntervalSince(startedAt)
