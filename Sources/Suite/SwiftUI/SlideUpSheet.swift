@@ -59,6 +59,7 @@ extension EnvironmentValues {
 	 }
 }
 
+
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 @available(iOSApplicationExtension, unavailable)
 public struct SlideUpSheet<Content: View>: View {
@@ -84,12 +85,13 @@ public struct SlideUpSheet<Content: View>: View {
 		var screenHeight: CGFloat = 1024
 	#endif
 
-	public init(show: Binding<Bool>, dragStyle: DragStyle = .handle, blockBackground: Bool = true, @ViewBuilder content: @escaping () -> Content) {
+	public init(show: Binding<Bool>, dragStyle: DragStyle = .handle, blockBackground: Bool = true, backgroundColor: Color? = nil, @ViewBuilder content: @escaping () -> Content) {
 		_show = show
 		self.dragStyle = dragStyle
 		self.blockBackground = blockBackground
 		self.content = content
 		self.radius = 10
+		if let color = backgroundColor { self.backgroundColor = color }
 	}
 
 	public var body: some View {

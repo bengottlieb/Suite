@@ -66,7 +66,8 @@ public extension View {
 			.overlay(
 				ZStack() {
 					if item.wrappedValue != nil {
-						Rectangle().fill(Color.black.opacity(0.5))
+						Rectangle()
+							.fill(Color.black.opacity(0.5))
 							.onTapGesture {
 								if tapToDismiss { withAnimation() { item.wrappedValue = nil } }
 							}
