@@ -88,6 +88,11 @@ public extension Date {
 		return Calendar.current.date(from: components) ?? self
 	}
 	
+	var nextNearestHour: Date {
+		let hour = nearestHour
+		return hour.byAdding(hours: 1)
+	}
+	
 	var isInFuture: Bool {
 		timeIntervalSinceNow > 0
 	}
