@@ -14,22 +14,22 @@ public struct AsyncButton<Label: View>: View {
 	@ViewBuilder var label: () -> Label
 	
 	@State private var isPressed = false
-    var role: Any?
+	var role: Any?
 	
     public init(action: @escaping () async -> Void, @ViewBuilder label: @escaping () -> Label) {
         self.action = action
         self.label = label
     }
 
-    @available(iOS 15.0, *)
-    public init(role: ButtonRole?, action: @escaping () async -> Void, @ViewBuilder label: @escaping () -> Label) {
+	@available(iOS 15.0, watchOS 8.0, *)
+	public init(role: ButtonRole?, action: @escaping () async -> Void, @ViewBuilder label: @escaping () -> Label) {
         self.action = action
         self.label = label
         self.role = role
     }
 
 	public var body: some View {
-        if #available(iOS 15.0, *) {
+        if #available(iOS 15.0, watchOS 8.0, *) {
             Button(role: role as? ButtonRole, action: { performAction() }) { buttonLabel }
                 .disabled(isPressed)
         } else {
