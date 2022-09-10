@@ -32,35 +32,43 @@ public extension TimeInterval {
 		if roundUp {
 			return self.rounded(.up).durationString(style: style, showLeadingZero: showLeadingZero, roundUp: false)
 		}
-
-		var leading = showLeadingZero ? "%02d" : "%d"
-		if self < 0 { leading = "-" + leading }
+		
+		let formatter = DateComponentsFormatter()
+		formatter.allowedUnits = [.minute, .second]
+		formatter.zeroFormattingBehavior = .pad
 
 		switch style {
 		case .hours:
-			return String(format: leading, hours)
+			formatter.allowedUnits = [.hour, .minute, .second]
 			
 		case .minutes:
-			return String(format: leading + ":%02d", hours, minutes % 60)
+			formatter.allowedUnits = [.hour, .minute]
 
 		case .secondsNoHours:
-			return String(format: leading + ":%02d", minutes, seconds % 60)
+			formatter.allowedUnits = [.minute, .second]
 
 		case .seconds:
-			if hours > 0 { return String(format: leading + ":%02d:%02d", hours, minutes % 60, seconds % 60) }
-			return String(format: leading + ":%02d", minutes % 60, seconds % 60)
+			formatter.allowedUnits = [.hour, .minute, .second]
 
-		case .centiseconds:
-			if hours > 0 { return String(format: leading + ":%02d:%02d.%02d", hours, minutes % 60, seconds % 60, Int(self * 100) % 100) }
-			return String(format: leading + ":%02d.%02d", minutes % 60, seconds % 60, Int(self * 100) % 100)
+		case .centiseconds, .milliseconds:
+			formatter.allowedUnits = hours > 0 ? [.hour, .minute, .second] : [.minute, .second]
 
-		case .milliseconds:
-			if hours > 0 { return String(format: leading + ":%02d:%02d.%02d", hours, minutes % 60, seconds % 60, Int(self * 1000) % 1000) }
-			return String(format: leading + "%02d.%02d", minutes % 60, seconds % 60, Int(self * 1000) % 1000)
-
+			let numberFormatter = NumberFormatter()
+			numberFormatter.minimumFractionDigits = style == .centiseconds ? 2 : 3
+			numberFormatter.maximumFractionDigits = style == .centiseconds ? 2 : 3
+			numberFormatter.maximumIntegerDigits = 0
+			numberFormatter.alwaysShowsDecimalSeparator = true
+			return [formatter.string(from: self), numberFormatter.string(from:
+																								NSNumber (value: milliseconds))].compactMap( { $0 }).joined()
 		}
+		
+		return formatter.string(from: self) ?? ""
 	}
 	
+	var milliseconds: Double {
+		(self).truncatingRemainder(dividingBy: 1)
+	}
+
 	enum DurationAbbreviation { case none, short, veryShort
 		var hour: String {
 			switch self {
