@@ -43,7 +43,7 @@ public struct DefaultsValue<T: Codable>: DynamicProperty {
 private extension UserDefaults {
 	func setCodable<T: Codable>(value: T, for key: String) {
 		do {
-			let data = try JSONEncoder().encode(value)
+			let data = try JSONEncoder.default.encode(value)
 			set(data, forKey: key)
 		} catch {
 			Studio.logg(error: error, "Failed to encode DefaultsValue<\(T.self)>")

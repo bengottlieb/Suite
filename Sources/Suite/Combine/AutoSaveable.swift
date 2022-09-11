@@ -38,7 +38,7 @@ extension AutoSaveable {
 	
 	public func autoSave() {
 		do {
-			let data = try JSONEncoder().encode(self)
+			let data = try JSONEncoder.default.encode(self)
 			try data.write(to: Self.saveURL)
 		} catch {
 			print("Failed to save \(String(describing: self)): \(error)")

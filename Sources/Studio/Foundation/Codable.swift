@@ -53,7 +53,7 @@ public class JSONExpandedDecoder: JSONDecoder {
 
 public extension Encodable {
 	var stringValue: String? {
-		stringValue(from: JSONEncoder())
+		stringValue(from: JSONEncoder.default)
 	}
 
 	var prettyJSON: String? {
@@ -149,13 +149,17 @@ extension String {
 }
 
 public extension JSONEncoder {
-	static var `default` = JSONEncoder()
+	static var `default`: JSONEncoder = {
+		let encoder = JSONEncoder()
+		encoder.outputFormatting = [ .withoutEscapingSlashes, .prettyPrinted, .sortedKeys ]
+		return encoder
+	}()
 }
 
 @available(iOS 10.0, *)
 public extension JSONEncoder {
 	static var iso8601Encoder: JSONEncoder {
-		let encoder = JSONEncoder()
+		let encoder = JSONEncoder.default
 		
 		encoder.dateEncodingStrategy = .iso8601
 		return encoder
