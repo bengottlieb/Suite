@@ -28,14 +28,33 @@ public extension TimeInterval {
 
 	enum DurationStyle { case hours, minutes, secondsNoHours, seconds, centiseconds, milliseconds }
 	
-	func durationString(style: DurationStyle = .seconds, showLeadingZero: Bool = false, roundUp: Bool = true) -> String {
+	static var durationFormatter = DateComponentsFormatter()
+	static var centisecondFormatter: NumberFormatter = {
+		let numberFormatter = NumberFormatter()
+		numberFormatter.minimumFractionDigits = 2
+		numberFormatter.maximumFractionDigits = 2
+		numberFormatter.maximumIntegerDigits = 0
+		numberFormatter.alwaysShowsDecimalSeparator = true
+		return numberFormatter
+	}()
+
+	static var millisecondsFormatter: NumberFormatter = {
+		let numberFormatter = NumberFormatter()
+		numberFormatter.minimumFractionDigits = 3
+		numberFormatter.maximumFractionDigits = 3
+		numberFormatter.maximumIntegerDigits = 0
+		numberFormatter.alwaysShowsDecimalSeparator = true
+		return numberFormatter
+	}()
+
+	@MainActor func durationString(style: DurationStyle = .seconds, showLeadingZero: Bool = false, roundUp: Bool = true) -> String {
 		if roundUp {
 			return self.rounded(.up).durationString(style: style, showLeadingZero: showLeadingZero, roundUp: false)
 		}
 		
-		let formatter = DateComponentsFormatter()
+		let formatter = Self.durationFormatter
 		formatter.allowedUnits = [.minute, .second]
-		formatter.zeroFormattingBehavior = .pad
+		formatter.zeroFormattingBehavior = showLeadingZero ? .pad : .dropLeading
 
 		switch style {
 		case .hours:
@@ -53,11 +72,7 @@ public extension TimeInterval {
 		case .centiseconds, .milliseconds:
 			formatter.allowedUnits = hours > 0 ? [.hour, .minute, .second] : [.minute, .second]
 
-			let numberFormatter = NumberFormatter()
-			numberFormatter.minimumFractionDigits = style == .centiseconds ? 2 : 3
-			numberFormatter.maximumFractionDigits = style == .centiseconds ? 2 : 3
-			numberFormatter.maximumIntegerDigits = 0
-			numberFormatter.alwaysShowsDecimalSeparator = true
+			let numberFormatter = style == .centiseconds ? Self.centisecondFormatter : Self.millisecondsFormatter
 			return [formatter.string(from: self), numberFormatter.string(from:
 																								NSNumber (value: milliseconds))].compactMap( { $0 }).joined()
 		}
