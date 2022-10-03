@@ -21,9 +21,15 @@ public extension NSManagedObject {
 				if let value = strategy.jsonValue(from: date) {
 					results[name] = value
 				}
-            } else if attr.attributeType == .booleanAttributeType {
-                results[name] = (raw as? Int) == 1
-            } else {
+			} else if attr.attributeType == .booleanAttributeType {
+				results[name] = (raw as? Int) == 1
+			} else if attr.attributeType == .binaryDataAttributeType, let data = raw as? Data {
+				if let json = try? JSONSerialization.jsonObject(with: data) {
+					results[name] = json
+				} else {
+					results[name] = raw
+				}
+			} else {
 				results[name] = raw
 			}
 		}
@@ -48,6 +54,8 @@ public extension NSManagedObject {
 				value = dateStrategy.date(from: value)
 			} else if attr.attributeType == .URIAttributeType {
 				value = URL(string: value as? String ?? "")
+			} else if attr.attributeType == .binaryDataAttributeType, let obj = value, let data = try? JSONSerialization.data(withJSONObject: obj) {
+				value = data
 			}
 			if let raw = value {
 				self.setValue(raw, forKey: name)
