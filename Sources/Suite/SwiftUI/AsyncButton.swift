@@ -79,7 +79,7 @@ extension AsyncButton where Label == Text {
 	}
 }
 
-@available(macOS 12, iOS 13.0, tvOS 13, watchOS 6, *)
+@available(macOS 12, iOS 15.0, tvOS 13, watchOS 6, *)
 extension AsyncButton where Label == Text {
 	public init(_ title: String, role: ButtonRole, action: @escaping () async -> Void) {
 		self.action = action
