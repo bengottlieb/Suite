@@ -26,7 +26,7 @@ public extension TimeInterval {
 	var leftoverMinutes: Int { return Int(self / .minute) % 60 }
 	var leftoverSeconds: Int { return Int(self) % 60 }
 
-	enum DurationStyle { case hours, minutes, secondsNoHours, seconds, centiseconds, milliseconds }
+	enum DurationStyle { case hours, minutes, secondsMaybeHours, secondsNoHours, seconds, centiseconds, milliseconds }
 	
 	static var durationFormatter = DateComponentsFormatter()
 	static var centisecondFormatter: NumberFormatter = {
@@ -65,6 +65,10 @@ public extension TimeInterval {
 
 		case .secondsNoHours:
 			formatter.allowedUnits = [.minute, .second]
+
+		case .secondsMaybeHours:
+			let hours = self / .hour
+			formatter.allowedUnits = hours >= 1 ? [.hour, .minute, .second] : [.minute, .second]
 
 		case .seconds:
 			formatter.allowedUnits = [.hour, .minute, .second]
