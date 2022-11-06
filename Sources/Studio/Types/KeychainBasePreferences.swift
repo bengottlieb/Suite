@@ -38,9 +38,12 @@ import Foundation
 			for child in mirror.children {
 				guard let label = child.label, let key = key(from: child.label) else { continue }
 				
-				if let value = Keychain.instance.get(key) {
+				if let value: String = Keychain.instance.get(key) {
+					self.setValue(value, forKey: label)
+				} else if let value: Data = Keychain.instance.get(key) {
 					self.setValue(value, forKey: label)
 				}
+
 				self.addObserver(self, forKeyPath: label, options: .new, context: nil)
 			}
 			guard let sup = mirror.superclassMirror else { break }
@@ -66,10 +69,11 @@ import Foundation
 				guard let label = child.label, label == keyPath, let key = key(from: child.label) else { continue }
 				
 				let keychainKey = key
-				if let value = change?[.newKey] as? String {
+				let newValue = change?[.newKey]
+				if let value = newValue as? String {
 					Keychain.instance.set(value, forKey: keychainKey)
-				} else if let value = change?[.newKey] as? Int {
-					Keychain.instance.set("\(value)", forKey: keychainKey)
+				} else if let value = newValue as? Data {
+					Keychain.instance.set(value, forKey: keychainKey)
 				} else {
 					Keychain.instance.delete(keychainKey)
 				}

@@ -43,6 +43,11 @@ open class Keychain {
 		return set(value?.data(using: String.Encoding.utf8), forKey: key, withAccess: access)
 	}
 	
+	@discardableResult
+	open func set(_ value: Double, forKey key: String, withAccess access: AccessOptions? = nil) -> Bool {
+		return set("\(value)", forKey: key, withAccess: access)
+	}
+	
 	/**
 	
 	Stores the data in the keychain item under the given key.
@@ -114,6 +119,23 @@ open class Keychain {
 			
 			if let currentString = String(data: data, encoding: .utf8) {
 				return currentString
+			}
+			
+			lastResultCode = -67853 // errSecInvalidEncoding
+		}
+		
+		return nil
+	}
+	
+	open func get(_ key: String) -> Data? {
+		return getData(key)
+	}
+	
+	open func get(_ key: String) -> Double? {
+		if let data = getData(key) {
+			
+			if let currentString = String(data: data, encoding: .utf8) {
+				return Double(string: currentString)
 			}
 			
 			lastResultCode = -67853 // errSecInvalidEncoding
