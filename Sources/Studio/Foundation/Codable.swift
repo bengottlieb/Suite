@@ -89,7 +89,7 @@ public extension Encodable {
 	
 	func saveJSON(to url: URL, using encoder: JSONEncoder = .default) throws {
 		let data = try encoder.encode(self)
-		try data.write(to: url)
+		try data.write(to: url, options: .atomic)
 	}
 	
 	func saveJSON(toUserDefaults key: String, using encoder: JSONEncoder = .default) throws {
