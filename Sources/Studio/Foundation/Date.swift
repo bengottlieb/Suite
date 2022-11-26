@@ -69,6 +69,8 @@ public extension Date {
 		public var shortName: String { return Calendar.current.shortMonthSymbols[self.rawValue - 1] }
 		public var name: String { return Calendar.current.monthSymbols[self.rawValue - 1] }
 	}
+	
+	var durationStringUntilNow: String { (-1 * timeIntervalSinceNow).durationString() }
 }
 
 public extension Date {
