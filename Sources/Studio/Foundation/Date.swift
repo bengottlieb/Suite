@@ -70,7 +70,7 @@ public extension Date {
 		public var name: String { return Calendar.current.monthSymbols[self.rawValue - 1] }
 	}
 	
-	var durationStringUntilNow: String { (-1 * timeIntervalSinceNow).durationString() }
+	@MainActor func durationStringUntilNow(style: TimeInterval.DurationStyle = .seconds, showLeadingZero: Bool = true, roundUp: Bool = true) -> String { (-1 * timeIntervalSinceNow).durationString(style: style, showLeadingZero: showLeadingZero, roundUp: roundUp) }
 }
 
 public extension Date {
