@@ -141,6 +141,15 @@ public extension URL {
 		
 		return result
 	}
+	
+	func contains(fileURL: URL) -> Bool {
+		if !fileURL.isFileURL || !isFileURL { return false }
+		
+		let myAbs = absoluteString.trimmingCharacters(in: .init(charactersIn: "/"))
+		let newAbs = fileURL.absoluteString
+		
+		return newAbs.hasPrefix(myAbs)
+	}
 }
 
 extension URLQueryItem: Comparable {
