@@ -12,6 +12,9 @@ import Foundation
 	import UIKit
 #endif
 
+#if os(macOS)
+	import Cocoa
+#endif
 
 
 public struct Gestalt {
@@ -76,6 +79,10 @@ public struct Gestalt {
 	#endif
 	
 	#if os(iOS)
+		static public var sleepDisabled: Bool {
+			get { UIApplication.shared.isIdleTimerDisabled }
+			set { UIApplication.shared.isIdleTimerDisabled = newValue }
+		}
 		static public var deviceName: String { UIDevice.current.name }
 		#if targetEnvironment(macCatalyst)
 			public static var isOnMac: Bool { return true }
@@ -264,7 +271,11 @@ public struct Gestalt {
 	
 	
 	#else
-		#if os(OSX)
+		#if os(macOS)
+			static public var sleepDisabled: Bool {
+				get { NSApp.sleepDisabled }
+				set { NSApp.sleepDisabled = newValue }
+			}
 			public static var serialNumber: String? = {
 				let platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
 				
