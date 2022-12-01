@@ -49,4 +49,9 @@ public extension URL {
 	static func bundled(in bundle: Bundle = .main, named name: String, withExtension ext: String? = nil, subDirectory: String? = nil) -> URL? {
 		bundle.url(forResource: name, withExtension: ext, subdirectory: subDirectory)
 	}
+	
+	func removeFromDisk() throws {
+		guard isFileURL else { return }
+		if FileManager.default.fileExists(at: self) { try FileManager.default.removeItem(at: self) }
+	}
 }
