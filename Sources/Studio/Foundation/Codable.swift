@@ -68,7 +68,7 @@ public extension Encodable {
 
 	func logJSON() {
 		if let json = prettyJSON {
-			print(json)
+			logg(json)
 		}
 	}
 	
@@ -97,7 +97,7 @@ public extension Encodable {
 		UserDefaults.standard.set(data, forKey: key)
 	}
 	
-	func logg(level: Logger.Level = .mild) {
+	func print(level: Logger.Level = .mild) {
 		do {
 			let data = try self.asJSONData()
 			guard let raw = String(data: data, encoding: .utf8) else {

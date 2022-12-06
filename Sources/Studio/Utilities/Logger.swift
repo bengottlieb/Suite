@@ -44,6 +44,7 @@ public class Logger {
 	public var timestampStart = Date()
 	public var logErrors: Bool { level > .mild }
 	var redirected: ((String) -> Void)?
+	public var prefix = ""
 	
 	public func log(to url: URL, clearingFirst: Bool = true) {
 		fileURL = url
@@ -72,7 +73,7 @@ public class Logger {
 			redirect(string)
 			return
 		}
-		print(string)
+		print(prefix + string)
 		
 		if let url = fileURL, let data = string.data(using: .utf8) {
 			write(data, to: url)
@@ -102,7 +103,7 @@ public class Logger {
 			if (error as NSError).code == 4 {
 				logFileExists = false
 			} else {
-				print("Failed to log to file: \(error)")
+				print(prefix + "Failed to log to file: \(error)")
 			}
 		}
 	}

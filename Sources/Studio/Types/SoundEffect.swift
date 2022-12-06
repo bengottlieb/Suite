@@ -91,7 +91,7 @@ public class SoundEffect: Equatable {
 		if self.hasActivated { return }
 		self.hasActivated = true
 		#if os(iOS) || os(watchOS)
-			print("Activating AVAudioSession")
+		logg("Activating AVAudioSession")
 			try? AVAudioSession.sharedInstance().setActive(true)
 		#endif
 	}
@@ -101,7 +101,7 @@ public class SoundEffect: Equatable {
 			if !SoundEffect.hasMadeAmbient {
 				SoundEffect.hasMadeAmbient = true
 				#if os(iOS) || os(watchOS)
-					print("Making sound effects ambient, setting up AVAudioSession")
+				logg("Making sound effects ambient, setting up AVAudioSession")
 					try? AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
 					try? AVAudioSession.sharedInstance().setActive(true)
 				#endif
@@ -187,7 +187,7 @@ extension SoundEffect {
 	var actualPlayer: AVAudioPlayer? { return self.original?.internalPlayer ?? self.setupPlayer() }
 	@discardableResult public func play(fadingInOver fadeIn: TimeInterval = 0, completion: (() -> Void)? = nil) -> Bool {
 		guard !SoundEffect.disableAllSounds else {
-			print("Sound effects disabled, not playing \(url?.lastPathComponent ?? "sound")")
+			logg("Sound effects disabled, not playing \(url?.lastPathComponent ?? "sound")")
 			completion?()
 			return false
 		}

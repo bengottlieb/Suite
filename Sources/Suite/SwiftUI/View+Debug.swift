@@ -12,7 +12,7 @@ import SwiftUI
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension View {
-	func logg(_ text: String?) -> some View {
+	func log(_ text: String?) -> some View {
 		Studio.logg(text ?? "")
 		return self
 	}

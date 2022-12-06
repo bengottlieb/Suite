@@ -20,7 +20,7 @@ extension AutoSaveable {
 				return decoded.setupForAutoSave()
 			}
 		} catch {
-			print("Failed to decode \(String(describing: self)): \(error)")
+			logg("Failed to decode \(String(describing: self)): \(error)")
 		}
 		return Self.init().setupForAutoSave()
 	}
@@ -41,7 +41,7 @@ extension AutoSaveable {
 			let data = try JSONEncoder.default.encode(self)
 			try data.write(to: Self.saveURL)
 		} catch {
-			print("Failed to save \(String(describing: self)): \(error)")
+			logg("Failed to save \(String(describing: self)): \(error)")
 		}
 	}
 }
