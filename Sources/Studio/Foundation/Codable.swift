@@ -97,7 +97,7 @@ public extension Encodable {
 		UserDefaults.standard.set(data, forKey: key)
 	}
 	
-	func print(level: Logger.Level = .mild) {
+	func echo(level: Logger.Level = .mild) {
 		do {
 			let data = try self.asJSONData()
 			guard let raw = String(data: data, encoding: .utf8) else {
