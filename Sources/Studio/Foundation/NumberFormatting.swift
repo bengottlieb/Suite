@@ -44,7 +44,14 @@ public extension DecimalFormattable {
 		if decimalPlaces <= 2 {
 			result = formatter.string(from: NSNumber(value: doubleValue))
 		}
-		if result == nil { result = String(format: "%.\(decimalPlaces)f", doubleValue) }
+		if result == nil {
+			let fmt = NumberFormatter()
+			fmt.numberStyle = .decimal
+			fmt.maximumFractionDigits = decimalPlaces
+			fmt.minimumFractionDigits = 2
+
+			result = fmt.string(from: NSNumber(value: doubleValue))
+		}
 		
 		while result.hasSuffix("0") || result.decimalPlaces > decimalPlaces {
 			result = String(result.dropLast())
