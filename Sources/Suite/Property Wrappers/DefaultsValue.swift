@@ -12,12 +12,14 @@ public struct DefaultsValue<T: Codable>: DynamicProperty {
 	private let key: String
 	private let defaultValue: T
 	@State private var current: T
-	
+	private let storage: Storage
+
 	public init(key: String, defaultValue: T, in defaults: UserDefaults = .standard) {
 		self.key = key
 		self.defaultValue = defaultValue
 		self.defaults = defaults
 		let initialValue = defaults.getCodable(for: key) ?? defaultValue
+		storage = Storage(value: initialValue)
 		_current = State(initialValue: initialValue)
 	}
 	
@@ -32,10 +34,22 @@ public struct DefaultsValue<T: Codable>: DynamicProperty {
 	}
 	
 	public var wrappedValue: T {
-		get { _current.wrappedValue }
+		get {
+			_ = _current.wrappedValue		// if we don't call this, it won't update in the SwiftUI world
+			return storage.value }
 		nonmutating set {
 			_current.wrappedValue = newValue
+			storage.value = newValue		// if we're not in a SwiftUI context, @State is useless
 			defaults.setCodable(value: newValue, for: key)
+		}
+	}
+	
+	
+	private class Storage {
+		var value: T
+		
+		init(value: T) {
+			self.value = value
 		}
 	}
 }
