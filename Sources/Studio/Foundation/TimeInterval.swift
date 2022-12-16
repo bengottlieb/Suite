@@ -47,7 +47,7 @@ public extension TimeInterval {
 		return numberFormatter
 	}()
 
-	@MainActor func durationString(style: DurationStyle = .seconds, showLeadingZero: Bool = false, roundUp: Bool = true) -> String {
+	func durationString(style: DurationStyle = .seconds, showLeadingZero: Bool = false, roundUp: Bool = true) -> String {
 		if roundUp {
 			return self.rounded(.up).durationString(style: style, showLeadingZero: showLeadingZero, roundUp: false)
 		}
