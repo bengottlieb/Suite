@@ -60,7 +60,9 @@ public extension Encodable {
 		do {
 			let json = try asJSON()
 			let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
-			return String(data: data, encoding: .utf8)
+			let string = String(data: data, encoding: .utf8)
+			return string?
+				.replacingOccurrences(of: "\\/", with: "/")
 		} catch {
 			return "\(error)"
 		}
