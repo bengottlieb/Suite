@@ -93,14 +93,14 @@ public extension View {		// Tracks the size available for the view
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public extension View {
-	func sizeDisplaying() -> some View {
+	func sizeDisplaying(text: Color = .white, fill: Color = .red) -> some View {
 		self
-			.overlay(SizeOverlay())
+			.overlay(SizeOverlay(dimensionsTextColor: text, dimensionsColor: fill))
 	}
 
-	func positionDisplaying() -> some View {
+	func positionDisplaying(text: Color = .white, fill: Color = .red) -> some View {
 		self
-			.overlay(PositionOverlay())
+			.overlay(PositionOverlay(dimensionsTextColor: text, dimensionsColor: fill))
 	}
 }
 
@@ -108,9 +108,9 @@ public extension View {
 struct SizeOverlay: View {
 	@State var size: CGSize?
 	
-	let dimensionsTextColor = Color.white
-	let dimensionsColor = Color.red
-	let dimensionThickness = 1.0
+	var dimensionsTextColor = Color.white
+	var dimensionsColor = Color.red
+	var dimensionThickness = 1.0
 	
 	var aspectRatioString: String {
 		if let size = size {
@@ -172,8 +172,8 @@ struct PositionOverlay: View {
 	@State var viewFrame: CGRect?
 	var coordinateSpace = CoordinateSpace.global
 	
-	let dimensionsTextColor = Color.white
-	let dimensionsColor = Color.red
+	var dimensionsTextColor = Color.white
+	var dimensionsColor = Color.red
 	
 	var body: some View {
 		ZStack() {
