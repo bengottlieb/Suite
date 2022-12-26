@@ -12,8 +12,15 @@ import UIKit
 @available(iOS 13.0, *)
 public extension UIApplication {
 	var currentScene: UIWindowScene? {
-		self.connectedScenes
+		let scene = self.connectedScenes
 			.filter { $0.activationState == .foregroundActive }
+			.compactMap { $0 as? UIWindowScene }
+			.first
+		
+		if let scene { return scene }
+		
+		return self.connectedScenes
+			.filter { $0.activationState == .foregroundInactive }
 			.compactMap { $0 as? UIWindowScene }
 			.first
 	}
