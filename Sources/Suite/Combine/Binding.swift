@@ -58,15 +58,6 @@ public extension Binding where Value: Equatable {
 	}
 }
 
-@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
-extension Binding: Equatable where Value: Equatable {
-	public static func ==(lhs: Self, rhs: Self) -> Bool {
-		lhs.wrappedValue == rhs.wrappedValue
-	}
-}
-
-
-
 public protocol OptionalType {
 	var isEmpty: Bool { get }
 	mutating func clear()
