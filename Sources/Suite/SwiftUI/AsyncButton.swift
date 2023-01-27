@@ -18,21 +18,24 @@ public struct ButtonIsPerformingActionKey: PreferenceKey {
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct AsyncButton<Label: View>: View {
 	var action: () async -> Void
+	var spinnerColor = Color.white
 	@ViewBuilder var label: () -> Label
 	
 	@State private var isPerformingAction = false
 	var role: Any?
 	
-	public init(action: @escaping () async -> Void, @ViewBuilder label: @escaping () -> Label) {
+	public init(action: @escaping () async -> Void, spinnerColor: Color? = nil, @ViewBuilder label: @escaping () -> Label) {
 		self.action = action
 		self.label = label
+		self.spinnerColor = spinnerColor ?? .white
 	}
 	
 	@available(macOS 12.0, iOS 15.0, watchOS 8.0, *)
-	public init(role: ButtonRole?, action: @escaping () async -> Void, @ViewBuilder label: @escaping () -> Label) {
+	public init(role: ButtonRole?, action: @escaping () async -> Void, spinnerColor: Color? = nil, @ViewBuilder label: @escaping () -> Label) {
 		self.action = action
 		self.label = label
 		self.role = role
+		self.spinnerColor = spinnerColor ?? .white
 	}
 	
 	public var body: some View {
@@ -61,6 +64,8 @@ public struct AsyncButton<Label: View>: View {
 				label().opacity(0)
 				if #available(OSX 11, iOS 14.0, watchOS 7, *) {
 					ProgressView()
+						.colorInvert()
+						.scaleEffect(0.5)
 				} else {
 					label().opacity(0.2)
 				}
