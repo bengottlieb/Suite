@@ -19,8 +19,9 @@ public class Debouncer<Value>: ObservableObject {
 		self.output = initialValue
 		debounce = $input
 			.debounce (for: . seconds (delay), scheduler: DispatchQueue.main)
-			.sink { [weak self] in
-				self?.output = $0
+			.sink { [weak self] result in
+				guard let self else { return }
+				Task { @MainActor in self.output = result }
 			}
 	}
 }

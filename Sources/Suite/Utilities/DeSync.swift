@@ -27,7 +27,7 @@ public func desync<Output>(block: @escaping () async throws -> Output, completio
 
 @available(OSX 12, iOS 15.0, tvOS 13, watchOS 8, *)
 public extension Publisher where Failure == Error  {
-	func `async`<MyOutput>(block: @escaping (Output) async throws -> MyOutput) -> AnyPublisher<MyOutput, Error> {
+	func convertToAsync<MyOutput>(block: @escaping (Output) async throws -> MyOutput) -> AnyPublisher<MyOutput, Error> {
 		flatMap { (input: Output) -> AnyPublisher<MyOutput, Error> in
 			let future = Future<MyOutput, Error> { promise in
 				Task {
@@ -47,7 +47,7 @@ public extension Publisher where Failure == Error  {
 
 @available(OSX 12, iOS 15.0, tvOS 13, watchOS 8, *)
 public extension Publisher where Failure == Never  {
-	func `async`<MyOutput>(block: @escaping (Output) async -> MyOutput) -> AnyPublisher<MyOutput, Never> {
+	func convertToAsync<MyOutput>(block: @escaping (Output) async -> MyOutput) -> AnyPublisher<MyOutput, Never> {
 		flatMap { (input: Output) -> AnyPublisher<MyOutput, Never> in
 			let future = Future<MyOutput, Never> { promise in
 				Task {
