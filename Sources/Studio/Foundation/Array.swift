@@ -73,6 +73,28 @@ public extension Array where Element: Equatable {
 	}
 }
 
+public extension Array where Element: Identifiable {
+	subscript(elem: Element) -> Element? {
+		get {
+			guard let index = identifiableIndex(of: elem) else { return nil }
+			return self[index]
+		}
+		
+		set {
+			guard let newValue else { return }
+			if let index = identifiableIndex(of: elem) {
+				self[index] = newValue
+			} else {
+				self.append(newValue)
+			}
+		}
+	}
+	
+	func identifiableIndex(of elem: Element) -> Int? {
+		firstIndex(where: { $0.id == elem.id })
+	}
+}
+
 public extension Array {
 	subscript(index index: Int?) -> Element? {
 		guard let idx = index, idx < self.count else { return nil }
