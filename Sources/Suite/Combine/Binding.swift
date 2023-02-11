@@ -124,6 +124,14 @@ public class Bound<Value> {
 	}
 }
 
+public extension Binding where Value: Equatable {
+	func equalTo(_ element: Value) -> Binding<Bool> {
+		Binding<Bool>(
+			get: { wrappedValue == element },
+			set: { newValue in if newValue { wrappedValue = element }}
+		)
+	}
+}
 
 #endif
 #endif
