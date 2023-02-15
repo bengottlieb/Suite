@@ -24,7 +24,7 @@ public struct OffsetReportingScrollView<Content: View>: View {
 	
 	public var body: some View {
 		ScrollView(axes, showsIndicators: showsIndicators) {
-			PositionObservingView(
+			PositionReportingView(
 				coordinateSpace: .named(coordinateSpaceName),
 				position: Binding(
 					get: { offset },
@@ -38,12 +38,19 @@ public struct OffsetReportingScrollView<Content: View>: View {
 		.coordinateSpace(name: coordinateSpaceName)
 	}
 }
-struct PositionObservingView<Content: View>: View {
+
+public struct PositionReportingView<Content: View>: View {
 	var coordinateSpace: CoordinateSpace
 	@Binding var position: CGPoint
 	@ViewBuilder var content: () -> Content
 	
-	var body: some View {
+	public init(coordinateSpace: CoordinateSpace, position: Binding<CGPoint>, content: @escaping () -> Content) {
+		self.coordinateSpace = coordinateSpace
+		_position = position
+		self.content = content
+	}
+	
+	public var body: some View {
 		content()
 			.background(GeometryReader { proxy in
 				Color.clear.preference(
@@ -57,7 +64,7 @@ struct PositionObservingView<Content: View>: View {
 	}
 }
 
-private extension PositionObservingView {
+private extension PositionReportingView {
 	struct PreferenceKey: SwiftUI.PreferenceKey {
 		static var defaultValue: CGPoint { .zero }
 		
