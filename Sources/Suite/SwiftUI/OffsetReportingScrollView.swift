@@ -10,12 +10,12 @@ import SwiftUI
 public struct OffsetReportingScrollView<Content: View>: View {
 	var axes: Axis.Set = [.vertical]
 	var showsIndicators = true
-	@Binding var offset: CGPoint
+	@Binding var offset: CGFloat
 	@ViewBuilder var content: () -> Content
 	
 	private let coordinateSpaceName = UUID()
 	
-	public init(_ axes: Axis.Set = [.vertical], showsIndicators: Bool = true, offset: Binding<CGPoint>, content: @escaping () -> Content) {
+	public init(_ axes: Axis.Set = [.vertical], showsIndicators: Bool = true, offset: Binding<CGFloat>, content: @escaping () -> Content) {
 		self.axes = axes
 		self.showsIndicators = showsIndicators
 		self.content = content
@@ -29,7 +29,7 @@ public struct OffsetReportingScrollView<Content: View>: View {
 				position: Binding(
 					get: { offset },
 					set: { newOffset in
-						offset = CGPoint(x: -newOffset.x, y: -newOffset.y)
+						offset = -newOffset
 					}
 				),
 				content: content
@@ -41,10 +41,10 @@ public struct OffsetReportingScrollView<Content: View>: View {
 
 public struct PositionReportingView<Content: View>: View {
 	var coordinateSpace: CoordinateSpace
-	@Binding var position: CGPoint
+	@Binding var position: CGFloat
 	@ViewBuilder var content: () -> Content
 	
-	public init(coordinateSpace: CoordinateSpace, position: Binding<CGPoint>, content: @escaping () -> Content) {
+	public init(coordinateSpace: CoordinateSpace, position: Binding<CGFloat>, content: @escaping () -> Content) {
 		self.coordinateSpace = coordinateSpace
 		_position = position
 		self.content = content
@@ -53,12 +53,12 @@ public struct PositionReportingView<Content: View>: View {
 	public var body: some View {
 		content()
 			.background(GeometryReader { proxy in
-				Color.clear.preference(
-					key: PreferenceKey.self,
-					value: proxy.frame(in: coordinateSpace).origin
-				)
+				let offset = proxy.frame(in: coordinateSpace).origin
+				Color.clear
+					.preference(key: PreferenceKey.self, value: offset.y)
 			})
 			.onPreferenceChange(PreferenceKey.self) { position in
+				_ = print("new position: \(position)")
 				self.position = position
 			}
 	}
@@ -66,8 +66,8 @@ public struct PositionReportingView<Content: View>: View {
 
 private extension PositionReportingView {
 	struct PreferenceKey: SwiftUI.PreferenceKey {
-		static var defaultValue: CGPoint { .zero }
+		static var defaultValue: CGFloat { .zero }
 		
-		static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) { }
+		static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
 	}
 }
