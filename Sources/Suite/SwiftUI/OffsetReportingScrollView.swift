@@ -10,12 +10,12 @@ import SwiftUI
 public struct OffsetReportingScrollView<Content: View>: View {
 	var axes: Axis.Set = [.vertical]
 	var showsIndicators = true
-	@Binding var offset: CGFloat
+	@Binding var offset: CGPoint
 	@ViewBuilder var content: () -> Content
 	
 	private let coordinateSpaceName = UUID()
 	
-	public init(_ axes: Axis.Set = [.vertical], showsIndicators: Bool = true, offset: Binding<CGFloat>, content: @escaping () -> Content) {
+	public init(_ axes: Axis.Set = [.vertical], showsIndicators: Bool = true, offset: Binding<CGPoint>, content: @escaping () -> Content) {
 		self.axes = axes
 		self.showsIndicators = showsIndicators
 		self.content = content
@@ -29,7 +29,7 @@ public struct OffsetReportingScrollView<Content: View>: View {
 				position: Binding(
 					get: { offset },
 					set: { newOffset in
-						offset = -newOffset
+						offset = newOffset
 					}
 				),
 				content: content
@@ -41,10 +41,10 @@ public struct OffsetReportingScrollView<Content: View>: View {
 
 public struct PositionReportingView<Content: View>: View {
 	var coordinateSpace: CoordinateSpace
-	@Binding var position: CGFloat
+	@Binding var position: CGPoint
 	@ViewBuilder var content: () -> Content
 	
-	public init(coordinateSpace: CoordinateSpace, position: Binding<CGFloat>, content: @escaping () -> Content) {
+	public init(coordinateSpace: CoordinateSpace, position: Binding<CGPoint>, content: @escaping () -> Content) {
 		self.coordinateSpace = coordinateSpace
 		_position = position
 		self.content = content
@@ -53,21 +53,13 @@ public struct PositionReportingView<Content: View>: View {
 	public var body: some View {
 		content()
 			.background(GeometryReader { proxy in
-				let offset = proxy.frame(in: coordinateSpace).origin
-				Color.clear
-					.preference(key: PreferenceKey.self, value: offset.y)
+				clearBackground(using: proxy)
 			})
-			.onPreferenceChange(PreferenceKey.self) { position in
-				_ = print("new position: \(position)")
-				self.position = position
-			}
 	}
-}
-
-private extension PositionReportingView {
-	struct PreferenceKey: SwiftUI.PreferenceKey {
-		static var defaultValue: CGFloat { .zero }
-		
-		static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+	
+	func clearBackground(using proxy: GeometryProxy) -> some View {
+		let offset = proxy.frame(in: coordinateSpace).origin
+		DispatchQueue.main.async { position = offset }
+		return Color.clear
 	}
 }
