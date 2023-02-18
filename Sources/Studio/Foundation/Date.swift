@@ -25,7 +25,7 @@ extension Date: Identifiable {
 
 public extension Date {
 	enum StringLength: Int { case normal, short, veryShort }
-
+	
 	enum DayOfWeek: Int, CaseIterable, Codable, Comparable { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 		public var nextDay: DayOfWeek { increment(count: 1) }
 		public var previousDay: DayOfWeek { increment(count: 6) }
@@ -39,7 +39,7 @@ public extension Date {
 		public var name: String { return Calendar.current.weekdaySymbols[self.rawValue - 1] }
 		public var isWeekendDay: Bool { return self == .saturday || self == .sunday }
 		public var isWeekDay: Bool { return !self.isWeekendDay }
-
+		
 		public static var firstDayOfWeek: DayOfWeek { DayOfWeek(rawValue: Calendar.current.firstWeekday) ?? .monday }
 		public static var lastDayOfWeek: DayOfWeek { firstDayOfWeek.previousDay }
 		public static var weekdays: [DayOfWeek] {
@@ -139,14 +139,14 @@ public extension Date {
 		let otherWeek = calendar.component(.weekOfYear, from: other)
 		return myWeek == otherWeek
 	}
-
+	
 	func isSameMonth(as other: Date) -> Bool {
 		let calendar = Calendar.current
 		let myComponents = calendar.dateComponents([.month, .year], from: self)
 		let otherComponents = calendar.dateComponents([.month, .year], from: other)
 		return myComponents.month == otherComponents.month && myComponents.year == otherComponents.year
 	}
-
+	
 	var isToday: Bool { self.isSameDay(as: Date()) }
 	var isTomorrow: Bool { self.isSameDay(as: Date().byAdding(days: 1)) }
 	var isYesterday: Bool { self.isSameDay(as: Date().byAdding(days: -1)) }
@@ -248,14 +248,14 @@ public extension Date {
 		let delta = weekDay.days(since: self.dayOfWeek)
 		return self.byAdding(days: delta)
 	}
-
+	
 	var hourMinuteString: String {
 		let formatter = DateFormatter()
 		formatter.dateStyle = .none
 		formatter.timeStyle = .short
 		return formatter.string(from: self)
 	}
-
+	
 	var hourString: String {
 		let isIn24HourTimeMode = self.isIn24HourTimeMode
 		var hour = isIn24HourTimeMode ? self.hour : self.hour % 12
@@ -268,10 +268,10 @@ public extension Date {
 	
 	var isIn24HourTimeMode: Bool {
 		guard let format = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: .current) else { return false }
-
+		
 		return format.range(of: "a") == nil
 	}
-
+	
 	func byAdding(seconds: Int? = nil, minutes: Int? = nil, hours: Int? = nil, days: Int? = nil, months: Int? = nil, years: Int? = nil) -> Date {
 		
 		let calendar = Calendar.current
@@ -292,7 +292,7 @@ public extension Date {
 		if let day = day { components.day = day }
 		if let month = month { components.month = month }
 		if let year = year { components.year = year }
-
+		
 		return calendar.date(from: components) ?? self
 	}
 	
@@ -340,8 +340,8 @@ public extension Date {
 		}
 		return results
 	}
-//	func isAfter(date: Date) -> Bool { return self.earlierDate(date) != self && date != self }
-//	func isBefore(date: Date) -> Bool { return self.earlierDate(date) == self && date != self }
+	//	func isAfter(date: Date) -> Bool { return self.earlierDate(date) != self && date != self }
+	//	func isBefore(date: Date) -> Bool { return self.earlierDate(date) == self && date != self }
 	
 	func isSameDay(as other: Date) -> Bool {
 		Calendar.current.compare(self, to: other, toGranularity: .day) == .orderedSame
@@ -350,7 +350,7 @@ public extension Date {
 	var iso8691String: String {
 		DateFormatter.iso8601.string(from: self)
 	}
-
+	
 	init?(iso8691String: String) {
 		if let date = DateFormatter.iso8601.date(from: iso8691String) {
 			self = date
@@ -462,26 +462,26 @@ public extension Date {
 		
 		return NSLocalizedString("now", comment: "now")
 	}
-
+	
 	func previous(_ dayOfWeek: Date.DayOfWeek) -> Date {
 		var date = self
 		
 		while date.dayOfWeek != dayOfWeek { date = date.previousDay }
 		return date
 	}
-
+	
 	func next(_ dayOfWeek: Date.DayOfWeek) -> Date {
 		var date = self
 		
 		while date.dayOfWeek != dayOfWeek { date = date.nextDay }
 		return date
 	}
-
+	
 	func thisWeek(_ dayOfWeek: Date.DayOfWeek) -> Date {
 		if dayOfWeek < self.dayOfWeek { return self.previous(dayOfWeek) }
 		return self.next(dayOfWeek)
 	}
-
+	
 	func upcoming(_ dayOfWeek: Date.DayOfWeek) -> Date {
 		if dayOfWeek < self.dayOfWeek { return self.previous(dayOfWeek) }
 		return self.next(dayOfWeek)
@@ -520,7 +520,7 @@ extension Set where Element == Calendar.Component {
 
 public extension Date {
 	enum Meridian { case am, pm }
-
+	
 	var meridian: Meridian {
 		get { hour < 12 ? .am : .pm }
 		set {
@@ -535,5 +535,15 @@ public extension Date {
 			
 			self = byChanging(hour: hour)
 		}
+	}
+}
+
+extension Date: RawRepresentable {
+	public var rawValue: String {
+		String(format: "%f", self.timeIntervalSinceReferenceDate)
+	}
+	
+	public init?(rawValue: String) {
+		self = Date(timeIntervalSinceReferenceDate: Double(rawValue) ?? 0.0)
 	}
 }
