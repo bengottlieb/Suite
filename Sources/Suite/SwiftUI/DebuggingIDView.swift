@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(iOS 15.0, macOS 12.0, *)
+@available(iOS 15.0, macOS 12.0, watchOS 8.0, *)
 public extension View {
 	@ViewBuilder func showDebuggingID(visible: Bool? = nil, _ id: String, alignment: Alignment = .topLeading) -> some View {
 		if visible ?? DebuggingIDView.showViewDebuggingIDs {
