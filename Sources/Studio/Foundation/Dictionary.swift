@@ -17,7 +17,7 @@ public extension Dictionary {
 	}
 }
 
-public struct KeyDifferences {
+public struct KeyDifferences: CustomStringConvertible {
 	public var additions: Set<String> = []
 	public var removals: Set<String> = []
 	public var changes: Set<String> = []
@@ -29,6 +29,14 @@ public struct KeyDifferences {
 		additions = additions.union(diffs.additions.map { key + "." + $0 })
 		removals = removals.union(diffs.removals.map { key + "." + $0 })
 		changes = changes.union(diffs.changes.map { key + "." + $0 })
+	}
+	
+	public var description: String {
+		var result = ""
+		if additions.isNotEmpty { result += "Added: \(additions.joined(separator: ", ")), " }
+		if removals.isNotEmpty { result += "Removed: \(removals.joined(separator: ", ")), " }
+		if changes.isNotEmpty { result += "Changed: \(changes.joined(separator: ", ")), " }
+		return result
 	}
 }
 
@@ -60,7 +68,7 @@ public extension Dictionary where Key == String {
 			diffs.changes.insert(key)
 		}
 		
-		for key in otherKeys { diffs.additions.insert(key) }
+		for key in otherKeys { diffs.removals.insert(key) }
 		
 		return diffs
 	}
