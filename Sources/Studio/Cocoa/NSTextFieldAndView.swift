@@ -32,6 +32,23 @@ public extension NSTextField {
 		self.maximumNumberOfLines = count
 		return self
 	}
+	
+	@discardableResult func selectable(_ select: Bool) -> Self {
+		self.isSelectable = select
+		return self
+	}
+	
+	@discardableResult func editabled(_ editable: Bool) -> Self {
+		self.isEditable = editable
+		return self
+	}
+	
+	@discardableResult func bordered(_ border: Bool) -> Self {
+		self.isBordered = border
+		return self
+	}
+	
+	
 }
 
 
