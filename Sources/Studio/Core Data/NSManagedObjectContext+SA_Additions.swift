@@ -177,7 +177,8 @@ public extension NSManagedObjectContext {
 		fetchRequest.predicate = predicate
 		if singleRecord { fetchRequest.fetchLimit = 1 }
 	
-		if let records = try self.fetch(fetchRequest) as? [NSManagedObject], records.count > 0 {
+		let records = (try self.fetch(fetchRequest) as? [NSManagedObject]) ?? []
+		if !records.isEmpty {
 			for record in records {
 				self.delete(record)
 			}

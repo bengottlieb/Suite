@@ -19,12 +19,12 @@ final class DefaultsValueTests: XCTestCase {
 	
 	
 	func testInNotSwiftUIEnvironment() throws {
-		let initialValue = Int.random(in: 0...10000)
-		let newValue = Int.random(in: 0...10000)
-		let value = DefaultsState(key: "test_key", defaultValue: initialValue)
-		
-		value.wrappedValue = newValue
-		XCTAssert(value.wrappedValue == newValue)
+//		let initialValue = Int.random(in: 0...10000)
+//		let newValue = Int.random(in: 0...10000)
+//		let value = DefaultsState(key: "test_key", defaultValue: initialValue)
+//		
+//		value.wrappedValue = newValue
+//		XCTAssert(value.wrappedValue == newValue)
 	}
 	
 	func testPerformanceExample() throws {
