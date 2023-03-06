@@ -44,8 +44,12 @@ public extension Data {
 		self.init(bytes: byteArray, count: count)
 	}
 	
-	var rawJSON: Any? {
+	var json: Any? {
 		try? JSONSerialization.jsonObject(with: self, options: [])
+	}
+
+	var jsonDictionary: JSONDictionary? {
+		try? JSONSerialization.jsonObject(with: self, options: []) as? JSONDictionary
 	}
 
 	@discardableResult

@@ -51,6 +51,18 @@ public class JSONExpandedDecoder: JSONDecoder {
 	}
 }
 
+public extension Dictionary where Key == String {
+	var jsonData: Data {
+		get throws {
+			try JSONSerialization.data(withJSONObject: self)
+		}
+	}
+	
+	func isEqual(to dict: JSONDictionary) -> Bool {
+		dict.diff(relativeTo: self).isEmpty
+	}
+}
+
 public extension Encodable {
 	var stringValue: String? {
 		stringValue(from: JSONEncoder.default)
