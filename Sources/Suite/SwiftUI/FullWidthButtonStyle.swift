@@ -5,8 +5,10 @@
 //  Created by Ben Gottlieb on 3/4/23.
 //
 
+#if canImport(Combine)
 import SwiftUI
 
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 public struct FullWidthButtonStyle: ButtonStyle {
 	var foregroundColor: Color?
 	var backgroundColor: Color?
@@ -35,3 +37,4 @@ public struct FullWidthButtonStyle: ButtonStyle {
 }
  
 
+#endif
