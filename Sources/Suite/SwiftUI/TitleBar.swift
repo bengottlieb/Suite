@@ -7,10 +7,23 @@
 
 import SwiftUI
 
+public struct TitleBarFontKey: EnvironmentKey {
+	public static var defaultValue = Font.title
+}
+
+public extension EnvironmentValues {
+	var titleBarFont: Font {
+		get { self[TitleBarFontKey.self] }
+		set { self[TitleBarFontKey.self] = newValue }
+	}
+}
+
 public struct TitleBar<Leading: View, Trailing: View, Title: View>: View {
 	let title: () -> Title
 	let leading: () -> Leading
 	let trailing: () -> Trailing
+	
+	@Environment(\.titleBarFont) var titleBarFont
 	
 	public init(title: @escaping () -> Title, leading: @escaping () -> Leading, trailing: @escaping () -> Trailing) {
 		self.title = title
@@ -28,6 +41,7 @@ public struct TitleBar<Leading: View, Trailing: View, Title: View>: View {
 			
 			title()
 				.frame(maxWidth: .infinity, alignment: .center)
+				.font(titleBarFont)
 		}
 		.padding(.horizontal)
 		.frame(height: 50)
@@ -53,31 +67,31 @@ extension TitleBar where Trailing == EmptyView, Leading == EmptyView {
 }
 
 extension TitleBar where Title == Text {
-	public init(title: String, leading: @escaping () -> Leading, trailing: @escaping () -> Trailing) {
+	public init(_ title: String, leading: @escaping () -> Leading, trailing: @escaping () -> Trailing) {
 		self.init(title: { Text(title) }, leading: leading, trailing: trailing)
 	}
 }
 
 extension TitleBar where Leading == EmptyView, Title == Text {
-	public init(title: String, trailing: @escaping () -> Trailing) {
+	public init(_ title: String, trailing: @escaping () -> Trailing) {
 		self.init(title: { Text(title) }, leading: { EmptyView() }, trailing: trailing)
 	}
 }
 
 extension TitleBar where Trailing == EmptyView, Title == Text {
-	public init(title: String, leading: @escaping () -> Leading) {
+	public init(_ title: String, leading: @escaping () -> Leading) {
 		self.init(title: { Text(title) }, leading: leading, trailing: { EmptyView() })
 	}
 }
 
 extension TitleBar where Trailing == EmptyView, Leading == EmptyView, Title == Text {
-	public init(title: String) {
+	public init(_ title: String) {
 		self.init(title: { Text(title) }, leading: { EmptyView() }, trailing: { EmptyView() })
 	}
 }
 
 struct TitleBar_Previews: PreviewProvider {
 	static var previews: some View {
-		TitleBar(title: "Title")
+		TitleBar("Title")
 	}
 }
