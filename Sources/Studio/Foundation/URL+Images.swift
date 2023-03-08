@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  URL+Images.swift
 //  
 //
 //  Created by ben on 5/30/20.
@@ -12,10 +12,10 @@ import CoreGraphics
 extension URL {
 	private func resizedImage(maxDimension: CGFloat) -> CGImage? {
 		let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-		let downsampleOptions =  [kCGImageSourceCreateThumbnailFromImageAlways: true,
+		let downsampleOptions: CFDictionary =  [kCGImageSourceCreateThumbnailFromImageAlways: true,
 								  kCGImageSourceShouldCacheImmediately: true,
 								  kCGImageSourceCreateThumbnailWithTransform: true,
-								  kCGImageSourceThumbnailMaxPixelSize: maxDimension] as CFDictionary
+																		 kCGImageSourceThumbnailMaxPixelSize: maxDimension] as [CFString : Any] as CFDictionary
 
 		guard
 			let imageSource = CGImageSourceCreateWithURL(self as CFURL, imageSourceOptions),
