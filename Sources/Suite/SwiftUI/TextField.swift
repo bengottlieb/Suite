@@ -7,21 +7,54 @@
 
 import SwiftUI
 
+#if os(iOS)
+	public typealias TextContentType = UITextContentType
+#else
+	public typealias TextContentType = NSTextContentType
+
+	extension NSTextContentType {
+		public static let name = NSTextContentType(rawValue: "name")
+		public static let givenName = NSTextContentType(rawValue: "givenName")
+		public static let middleName = NSTextContentType(rawValue: "middleName")
+		public static let familyName = NSTextContentType(rawValue: "familyName")
+		public static let nickname = NSTextContentType(rawValue: "nickname")
+		public static let organizationName = NSTextContentType(rawValue: "organizationName")
+		public static let streetAddressLine1 = NSTextContentType(rawValue: "streetAddressLine1")
+		public static let fullStreetAddress = NSTextContentType(rawValue: "fullStreetAddress")
+		public static let newPassword = NSTextContentType(rawValue: "newPassword")
+		public static let emailAddress = NSTextContentType(rawValue: "emailAddress")
+		public static let flightNumber = NSTextContentType(rawValue: "flightNumber")
+		public static let shipmentTrackingNumber = NSTextContentType(rawValue: "shipmentTrackingNumber")
+		public static let URL = NSTextContentType(rawValue: "URL")
+	}
+#endif
+
+@available(macOS 11.0, *)
 public extension View {
-	func addTextContentType(_ type: UITextContentType) -> some View {
-		self
-			.textContentType(type)
-			.autocorrectionDisabled(!type.shouldAutocorrect)
-			.autocapitalization(type.shouldAutocapitalize ? .words : .none )
+	func addTextContentType(_ type: TextContentType) -> some View {
+		#if os(macOS)
+			self
+				.textContentType(type)
+				.autocorrectionDisabled(!type.shouldAutocorrect)
+		#else
+			self
+				.textContentType(type)
+				.autocorrectionDisabled(!type.shouldAutocorrect)
+				.autocapitalization(type.shouldAutocapitalize ? .words : .none )
+				.keyboardType(type.requiresURLKeyboard ? .URL : .default)
+		#endif
 	}
 }
 
-private extension UITextContentType {
+@available(macOS 11.0, *)
+private extension TextContentType {
+	var requiresURLKeyboard: Bool {
+		self == .emailAddress || self == .URL
+	}
+
 	var shouldAutocorrect: Bool {
 		switch self {
 		case .name, .givenName, .middleName, .familyName, .nickname, .organizationName, .streetAddressLine1, .fullStreetAddress, .username, .password, .newPassword, .oneTimeCode, .emailAddress: return false
-			
-			
 			
 		default:
 			if #available(iOS 15.0, *) {

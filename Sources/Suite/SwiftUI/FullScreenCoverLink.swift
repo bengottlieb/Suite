@@ -6,9 +6,10 @@
 //
 
 #if canImport(Combine)
+#if os(iOS)
 import SwiftUI
 
-@available(OSX 12.0, iOS 14.0, watchOS 8.0, *)
+@available(iOS 14.0, watchOS 8.0, *)
 public struct FullScreenCoverLink<Label: View, Content: View>: View {
 	let label: () -> Label
 	let content: () -> Content
@@ -36,4 +37,5 @@ extension FullScreenCoverLink where Label == Text {
 	}
 }
 
+#endif
 #endif
