@@ -45,7 +45,7 @@ public extension Date {
 		return next
 	}
 	
-	struct TimeRange {
+	struct TimeRange: Equatable {
 		public var start: Date.Time
 		public var end: Date.Time
 		
@@ -60,6 +60,19 @@ public extension Date {
 			}
 			
 			return (Date.Time.lastSecond.timeInterval - start.timeInterval) + (end.timeInterval)
+		}
+		
+		public static func ==(lhs: Self, rhs: Self) -> Bool {
+			lhs.start == rhs.start && lhs.end == rhs.end
+		}
+		
+		public func intersection(with time: TimeRange) -> TimeRange? {
+			if end.timeInterval < time.start.timeInterval || start.timeInterval > time.end.timeInterval { return nil }
+			
+			let newStart = max(start.timeInterval, time.start.timeInterval)
+			let newEnd = min(end.timeInterval, time.end.timeInterval)
+			
+			return TimeRange(.init(timeInterval: newStart), .init(timeInterval: newEnd))
 		}
 	}
 
