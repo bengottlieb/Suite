@@ -61,6 +61,13 @@ public struct Gestalt {
 	}()
 	
 	public static var isInPreview: Bool { ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" }
+	public static var deviceID: String? {
+		#if os(iOS) || os(watchOS)
+			return UIDevice.current.identifierForVendor?.uuidString
+		#elseif  os(macOS)
+			return serialNumber
+		#endif
+	}
 	
 	#if os(OSX)
 		public static var isOnMac: Bool { return true }
