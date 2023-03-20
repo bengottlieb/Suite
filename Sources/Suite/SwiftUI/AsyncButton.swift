@@ -17,21 +17,21 @@ public struct ButtonIsPerformingActionKey: PreferenceKey {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct AsyncButton<Label: View>: View {
-	var action: () async -> Void
+	var action: () async throws -> Void
 	var spinnerColor = Color.white
 	@ViewBuilder var label: () -> Label
 	
 	@State private var isPerformingAction = false
 	var role: Any?
 	
-	public init(action: @escaping () async -> Void, spinnerColor: Color? = nil, @ViewBuilder label: @escaping () -> Label) {
+	public init(action: @escaping () async throws -> Void, spinnerColor: Color? = nil, @ViewBuilder label: @escaping () -> Label) {
 		self.action = action
 		self.label = label
 		self.spinnerColor = spinnerColor ?? .white
 	}
 	
 	@available(macOS 12.0, iOS 15.0, watchOS 8.0, *)
-	public init(role: ButtonRole?, action: @escaping () async -> Void, spinnerColor: Color? = nil, @ViewBuilder label: @escaping () -> Label) {
+	public init(role: ButtonRole?, action: @escaping () async throws -> Void, spinnerColor: Color? = nil, @ViewBuilder label: @escaping () -> Label) {
 		self.action = action
 		self.label = label
 		self.role = role
@@ -53,7 +53,11 @@ public struct AsyncButton<Label: View>: View {
 	func performAction() {
 		Task.detached {
 			isPerformingAction = true
-			await action()
+			do {
+				try await action()
+			} catch {
+				print("AsyncButton action failed: \(error)")
+			}
 			await MainActor.run { isPerformingAction = false }
 		}
 	}
@@ -78,7 +82,7 @@ public struct AsyncButton<Label: View>: View {
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 8, *)
 extension AsyncButton where Label == Text {
-	public init(_ title: String, action: @escaping () async -> Void) {
+	public init(_ title: String, action: @escaping () async throws -> Void) {
 		self.action = action
 		self.label = { Text(title) }
 	}
@@ -86,7 +90,7 @@ extension AsyncButton where Label == Text {
 
 @available(macOS 12, iOS 15.0, tvOS 13, watchOS 8, *)
 extension AsyncButton where Label == Text {
-	public init(_ title: String, role: ButtonRole, action: @escaping () async -> Void) {
+	public init(_ title: String, role: ButtonRole, action: @escaping () async throws -> Void) {
 		self.action = action
 		self.role = role
 		self.label = { Text(title) }

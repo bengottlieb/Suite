@@ -20,12 +20,12 @@ public extension EnvironmentValues {
 
 public struct TitleBar<Leading: View, Trailing: View, Title: View>: View {
 	let title: () -> Title
-	let leading: () -> Leading
-	let trailing: () -> Trailing
+	@ViewBuilder var leading: () -> Leading
+	@ViewBuilder var trailing: () -> Trailing
 	
 	@Environment(\.titleBarFont) var titleBarFont
 	
-	public init(title: @escaping () -> Title, leading: @escaping () -> Leading, trailing: @escaping () -> Trailing) {
+	public init(title: @escaping () -> Title, @ViewBuilder leading: @escaping () -> Leading, @ViewBuilder trailing: @escaping () -> Trailing) {
 		self.title = title
 		self.leading = leading
 		self.trailing = trailing
@@ -50,13 +50,13 @@ public struct TitleBar<Leading: View, Trailing: View, Title: View>: View {
 }
 
 extension TitleBar where Leading == EmptyView {
-	public init(title: @escaping () -> Title, trailing: @escaping () -> Trailing) {
+	public init(title: @escaping () -> Title, @ViewBuilder trailing: @escaping () -> Trailing) {
 		self.init(title: title, leading: { EmptyView() }, trailing: trailing)
 	}
 }
 
 extension TitleBar where Trailing == EmptyView {
-	public init(title: @escaping () -> Title, leading: @escaping () -> Leading) {
+	public init(title: @escaping () -> Title, @ViewBuilder leading: @escaping () -> Leading) {
 		self.init(title: title, leading: leading, trailing: { EmptyView() })
 	}
 }
@@ -68,19 +68,19 @@ extension TitleBar where Trailing == EmptyView, Leading == EmptyView {
 }
 
 extension TitleBar where Title == Text {
-	public init(_ title: String, leading: @escaping () -> Leading, trailing: @escaping () -> Trailing) {
+	public init(_ title: String, @ViewBuilder leading: @escaping () -> Leading, @ViewBuilder trailing: @escaping () -> Trailing) {
 		self.init(title: { Text(title) }, leading: leading, trailing: trailing)
 	}
 }
 
 extension TitleBar where Leading == EmptyView, Title == Text {
-	public init(_ title: String, trailing: @escaping () -> Trailing) {
+	public init(_ title: String, @ViewBuilder trailing: @escaping () -> Trailing) {
 		self.init(title: { Text(title) }, leading: { EmptyView() }, trailing: trailing)
 	}
 }
 
 extension TitleBar where Trailing == EmptyView, Title == Text {
-	public init(_ title: String, leading: @escaping () -> Leading) {
+	public init(_ title: String, @ViewBuilder leading: @escaping () -> Leading) {
 		self.init(title: { Text(title) }, leading: leading, trailing: { EmptyView() })
 	}
 }
