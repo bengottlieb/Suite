@@ -133,7 +133,7 @@ extension Decodable {
 	}
 	
 	public static func loadJSON(dictionary: [String: Any], using decoder: JSONDecoder = .default) throws -> Self {
-		let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+ 		let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
 		return try decoder.decode(Self.self, from: data)
 	}
 	

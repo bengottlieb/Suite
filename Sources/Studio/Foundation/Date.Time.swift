@@ -144,6 +144,21 @@ public extension Date {
 			self.second = min(second, 59)
 		}
 		
+		public init?(string: String) {
+			let components = string.components(separatedBy: ":")
+			guard components.count >= 2, let hour = Int(components[0]), let minute = Int(components[1]) else { return nil }
+			
+			self.hour = hour
+			self.minute = minute
+			if components.count > 2, let sec = TimeInterval(components[2]) {
+				self.second = sec
+			} else {
+				self.second = 0
+			}
+		}
+		
+		public var stringValue: String { description }
+		
 		public var description: String {
 			if second == 0 {
 				return String(format: "%d:%02d", hour, minute)
