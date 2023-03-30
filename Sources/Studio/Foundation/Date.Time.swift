@@ -145,10 +145,17 @@ public extension Date {
 		}
 		
 		public init?(string: String) {
-			let components = string.components(separatedBy: ":")
+			let chunks = string.components(separatedBy: " ")
+			guard let hourMinuteChunk = chunks.first else { return nil }
+			let components = hourMinuteChunk.components(separatedBy: ":")
 			guard components.count >= 2, let hour = Int(components[0]), let minute = Int(components[1]) else { return nil }
 			
-			self.hour = hour
+			if chunks.count > 1, chunks[1].lowercased() == "pm", hour < 12, hour != 0 {
+				self.hour = hour + 12
+			} else {
+				self.hour = hour
+			}
+			
 			self.minute = minute
 			if components.count > 2, let sec = TimeInterval(components[2]) {
 				self.second = sec
