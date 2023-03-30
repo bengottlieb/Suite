@@ -164,7 +164,7 @@ public extension Date {
 		return calendar.date(from: components) ?? self
 	}
 	
-	func dateBySettingTime(time: Date?) -> Date {
+	func dateBySetting(time: Date?) -> Date {
 		guard let time = time else { return self }
 		let calendar = Calendar.current
 		var components = calendar.dateComponents([.hour, .minute, .second, .year, .month, .day], from: self)
@@ -173,6 +173,18 @@ public extension Date {
 		components.hour = theirComponents.hour
 		components.minute = theirComponents.minute
 		components.second = theirComponents.second
+		
+		return calendar.date(from: components) ?? self
+	}
+	
+	func dateBySetting(time: Date.Time?) -> Date {
+		guard let time = time else { return self }
+		let calendar = Calendar.current
+		var components = calendar.dateComponents([.hour, .minute, .second, .year, .month, .day], from: self)
+		
+		components.hour = time.hour
+		components.minute = time.minute
+		components.second = Int(time.second)
 		
 		return calendar.date(from: components) ?? self
 	}
