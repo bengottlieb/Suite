@@ -74,6 +74,16 @@ public extension Date {
 			
 			return TimeRange(.init(timeInterval: newStart), .init(timeInterval: newEnd))
 		}
+
+		public init(startMinute minutes: Int, duration: TimeInterval) {
+			let startHour = minutes / 60
+			let startMinute = minutes % 60
+			
+			let endHour = (minutes + Int(duration / 60)) / 60
+			let endMinute = (minutes + Int(duration / 60)) % 60
+			
+			self.init(.init(hour: startHour, minute: startMinute), .init(hour: endHour, minute: endMinute))
+		}
 	}
 
 	struct Time: Codable, Comparable, Equatable, CustomStringConvertible {
