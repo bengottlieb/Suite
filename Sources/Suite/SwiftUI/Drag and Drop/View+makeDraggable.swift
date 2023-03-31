@@ -33,7 +33,7 @@ struct DraggableView<Content: View>: View {
 			.background {
 				GeometryReader { geo in
 					Color.clear
-						.onAppear { frame = geo.frame(in: .global) }
+						.onAppear { frame = geo.frame(in: .dragAndDropSpace) }
 				}
 			}
 	}
@@ -43,7 +43,7 @@ struct DraggableView<Content: View>: View {
 	}
 	
 	private var dragGesture: some Gesture {
-		DragGesture(coordinateSpace: .global).onChanged { action in
+		DragGesture(coordinateSpace: .dragAndDropSpace).onChanged { action in
 			if !isDragging {
 				isDragging = true
 				let renderer = ImageRenderer(content: dragContent())
