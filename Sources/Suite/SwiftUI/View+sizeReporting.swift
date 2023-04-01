@@ -62,16 +62,29 @@ public extension View {		// Tracks the size available for the view
 	}
 
 	func frameReporting(_ frame: Binding<CGRect>, in space: CoordinateSpace = .global, firstTimeOnly: Bool = false) -> some View {
-			self
-					.background(GeometryReader() { geo -> Color in
-						let rect = geo.frame(in: space)
-						DispatchQueue.main.async {
-							if (!firstTimeOnly || frame.wrappedValue == .zero) && frame.wrappedValue != rect  { frame.wrappedValue = rect }
-						}
-						return Color.clear
-					})
+		self
+			.background(GeometryReader() { geo -> Color in
+				let rect = geo.frame(in: space)
+				DispatchQueue.main.async {
+					if (!firstTimeOnly || frame.wrappedValue == .zero) && frame.wrappedValue != rect  { frame.wrappedValue = rect }
+				}
+				return Color.clear
+			})
 	}
-
+	
+	func reportGeometry(frame: Binding<CGRect?>? = nil, size: Binding<CGSize?>? = nil, in space: CoordinateSpace = .global) -> some View {
+		self
+			.background(
+				GeometryReader { geo in
+					Color.clear
+						.onAppear {
+							frame?.wrappedValue = geo.frame(in: space)
+							size?.wrappedValue = geo.frame(in: space).size
+						}
+				}
+			)
+	}
+	
 	func sizeReporting(_ callback: @escaping (CGSize) -> Void) -> some View {
 		self.background(
 			GeometryReader() { geo -> Color in

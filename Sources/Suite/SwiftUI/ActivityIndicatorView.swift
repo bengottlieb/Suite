@@ -30,11 +30,11 @@ public struct ActivityIndicatorView: View {
 		spokeColors = Array(0..<count).map { color.opacity(1.0 - Double($0) / Double(count)) }
 	}
 	
-    static public var smallHeight: CGFloat = 20
-    static public var mediumHeight: CGFloat = 35
-    static public var largeHeight: CGFloat = 50
+	static public var smallHeight: CGFloat = 20
+	static public var mediumHeight: CGFloat = 35
+	static public var largeHeight: CGFloat = 50
 
-    public func small() -> some View { self.frame(width: Self.smallHeight, height: Self.smallHeight) }
+	public func small() -> some View { self.frame(width: Self.smallHeight, height: Self.smallHeight) }
 	public func medium() -> some View { self.frame(width: Self.mediumHeight, height: Self.mediumHeight) }
 	public func large() -> some View { self.frame(width: Self.largeHeight, height: Self.largeHeight) }
 	

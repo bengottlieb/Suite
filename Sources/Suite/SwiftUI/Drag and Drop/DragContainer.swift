@@ -34,13 +34,9 @@ public struct DragContainer<Content: View>: View {
 				Color.clear
 					.onAppear {
 						coordinator.containerFrame = geo.frame(in: .dragAndDropSpace)
-						print("Global: \(geo.frame(in: .global))")
-						print("Drag: \(geo.frame(in: .dragAndDropSpace))")
 					}
 					.onReceive(CoordinateSpace.dragAndDropSpaceCreatedNotification.publisher()) { _ in
 						coordinator.containerFrame = geo.frame(in: .dragAndDropSpace)
-						print("Updated Global: \(geo.frame(in: .global))")
-						print("Updated Drag: \(geo.frame(in: .dragAndDropSpace))")
 					}
 			}
 		}

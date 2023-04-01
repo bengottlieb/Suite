@@ -30,12 +30,7 @@ struct DraggableView<Content: View>: View {
 		content
 			.gesture(dragGesture)
 			.opacity(isDragging ? dragAlpha : 1)
-			.background {
-				GeometryReader { geo in
-					Color.clear
-						.onAppear { frame = geo.frame(in: .dragAndDropSpace) }
-				}
-			}
+			.reportGeometry(frame: $frame, in: .dragAndDropSpace)
 	}
 	
 	@ViewBuilder func dragContent() -> some View {
