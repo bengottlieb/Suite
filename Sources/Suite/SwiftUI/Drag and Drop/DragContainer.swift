@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(OSX 13, iOS 15, tvOS 13, watchOS 8, *)
+@available(OSX 13, iOS 16, tvOS 13, watchOS 8, *)
 public struct DragContainer<Content: View>: View {
 	@ViewBuilder private var content: () -> Content
 	@StateObject private var coordinator = DragCoordinator()
@@ -27,6 +27,7 @@ public struct DragContainer<Content: View>: View {
 					.offset(offset)
 			}
 		}
+		.environment(\.isDragAndDropEnabled, true)
 		.environment(\.currentDragPosition, coordinator.currentPosition)
 		.environmentObject(coordinator)
 		.background {
@@ -44,7 +45,7 @@ public struct DragContainer<Content: View>: View {
 	}
 }
 
-@available(OSX 13, iOS 15, tvOS 13, watchOS 8, *)
+@available(OSX 13, iOS 16, tvOS 13, watchOS 8, *)
 struct DragContainer_Previews: PreviewProvider {
 	static var previews: some View {
 		DragContainer() {

@@ -34,6 +34,7 @@ struct DropTargetView<Content: View>: View {
 	let dropped: (String, Any, CGPoint) -> Bool
 
 	@EnvironmentObject var dragCoordinator: DragCoordinator
+	@Environment(\.isDragAndDropEnabled) var isDragAndDropEnabled
 	@State var frame: CGRect?
 	@State var indicateIsDropTarget = false
 	@State var isDropTarget = false
@@ -46,34 +47,38 @@ struct DropTargetView<Content: View>: View {
 		return CGPoint(x: newX, y: newY)
 	}
 	var body: some View {
-		content
-			.background {
-				GeometryReader { geo in
-					Color.clear
-						.onAppear { frame = geo.frame(in: .dragAndDropSpace) }
-						.onChange(of: dragCoordinator.currentPosition) { newPosition in
-							guard let dragPosition = convert(point: newPosition, using: geo), let type = dragCoordinator.dragType, let object = dragCoordinator.draggedObject else { return }
-							
-							if let point = dropPosition(at: dragPosition) {
-								isDropTarget = true
-								indicateIsDropTarget = hover(type, object, point)
-							} else if isDropTarget {
-								_ = hover(type, object, nil)
-								isDropTarget = false
-								indicateIsDropTarget = false
-							}
-						}
-						.onChange(of: dragCoordinator.dropPosition) { dropPoint in
-							guard let dropPoint = convert(point: dropPoint, using: geo) else { return }
-							if let point = dropPosition(at: dropPoint), let type = dragCoordinator.dragType, let object = dragCoordinator.draggedObject {
-								if dropped(type, object, point) {
-									dragCoordinator.acceptedDrop = true
+		if isDragAndDropEnabled {
+			content
+				.background {
+					GeometryReader { geo in
+						Color.clear
+							.onAppear { frame = geo.frame(in: .dragAndDropSpace) }
+							.onChange(of: dragCoordinator.currentPosition) { newPosition in
+								guard let dragPosition = convert(point: newPosition, using: geo), let type = dragCoordinator.dragType, let object = dragCoordinator.draggedObject else { return }
+								
+								if let point = dropPosition(at: dragPosition) {
+									isDropTarget = true
+									indicateIsDropTarget = hover(type, object, point)
+								} else if isDropTarget {
+									_ = hover(type, object, nil)
+									isDropTarget = false
+									indicateIsDropTarget = false
 								}
 							}
-						}
+							.onChange(of: dragCoordinator.dropPosition) { dropPoint in
+								guard let dropPoint = convert(point: dropPoint, using: geo) else { return }
+								if let point = dropPosition(at: dropPoint), let type = dragCoordinator.dragType, let object = dragCoordinator.draggedObject {
+									if dropped(type, object, point) {
+										dragCoordinator.acceptedDrop = true
+									}
+								}
+							}
+					}
+					.border(Color.red, width: indicateIsDropTarget ? 4 : 0)
 				}
-				.border(Color.red, width: indicateIsDropTarget ? 4 : 0)
-			}
+		} else {
+			content
+		}
 	}
 
 	func dropPosition(at point: CGPoint?) -> CGPoint? {
