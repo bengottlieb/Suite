@@ -11,9 +11,11 @@ import SwiftUI
 public struct DragContainer<Content: View>: View {
 	@ViewBuilder private var content: () -> Content
 	@StateObject private var coordinator = DragCoordinator()
+	let isDragEnabled: Bool
 	
-	public init(@ViewBuilder content: @escaping () -> Content) {
+	public init(enabled: Bool = true, @ViewBuilder content: @escaping () -> Content) {
 		self.content = content
+		isDragEnabled = enabled
 	}
 	
 	public var body: some View {
@@ -27,7 +29,7 @@ public struct DragContainer<Content: View>: View {
 					.offset(offset)
 			}
 		}
-		.environment(\.isDragAndDropEnabled, true)
+		.environment(\.isDragAndDropEnabled, isDragEnabled)
 		.environment(\.currentDragPosition, coordinator.currentPosition)
 		.environmentObject(coordinator)
 		.background {

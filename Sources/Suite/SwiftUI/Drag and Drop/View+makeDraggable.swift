@@ -22,15 +22,20 @@ struct DraggableView<Content: View>: View {
 	let hideWhenDragging: Bool
 	
 	@EnvironmentObject var dragCoordinator: DragCoordinator
+	@Environment(\.isDragAndDropEnabled) var isDragAndDropEnabled
 	@State var frame: CGRect?
 	@State var isDragging = false
 	var dragAlpha: CGFloat { hideWhenDragging ? 0 : 0.25 }
 
 	var body: some View {
-		content
-			.gesture(dragGesture)
-			.opacity(isDragging ? dragAlpha : 1)
-			.reportGeometry(frame: $frame, in: .dragAndDropSpace)
+		if isDragAndDropEnabled {
+			content
+				.gesture(dragGesture)
+				.opacity(isDragging ? dragAlpha : 1)
+				.reportGeometry(frame: $frame, in: .dragAndDropSpace)
+		} else {
+			content
+		}
 	}
 	
 	@ViewBuilder func dragContent() -> some View {
