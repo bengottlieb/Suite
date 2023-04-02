@@ -55,7 +55,7 @@ public extension Date {
 		}
 
 		public var duration: TimeInterval {
-			if start < end {
+			if start <= end {
 				return end.timeInterval - start.timeInterval
 			}
 			
