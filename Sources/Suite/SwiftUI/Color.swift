@@ -47,7 +47,7 @@ public extension Color {
 	
 }
 
-@available(OSX 11, iOS 13.0, tvOS 13, watchOS 6, *)
+@available(OSX 11, iOS 14.0, tvOS 13, watchOS 6, *)
 public extension Color {
 	var brightness: Double {
 		#if os(macOS)
