@@ -45,7 +45,7 @@ public extension Date {
 		return next
 	}
 	
-	struct TimeRange: Equatable {
+	struct TimeRange: Equatable, CustomStringConvertible {
 		public var start: Date.Time
 		public var end: Date.Time
 		
@@ -78,6 +78,11 @@ public extension Date {
 			let newEnd = min(end.timeInterval, time.end.timeInterval)
 			
 			return TimeRange(.init(timeInterval: newStart), .init(timeInterval: newEnd))
+		}
+		
+		public var description: String {
+			if start == end { return "\(start)" }
+			return "\(start) - \(end)"
 		}
 
 		public init(startMinute minutes: Int, duration: TimeInterval) {
@@ -128,7 +133,7 @@ public extension Date {
 		
 		public func byAdding(timeInterval: TimeInterval) -> Date.Time {
 			let hours = timeInterval / .hour
-			let minutes = (timeInterval - hours * .hour) / .minute
+			let minutes = (timeInterval - floor(hours) * .hour) / .minute
 			let seconds = TimeInterval(Int(timeInterval) % 60)
 			
 			return byAdding(hours: Int(hours), minutes: Int(minutes), seconds: seconds)
