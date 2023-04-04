@@ -54,6 +54,11 @@ public extension Date {
 			self.end = end
 		}
 
+		public init(start: Date.Time, duration: TimeInterval) {
+			self.start = start
+			self.end = start.byAdding(timeInterval: duration)
+		}
+
 		public var duration: TimeInterval {
 			if start <= end {
 				return end.timeInterval - start.timeInterval
@@ -119,6 +124,14 @@ public extension Date {
 			}
 			
 			return times
+		}
+		
+		public func byAdding(timeInterval: TimeInterval) -> Date.Time {
+			let hours = timeInterval / .hour
+			let minutes = (timeInterval - hours * .hour) / .minute
+			let seconds = TimeInterval(Int(timeInterval) % 60)
+			
+			return byAdding(hours: Int(hours), minutes: Int(minutes), seconds: seconds)
 		}
 		
 		public func byAdding(hours: Int = 0, minutes: Int = 0, seconds: TimeInterval = 0) -> Time {
