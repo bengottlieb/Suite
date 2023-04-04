@@ -57,6 +57,21 @@ public extension NSColor {
 		
 		return r << 16 + g << 8 + b
 	}
+	
+	var brightness: Double {
+		var r: CGFloat = 0.0
+		var g: CGFloat = 0.0
+		var b: CGFloat = 0.0
+		var a: CGFloat = 0.0
+		var brightness: CGFloat = 0.0
+		
+		guard let rgb = usingColorSpace(.sRGB) else { return 0.5 }
+		rgb.getRed(&r, green: &g, blue: &b, alpha: &a)
+		
+		// algorithm from: http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
+		brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+		return brightness
+	}
 }
 
 #endif

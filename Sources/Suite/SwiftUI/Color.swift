@@ -44,8 +44,23 @@ public extension Color {
 	static var randomGray: Color {
 		Color(white: Double.random(in: 0...100.0))
 	}
+	
 }
 
+@available(OSX 11, iOS 13.0, tvOS 13, watchOS 6, *)
+public extension Color {
+	var brightness: Double {
+		#if os(macOS)
+				NSColor(self).brightness
+		#else
+				UIColor(self).brightness
+		#endif
+	}
+	
+	var textColor: Color {
+		brightness <= 0.50 ? .white : .black
+	}
+}
 
 #if os(macOS) && !targetEnvironment(macCatalyst)
 	import AppKit
