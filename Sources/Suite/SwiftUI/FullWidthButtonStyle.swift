@@ -12,25 +12,49 @@ import SwiftUI
 public struct FullWidthButtonStyle: ButtonStyle {
 	var foregroundColor: Color?
 	var backgroundColor: Color?
-	
+	let borderOnly: Bool
+	let borderWidth: Double
+	let cornerRadius = 8.0
 	@Environment(\.isEnabled) private var isEnabled: Bool
 	
 	
-	public init(foreground: Color? = nil, background: Color? = nil) {
+	public init(foreground: Color? = nil, background: Color? = nil, borderOnly: Bool = false, borderWidth: Double = 0.0) {
 		foregroundColor = foreground
 		backgroundColor = background
+		self.borderOnly = borderOnly
+		self.borderWidth = borderWidth
 	}
 
+	var resolvedForeground: Color {
+		if !borderOnly { return foregroundColor ?? Color.systemBackground }
+		return foregroundColor ?? Color.accentColor
+	}
+	
+	var resolvedBackground: Color {
+		if !borderOnly { return backgroundColor ?? Color.accentColor }
+		return backgroundColor ?? Color.systemBackground
+	}
+	
 	public func makeBody(configuration: FullWidthButtonStyle.Configuration) -> some View {
 		configuration.label
 			.padding()
 			.frame(maxWidth: .infinity)
-			.background(backgroundColor ?? Color.accentColor)
-			.foregroundColor(foregroundColor ?? Color.systemBackground)
+			.background (
+				ZStack {
+					if !borderOnly {
+						RoundedRectangle(cornerRadius: cornerRadius)
+							.fill(resolvedBackground)
+					}
+					if borderWidth > 0 {
+						RoundedRectangle(cornerRadius: cornerRadius)
+							.stroke(resolvedForeground)
+					}
+				}
+			)
+			.foregroundColor(resolvedForeground)
 			.opacity(isEnabled ? 1 : 0.4)
 			.frame(maxWidth: .infinity)
 			.frame(height: 50)
-			.cornerRadius(8)
 			.scaleEffect(configuration.isPressed ? 0.98 : 1)
 			.animation(.linear(duration: 0.1), value: configuration.isPressed)
 	}
