@@ -101,16 +101,18 @@ public extension Array {
 		return self[idx]
 	}
 	
-	func breakIntoChunks(ofSize size: Int) -> [[Element]] {
+	func breakIntoChunks(ofSize size: Int, growth: Double = 1.0) -> [[Element]] {
 		if self.count <= size || size == 0 { return [self] }
 
+		var chunkSize = size
 		let count = self.count
-		var start = size
-		var results: [[Element]] = [Array(self[0..<size])]
+		var start = chunkSize
+		var results: [[Element]] = [Array(self[0..<chunkSize])]
 		
-		while (count - start) >= size {
-			results.append(Array(self[start..<(start + size)]))
-			start += size
+		while (count - start) >= chunkSize {
+			results.append(Array(self[start..<(start + chunkSize)]))
+			start += chunkSize
+			chunkSize = Int(Double(chunkSize) * growth)
 		}
 		
 		
