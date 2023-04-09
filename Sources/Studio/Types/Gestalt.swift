@@ -85,6 +85,19 @@ public struct Gestalt {
 	static public var deviceName: String { rawDeviceType }
 	#endif
 	
+	#if os(watchOS)
+		public static var isOnWatch: Bool { true }
+	#else
+		public static var isOnWatch: Bool { false }
+	#endif
+	
+	#if os(tvOS)
+		public static var isOnTV: Bool { true }
+	#else
+		public static var isOnTV: Bool { false }
+	#endif
+
+	
 	#if os(iOS)
 		static public var sleepDisabled: Bool {
 			get { UIApplication.shared.isIdleTimerDisabled }
