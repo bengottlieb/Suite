@@ -85,6 +85,11 @@ public struct Gestalt {
 	static public var deviceName: String { rawDeviceType }
 	#endif
 	
+	#if os(macOS)
+		public static var isOnIPad: Bool { false }
+		public static var isOnIPhone: Bool { false }
+	#endif
+	
 	#if os(watchOS)
 		public static var isOnWatch: Bool { true }
 	#else

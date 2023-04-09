@@ -37,16 +37,16 @@ public extension DeviceFilter {
 			if !Gestalt.isOnMac, !Gestalt.isOnSimulator { return false }
 		}
 		
+		if contains(.prod), Gestalt.distribution != .appStore { return false }
+		if contains(.debug), Gestalt.distribution != .development { return false }
+		if contains(.testFlight), Gestalt.distribution != .testflight { return false }
+
 		if contains(.iOS), !Gestalt.isOnIPad && !Gestalt.isOnIPhone { return false }
 		if contains(.iPad), !Gestalt.isOnIPad { return false }
 		if contains(.iPhone), !Gestalt.isOnIPhone { return false }
 		if contains(.watch), !Gestalt.isOnWatch { return false }
 		if contains(.tv), !Gestalt.isOnTV { return false }
 		if contains(.mac), !Gestalt.isOnMac { return false }
-
-		if contains(.prod), Gestalt.distribution != .appStore { return false }
-		if contains(.debug), Gestalt.distribution != .development { return false }
-		if contains(.testFlight), Gestalt.distribution != .testflight { return false }
 
 		return true
 	}
