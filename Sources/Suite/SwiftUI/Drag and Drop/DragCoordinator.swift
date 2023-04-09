@@ -34,14 +34,18 @@ public class DragCoordinator: ObservableObject {
 		dropScale = 1.0
 	}
 	
-	func drop(at point: CGPoint) {
-		dropPosition = point
-		DispatchQueue.main.async(after: 0.01) {
-			if self.acceptedDrop {
-				self.animateDrop()
-			} else {
-				self.snapback()
+	func drop(at point: CGPoint?) {
+		if let point {
+			dropPosition = point
+			DispatchQueue.main.async(after: 0.01) {
+				if self.acceptedDrop {
+					self.animateDrop()
+				} else {
+					self.snapback()
+				}
 			}
+		} else {
+			snapback()
 		}
 	}
 	

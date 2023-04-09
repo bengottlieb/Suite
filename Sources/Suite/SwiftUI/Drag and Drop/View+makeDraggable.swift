@@ -24,9 +24,9 @@ struct DraggableView<Content: View>: View {
 	
 	@EnvironmentObject var dragCoordinator: DragCoordinator
 	@Environment(\.isDragAndDropEnabled) var isDragAndDropEnabled
+	@Environment(\.isScrolling) var isScrolling
 	@State var frame: CGRect?
 	@State var isDragging = false
-	@GestureState private var dragGestureActive: Bool = false
 	
 	var dragAlpha: CGFloat { hideWhenDragging ? 0 : 0.25 }
 	
@@ -36,11 +36,11 @@ struct DraggableView<Content: View>: View {
 				.highPriorityGesture(dragGesture)
 				.opacity(isDragging ? dragAlpha : 1)
 				.reportGeometry(frame: $frame, in: .dragAndDropSpace)
-				.onChange(of: dragGestureActive) { active in
-					print("Dragging active: \(active)")
-				}
-				.onChange(of: frame) { newValue in
-					print("Frame changed")
+				.onChange(of: isScrolling) { isScrolling in
+					if isScrolling, isDragging {
+						isDragging = false
+						dragCoordinator.drop(at: nil)
+					}
 				}
 		} else {
 			content
@@ -55,10 +55,6 @@ struct DraggableView<Content: View>: View {
 	
 	private var dragGesture: some Gesture {
 		DragGesture(coordinateSpace: .dragAndDropSpace)
-			.updating($dragGestureActive) { value, state, transaction in
-				state = true
-				print("value: \(value)")
-			}
 			.onChanged { action in
 				if !isDragging {
 					isDragging = true
