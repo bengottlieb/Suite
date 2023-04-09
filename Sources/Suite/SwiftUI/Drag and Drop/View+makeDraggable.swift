@@ -39,6 +39,8 @@ struct DraggableView<Content: View>: View {
 				.onChange(of: isScrolling) { isScrolling in
 					if isScrolling, isDragging {
 						isDragging = false
+						dragCoordinator.currentPosition = nil
+						dragCoordinator.cancelledDrop = true
 						dragCoordinator.drop(at: nil)
 					}
 				}

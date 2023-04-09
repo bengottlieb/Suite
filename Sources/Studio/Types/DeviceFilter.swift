@@ -32,7 +32,7 @@ public extension DeviceFilter {
 	static let testFlight = DeviceFilter(rawValue: 1 << 10)
 	static let prod = DeviceFilter(rawValue: 1 << 11)
 
-	var `is`: Bool {
+	var matches: Bool {
 		if contains(.sim) {
 			if !Gestalt.isOnMac, !Gestalt.isOnSimulator { return false }
 		}

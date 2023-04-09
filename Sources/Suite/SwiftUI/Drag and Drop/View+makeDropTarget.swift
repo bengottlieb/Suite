@@ -16,7 +16,7 @@ extension CoordinateSpace {
 @available(OSX 13, iOS 15, tvOS 13, watchOS 8, *)
 public extension View {
 	func makeDropTarget(types: [String], showDropPoint: DeviceFilter = .debug, hover: @escaping (String, Any, CGPoint?) -> Bool = { _, _, _ in true }, dropped: @escaping (String, Any, CGPoint) -> Bool) -> some View {
-		DropTargetView(content: self, types: types, showDropPoint: showDropPoint.is, hover: hover, dropped: dropped)
+		DropTargetView(content: self, types: types, showDropPoint: showDropPoint.matches, hover: hover, dropped: dropped)
 	}
 	
 	func dragAndDropCoordinateSpace() -> some View {
@@ -72,11 +72,13 @@ struct DropTargetView<Content: View>: View {
 									return
 								}
 
-								if let point = dropPosition(at: dragPosition) {
+								if dragCoordinator.cancelledDrop {
+									_ = hover(type, object, nil)
+								} else if let point = dropPosition(at: dragPosition) {
 									if showDropPoint { dropPoint = point }
 									isDropTarget = true
 									indicateIsDropTarget = hover(type, object, point)
-								} else if isDropTarget {
+								} else if isDropTarget || dropPoint != nil {
 									_ = hover(type, object, nil)
 									isDropTarget = false
 									indicateIsDropTarget = false

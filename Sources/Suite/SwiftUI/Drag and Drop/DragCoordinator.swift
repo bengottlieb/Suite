@@ -20,6 +20,7 @@ public class DragCoordinator: ObservableObject {
 	@Published var dragType: String?
 	@Published var draggedObject: Any?
 	@Published var acceptedDrop = false
+	@Published var cancelledDrop = false
 	@Published var dropScale = 1.0
 	
 	func startDragging(at point: CGPoint, source: CGRect?, type: String, object: Any, image: DragImage?) {
@@ -32,10 +33,11 @@ public class DragCoordinator: ObservableObject {
 		isDragging = true
 		acceptedDrop = false
 		dropScale = 1.0
+		cancelledDrop = false
 	}
 	
 	func drop(at point: CGPoint?) {
-		if let point {
+		if let point, !cancelledDrop {
 			dropPosition = point
 			DispatchQueue.main.async(after: 0.01) {
 				if self.acceptedDrop {
