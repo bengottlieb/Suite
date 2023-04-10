@@ -194,7 +194,6 @@ public extension Date {
 	
 	var year: Int { self.components(which: .year).year! }
 	var month: Month { Month(rawValue: self.components(which: .month).month!) ?? .jan }
-	var day: Int { self.components(which: .day).day ?? 1 }
 	var hour: Int { self.components(which: .hour).hour ?? 0 }
 	var minute: Int { self.components(which: .minute).minute ?? 0 }
 	var second: Int { self.components(which: .second).second ?? 0 }

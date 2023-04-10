@@ -1,0 +1,66 @@
+//
+//  File.swift
+//  
+//
+//  Created by Ben Gottlieb on 4/10/23.
+//
+
+import Foundation
+
+public extension Date {
+	struct Day: Codable, CustomStringConvertible {
+		public var day: Int
+		public var month: Foundation.Date.Month
+		public var year: Int
+		
+		public var description: String {
+			"\(day)/\(month.rawValue)/\(year)"
+		}
+		
+		public init?(mdy: String) {
+			guard let components = mdy.dateComponents else { return nil }
+			
+			self.init(day: components[1], month: components[0], year: components[2])
+		}
+		
+		public init?(dmy: String) {
+			guard let components = dmy.dateComponents else { return nil }
+			
+			self.init(day: components[0], month: components[1], year: components[2])
+		}
+		
+		public init(day: Int, month: Month, year: Int) {
+			self.day = day
+			self.month = month
+			self.year = year
+		}
+
+		public init?(day: Int, month: Int, year: Int) {
+			guard let actualMonth = Month(rawValue: month) else { return nil }
+			self.day = day
+			self.month = actualMonth
+			self.year = year < 1000 ? year + 2000 : year
+		}
+		
+		public var date: Date {
+			Date(calendar: .current, timeZone: .current, year: year, month: month.rawValue, day: day) ?? Date()
+		}
+	}
+	
+	var day: Day {
+		Day(day: dayOfMonth, month: month, year: year)
+	}
+}
+
+extension String {
+	fileprivate var dateComponents: [Int]? {
+		var comp = self.components(separatedBy: "/")
+		if comp.count < 3 { comp = self.components(separatedBy: "/") }
+		if comp.count < 3 { return nil }
+		
+		let ints = comp.compactMap { Int($0) }
+		if ints.count < 3 { return nil }
+		
+		return ints.first(3)
+	}
+}
