@@ -262,6 +262,10 @@ public extension Date {
 		public var hourString: String {
 			DateFormatter(format: "h").string(from: date)
 		}
+		
+		public static let never = Date.Time(hour: -1, minute: -1)
+		
+		public var isNever: Bool { hour == -1 || minute == -1 }
 	}
 
 	var time: Time {

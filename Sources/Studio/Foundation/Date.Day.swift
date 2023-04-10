@@ -50,6 +50,10 @@ public extension Date {
 	var day: Day {
 		Day(day: dayOfMonth, month: month, year: year)
 	}
+	
+	init(_ date: Date.Day, _ time: Date.Time?) {
+		self = Date(calendar: .current, timeZone: .current, year: date.year, month: date.month.rawValue, day: date.day, hour: time?.isNever == false ? time?.hour : nil, minute: time?.isNever == false ? time?.minute : nil) ?? Date()
+	}
 }
 
 extension String {
