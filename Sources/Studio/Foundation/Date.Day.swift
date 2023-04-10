@@ -45,6 +45,8 @@ public extension Date {
 		public var date: Date {
 			Date(calendar: .current, timeZone: .current, year: year, month: month.rawValue, day: day) ?? Date()
 		}
+		
+		public var dmyString: String { "\(day)/\(month.rawValue)/\(year)" }
 	}
 	
 	var day: Day {
