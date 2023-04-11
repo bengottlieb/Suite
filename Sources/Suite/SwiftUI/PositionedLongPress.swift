@@ -24,7 +24,7 @@ struct PositionedLongPressGesture: ViewModifier {
 	let maxDistance: Double
 	var completion: (CGPoint) -> Void
 
-	init(duration: TimeInterval = 1.0, maxDistance: Double = 0, completion: @escaping (CGPoint) -> Void) {
+	init(duration: TimeInterval = 0.6, maxDistance: Double = 0, completion: @escaping (CGPoint) -> Void) {
 		self.longPressDuration = duration
 		self.completion = completion
 		self.maxDistance = maxDistance
@@ -36,7 +36,7 @@ struct PositionedLongPressGesture: ViewModifier {
 				.contentShape(Rectangle())
 				.onTapGesture { }
 				.gesture(
-					DragGesture(minimumDistance: maxDistance, coordinateSpace: .local)
+					DragGesture(minimumDistance: maxDistance, coordinateSpace: .global)
 						.onChanged { info in
 							if location == nil {
 								location = info.location
