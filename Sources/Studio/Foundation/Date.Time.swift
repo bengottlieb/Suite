@@ -24,11 +24,6 @@ public extension Date {
 		self.byChanging(nanosecond: nil, second: Int(time.second), minute: time.minute, hour: time.hour, day: nil, month: nil, year: nil)
 	}
 	
-	func roundedToNearest(minute: Int) -> Date.Time {
-		if (minute + self.minute) >= 60 { return Date.Time(hour: (hour + 1) % 24, minute: 0) }
-		return Date.Time(hour: hour, minute: minute * Int(round(Double(self.minute) / Double(minute))))
-	}
-
 	func allHours(until end: Date) -> [Date] {
 		var date = self
 		
@@ -136,6 +131,11 @@ public extension Date {
 			return times
 		}
 		
+		public func roundedToNearest(minute: Int) -> Date.Time {
+			if (minute + self.minute) >= 60 { return Date.Time(hour: (hour + 1) % 24, minute: 0) }
+			return Date.Time(hour: hour, minute: minute * Int(round(Double(self.minute) / Double(minute))))
+		}
+
 		public func byAdding(timeInterval: TimeInterval) -> Date.Time {
 			let hours = timeInterval / .hour
 			let minutes = (timeInterval - floor(hours) * .hour) / .minute
