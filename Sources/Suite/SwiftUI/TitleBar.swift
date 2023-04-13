@@ -23,6 +23,9 @@ public struct TitleBar<Leading: View, Trailing: View, Title: View>: View {
 	@ViewBuilder var leading: () -> Leading
 	@ViewBuilder var trailing: () -> Trailing
 	
+	@State private var leadingFrame: CGRect?
+	@State private var trailingFrame: CGRect?
+
 	@Environment(\.titleBarFont) var titleBarFont
 	
 	public init(title: @escaping () -> Title, @ViewBuilder leading: @escaping () -> Leading, @ViewBuilder trailing: @escaping () -> Trailing) {
@@ -34,14 +37,21 @@ public struct TitleBar<Leading: View, Trailing: View, Title: View>: View {
 	public var body: some View {
 		ZStack {
 			leading()
+				.reportGeometry(frame: $leadingFrame)
 				.frame(maxWidth: .infinity, alignment: .leading)
 
 			trailing()
+				.reportGeometry(frame: $trailingFrame)
 				.frame(maxWidth: .infinity, alignment: .trailing)
-			
+
 			title()
 				.frame(maxWidth: .infinity, alignment: .center)
+				.minimumScaleFactor(0.5)
+				.multilineTextAlignment(.center)
 				.font(titleBarFont)
+				.padding(.horizontal, 1)
+				.padding(.leading, leadingFrame?.width)
+				.padding(.trailing, trailingFrame?.width)
 		}
 		.padding(.horizontal)
 		.frame(height: 50)
