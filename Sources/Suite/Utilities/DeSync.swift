@@ -60,3 +60,27 @@ public extension Publisher where Failure == Never  {
 		.eraseToAnyPublisher()
 	}
 }
+
+@available(OSX 12, iOS 15.0, tvOS 13, watchOS 8, *)
+public extension Publisher where Failure == Error  {
+	func asynchronize() async throws -> Output {
+		var bag: Set<AnyCancellable> = []
+		
+		let result: Output = try await withCheckedThrowingContinuation { continuation in
+			self
+				.sink(receiveCompletion: { done in
+					switch done {
+					case .failure(let error):
+						continuation.resume(throwing: error)
+						
+					default: break
+					}
+				}, receiveValue: { output in
+					continuation.resume(returning: output)
+				})
+				.store(in: &bag)
+		}
+		
+		return result
+	}
+}

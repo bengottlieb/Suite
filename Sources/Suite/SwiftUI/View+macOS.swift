@@ -12,7 +12,11 @@ import AppKit
 @available(OSX 10.15, *)
 public extension View {
 	func closeCurrentWindow() {
-		NSApplication.shared.keyWindow?.close()
+		#if targetEnvironment(macCatalyst)
+		
+		#else
+			NSApplication.shared.keyWindow?.close()
+		#endif
 	}
 }
 
