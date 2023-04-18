@@ -64,22 +64,27 @@ public extension Publisher where Failure == Never  {
 @available(OSX 12, iOS 15.0, tvOS 13, watchOS 8, *)
 public extension Publisher where Failure == Error  {
 	func asynchronize() async throws -> Output {
-		var bag: Set<AnyCancellable> = []
+		var cancellable: AnyCancellable!
+		var hasContinued = false
 		
 		let result: Output = try await withCheckedThrowingContinuation { continuation in
-			self
+			cancellable = self
 				.sink(receiveCompletion: { done in
 					switch done {
 					case .failure(let error):
+						if hasContinued { return }
 						continuation.resume(throwing: error)
 						
-					default: break
+					default:
+						break
 					}
 				}, receiveValue: { output in
+					cancellable?.cancel()
+					if hasContinued { return }
+					hasContinued = true
 					continuation.resume(returning: output)
 				})
-				.store(in: &bag)
-		}
+			}
 		
 		return result
 	}
