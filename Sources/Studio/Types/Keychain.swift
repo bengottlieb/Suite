@@ -85,7 +85,9 @@ open class Keychain {
 		
 		lastResultCode = SecItemAdd(query as CFDictionary, nil)
 		
-		return lastResultCode == noErr
+		if lastResultCode == noErr { return true }
+		Logger.instance.log("Failed to store keychain data: \(lastResultCode)")
+		return false
 	}
 	
 	/**
