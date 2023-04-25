@@ -41,6 +41,10 @@ public extension Color {
 		Color(red: Int.random(in: 0...255), green: Int.random(in: 0...255), blue: Int.random(in: 0...255))
 	}
 
+	static func random(using rng: inout SeededRandomNumberGenerator) -> Color {
+		Color(red: Int.random(in: 0...255, using: &rng), green: Int.random(in: 0...255, using: &rng), blue: Int.random(in: 0...255, using: &rng))
+	}
+
 	static var randomGray: Color {
 		Color(white: Double.random(in: 0...100.0))
 	}
