@@ -32,6 +32,10 @@ public extension CGPoint {
 		return sqrt(pow(self.x - other.x, 2) + pow(self.y - other.y, 2))
 	}
 	
+	func offset(x: Double = 0, y: Double = 0) -> CGPoint {
+		CGPoint(x: self.x + x, y: self.y + y)
+	}
+	
 	static func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
 		return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
 	}
