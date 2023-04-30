@@ -49,7 +49,7 @@ public extension Color {
 		Color(white: Double.random(in: 0...100.0))
 	}
 	
-	@available(iOS 15.0, *)
+	@available(iOS 15.0, macOS 12.0, *)
 	static var rainbow: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple]
 }
 
