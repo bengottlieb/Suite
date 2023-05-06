@@ -12,6 +12,10 @@ import CoreGraphics
 	import UIKit
 #endif
 
+#if canImport(SwiftUI)
+	import SwiftUI
+#endif
+
 public func roundcgf(value: CGFloat) -> CGFloat { return CGFloat(floorf(Float(value))) }
 
 extension CGRect: Comparable {
@@ -29,6 +33,34 @@ public extension CGRect {
 	#else
 		enum Placement: Int { case scaleToFill, scaleAspectFit, scaleAspectFill, none, center, top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight }
 	#endif
+	
+	var xRange: Range<Double> { minX..<maxX }
+	var yRange: Range<Double> { minY..<maxY }
+}
+
+extension CGRect: Hashable {
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(origin)
+		hasher.combine(size)
+	}
+}
+
+extension CGRect: StringInitializable {
+	public var rawValue: String {
+		stringValue
+	}
+	
+	public var stringValue: String {
+		"(\(origin),\(size))"
+	}
+	
+	public init?(rawValue: String) {
+		let components = rawValue.trimmingCharacters(in: .decimalDigits.inverted).components(separatedBy: "),(")
+		if components.count != 2 { return nil }
+		
+		guard let origin = CGPoint(rawValue: components[0].trimmingCharacters(in: .whitespacesAndNewlines)), let size = CGSize(rawValue: components[1].trimmingCharacters(in: .whitespacesAndNewlines)) else { return nil }
+		self.init(origin: origin, size: size)
+	}
 }
 
 extension CGRect.Placement: Codable {
@@ -83,11 +115,11 @@ public extension CGRect.Placement {
 public extension CGRect {
 	var largestDimension: CGFloat { max(width, height) }
 	var smallestDimension: CGFloat { min(width, height) }
-
+	
 	func scaled(to factor: CGFloat) -> CGRect {
 		return CGRect(x: self.x * factor, y: self.y * factor, width: self.width * factor, height: self.height * factor)
 	}
-
+	
 	init(x: CGFloat = 0, y: CGFloat = 0, size: CGSize) {
 		self.init(x: x, y: y, width: size.width, height: size.height)
 	}
@@ -96,11 +128,11 @@ public extension CGRect {
 		self.init(x: origin.x, y: origin.y, width: width, height: height)
 	}
 	
-//	#if os(iOS)
-//		func inset(by insets: UIEdgeInsets) -> CGRect {
-//			return CGRect(x: self.origin.x + insets.left, y: self.origin.y + insets.top, width: self.width - (insets.left + insets.right), height: self.height - (insets.top + insets.bottom))
-//		}
-//	#endif
+	//	#if os(iOS)
+	//		func inset(by insets: UIEdgeInsets) -> CGRect {
+	//			return CGRect(x: self.origin.x + insets.left, y: self.origin.y + insets.top, width: self.width - (insets.left + insets.right), height: self.height - (insets.top + insets.bottom))
+	//		}
+	//	#endif
 	
 	var aspectRatio: CGFloat { return self.size.aspectRatio }
 	var aspectRatioType: CGSize.AspectRatioType { return self.size.aspectRatioType }
@@ -135,7 +167,7 @@ public extension CGRect {
 		let child = self
 		var newSize = self.size
 		var newRect = (child.width < parent.width && child.height < parent.height) ? child : child.size.scaled(within: parent.size).rect
-
+		
 		newRect.origin = parent.origin
 		
 		switch (placed) {
@@ -152,14 +184,14 @@ public extension CGRect {
 		case .scaleAspectFit:
 			newRect = parent
 			if child.aspectRatio < parent.aspectRatio {         // left and right letter boxing
-                newSize = CGSize(width: parent.width * (child.aspectRatio / parent.aspectRatio), height: parent.height)
+				newSize = CGSize(width: parent.width * (child.aspectRatio / parent.aspectRatio), height: parent.height)
 			} else if child.aspectRatio > parent.aspectRatio {  // top and bottom letter boxin
 				newSize = CGSize(width: parent.width, height: parent.height * (parent.aspectRatio / child.aspectRatio))
 			} else if newSize.width > parent.width {
 				newSize = parent.size
 			}
 			newRect = CGRect(x: (parent.width - newSize.width) / 2, y: (parent.height - newSize.height) / 2, width: newSize.width, height: newSize.height)
-
+			
 		case .center:
 			let insetX = (parent.width - newRect.width) / 2
 			let insetY = (parent.height - newRect.height) / 2
@@ -167,44 +199,44 @@ public extension CGRect {
 			newRect.origin.y += insetY
 			newRect.size.height = min(limit.height - insetY * 2, self.height)
 			newRect.size.width = min(limit.width - insetX * 2, self.width)
-
+			
 		case .top:
 			newRect.origin.x += (parent.width - newRect.width) / 2
 			newRect.origin.y = parent.origin.y
-
+			
 		case .bottom:
 			newRect.origin.x += (parent.width - newRect.width) / 2
 			newRect.origin.y = (parent.height - newRect.height)
-
+			
 		case .left:
 			newRect.origin.x = parent.origin.x
 			newRect.origin.y += (parent.height - newRect.height) / 2
-
+			
 		case .right:
 			newRect.origin.x += (parent.width - newRect.width)
 			newRect.origin.y += (parent.height - newRect.height) / 2
-
+			
 		case .topLeft:
 			newRect.origin.x = parent.origin.x
 			newRect.origin.y = parent.origin.y
-
+			
 		case .bottomLeft:
 			newRect.origin.x = parent.origin.x
 			newRect.origin.y += (parent.height - newRect.height)
-
+			
 		case .topRight:
 			newRect.origin.x += (parent.width - newRect.width)
 			newRect.origin.y = parent.origin.y
-
+			
 		case .bottomRight:
 			newRect.origin.x += (parent.width - newRect.width)
 			newRect.origin.y += (parent.height - newRect.height)
-
+			
 		default: break
 		}
 		return newRect
 	}
-
+	
 	var upperLeft: CGPoint { return CGPoint(x: self.minX, y: self.minY) }
 	var upperRight: CGPoint { return CGPoint(x: self.maxX, y: self.minY) }
 	var lowerLeft: CGPoint { return CGPoint(x: self.minX, y: self.maxY) }
@@ -233,7 +265,7 @@ public extension CGRect {
 		precondition(percentage >= 0.0 && percentage <= 1.0)
 		return CGRect(x: self.x, y: self.y + (self.height * (1.0 - percentage)), width: self.width, height: self.height * percentage)
 	}
-
+	
 	func leading(amount: CGFloat) -> CGRect { return CGRect(x: self.x, y: self.y, width: amount, height: self.height) }
 	func trailing(amount: CGFloat) -> CGRect { return CGRect(x: self.x + (self.width - amount), y: self.y, width: amount, height: self.height) }
 	func upper(amount: CGFloat) -> CGRect { return CGRect(x: self.x, y: self.y, width: self.width, height: amount) }
@@ -247,4 +279,8 @@ public extension CGRect {
 		let delta = (self.height - height) / 2
 		return CGRect(x: self.x, y: self.y + delta, width: self.width, height: height)
 	}
+	
+	#if canImport(SwiftUI)
+	subscript(unitPoint: UnitPoint) -> CGPoint { CGPoint(x: minX + width * unitPoint.x, y: minY + height * unitPoint.y) }
+	#endif
 }

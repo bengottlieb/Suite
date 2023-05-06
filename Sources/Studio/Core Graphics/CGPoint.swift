@@ -14,8 +14,6 @@ import UIKit
 
 public extension CGPoint {
 	var size: CGSize { CGSize(width: x, height: y )}
-	var description: String { "(\(x.string(decimalPlaces: 2, padded: false)), \(y.string(decimalPlaces: 2, padded: false)))"}
-	var debugDescription: String { "(\(x.string(decimalPlaces: 2, padded: false)), \(y.string(decimalPlaces: 2, padded: false)))"}
 	
 	func centeredRect(size: CGSize) -> CGRect {
 		return CGRect(x: self.x - size.width / 2, y: self.y - size.height / 2, width: size.width, height: size.height)
@@ -29,7 +27,7 @@ public extension CGPoint {
 	func round() -> CGPoint { return CGPoint(x: roundcgf(value: self.x), y: roundcgf(value: self.y) )}
 	
 	func distance(to other: CGPoint) -> CGFloat {
-		return sqrt(pow(self.x - other.x, 2) + pow(self.y - other.y, 2))
+		hypot(self.x - other.x, self.y - other.y)
 	}
 	
 	func offset(x: Double = 0, y: Double = 0) -> CGPoint {
@@ -59,5 +57,48 @@ public extension CGPoint {
 	static var randomUnitPoint: CGPoint {
 		CGPoint(x: CGFloat.random(in: 0...1), y: CGFloat.random(in: 0...1))
 	}
+	
+	var shortDescription: String {
+		"(\(x.shortDescription), \(y.shortDescription))"
+	}
+	
+	func close(to point: CGPoint, tolerance: CGFloat) -> Bool {
+		let delta = point - self
+		
+		return abs(delta.x) <= tolerance && abs(delta.y) <= tolerance
+	}
 }
 
+extension CGPoint: StringInitializable, RawRepresentable {
+	public var rawValue: String {
+		stringValue
+	}
+	
+	public var stringValue: String {
+		"(\(x),\(y))"
+	}
+	
+	public init?(rawValue: String) {
+		let components = rawValue.trimmingCharacters(in: .decimalDigits.inverted).components(separatedBy: ",")
+		if components.count != 2 { return nil }
+		
+		guard let x = Double(components[0].trimmingCharacters(in: .whitespacesAndNewlines)), let y = Double(components[1].trimmingCharacters(in: .whitespacesAndNewlines)) else { return nil }
+		self.init(x, y)
+	}
+}
+
+extension CGPoint: Hashable {
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(x)
+		hasher.combine(y)
+	}
+}
+
+extension CGPoint: CustomStringConvertible {
+	public var description: String { "(\(x.string(decimalPlaces: 1, padded: false)), \(y.string(decimalPlaces: 1, padded: false)))"}
+}
+
+
+extension CGPoint {
+	public var debugDescription: String { "(\(x.string(decimalPlaces: 1, padded: false)), \(y.string(decimalPlaces: 1, padded: false)))"}
+}

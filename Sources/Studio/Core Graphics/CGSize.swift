@@ -88,3 +88,24 @@ public extension CGSize {
         return CGSize(width: maxWidth ?? self.width, height: maxHeight ?? self.height)
     }
 }
+
+extension CGSize: Hashable {
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(width)
+		hasher.combine(height)
+	}
+}
+
+extension CGSize: StringInitializable {
+	public var stringValue: String {
+		"(\(width), \(height))"
+	}
+	
+	public init?(rawValue: String) {
+		let components = rawValue.trimmingCharacters(in: .decimalDigits.inverted).components(separatedBy: ",")
+		if components.count != 2 { return nil }
+		
+		guard let width = Double(components[0].trimmingCharacters(in: .whitespacesAndNewlines)), let height = Double(components[0].trimmingCharacters(in: .whitespacesAndNewlines)) else { return nil }
+		self.init(width: width, height: height)
+	}
+}

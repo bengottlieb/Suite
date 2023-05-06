@@ -26,6 +26,15 @@ public extension Array where Element: Equatable {
 	}
 }
 
+extension Array: RawRepresentable where Element: RawRepresentable, Element.RawValue == String {
+	public var rawValue: String { map { $0.rawValue }.joined(separator: ";") }
+	
+	public init?(rawValue: String) {
+		let elem = rawValue.components(separatedBy: ";")
+		self = elem.compactMap { Element(rawValue: $0) }
+	}
+}
+
 public extension Array {
 	func indicesMatching(where check: (Element) -> Bool) -> [Int] {
 		indices.filter { check(self[$0]) }
