@@ -12,6 +12,8 @@ public struct CGLine: Codable, Equatable, Hashable, RawRepresentable {
 	public var start: CGPoint
 	public var end: CGPoint
 	
+	public static func ==(lhs: Self, rhs: Self) -> Bool { lhs.start == rhs.start && lhs.end == rhs.end }
+	
 	public init(start: CGPoint, end: CGPoint) {
 		self.start = start
 		self.end = end
