@@ -138,6 +138,16 @@ public struct CGLine: Codable, Equatable, Hashable, RawRepresentable {
 		
 		return CGPoint(intersect.x, intersect.y)
 	}
+	
+	public func segment(startingAt start: CGPoint, ofLength length: Double) -> CGLine? {
+		if !contains(start) { return nil }
+		
+		let angle = self.angle
+		let endX = start.x + length * cos(angle.radians)
+		let endY = start.y + length * sin(angle.radians)
+		
+		return CGLine(start, CGPoint(endX, endY))
+	}
 }
 
 extension CGLine: StringInitializable {
