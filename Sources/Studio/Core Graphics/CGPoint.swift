@@ -30,6 +30,16 @@ public extension CGPoint {
 		hypot(self.x - other.x, self.y - other.y)
 	}
 	
+	func isCloseToEqual(to other: CGPoint) -> Bool {
+		let eps = CGFloat.ulpOfOne.squareRoot()
+
+		return self.distance(to: other) < eps
+	}
+	
+	static func ≈≈(lhs: CGPoint, rhs: CGPoint) -> Bool {
+		lhs.isCloseToEqual(to: rhs)
+	}
+	
 	func nearestPoint(on line: CGLine) -> CGPoint {
 		let A = x - line.start.x
 		let B = y - line.start.y

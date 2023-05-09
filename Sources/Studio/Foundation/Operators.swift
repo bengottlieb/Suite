@@ -9,6 +9,8 @@ import Foundation
 
 infix operator ?= : AssignmentPrecedence
 infix operator ∆= : AssignmentPrecedence
+infix operator ≈≈ : ComparisonPrecedence
+infix operator !≈ : ComparisonPrecedence
 
 public func ?=<T>( left: inout T, right: T?) {
 	guard let value = right else { return }

@@ -104,10 +104,6 @@ public extension Date {
 	}
 }
 
-infix operator ≈≈ : ComparisonPrecedence
-infix operator !≈ : ComparisonPrecedence
-
-
 public func ≈≈(lhs: Date, rhs: Date) -> Bool {
 	let lhSec = floor(lhs.timeIntervalSinceReferenceDate)
 	let rhSec = floor(rhs.timeIntervalSinceReferenceDate)
