@@ -12,7 +12,9 @@ public struct CGLine: Codable, Equatable, Hashable, RawRepresentable {
 	public var start: CGPoint
 	public var end: CGPoint
 	
-	public static func ==(lhs: Self, rhs: Self) -> Bool { lhs.start == rhs.start && lhs.end == rhs.end }
+	public static func ==(lhs: Self, rhs: Self) -> Bool {
+		(lhs.start == rhs.start && lhs.end == rhs.end) || (lhs.start == rhs.end && lhs.end == rhs.start)
+	}
 	
 	public init(start: CGPoint, end: CGPoint) {
 		self.start = start
@@ -77,7 +79,11 @@ public struct CGLine: Codable, Equatable, Hashable, RawRepresentable {
 		}
 	}
 
-	public func contains(_ point: CGPoint) -> Bool {
+	public func contains(_ point: CGPoint, tolerance: CGFloat? = nil) -> Bool {
+		if let tolerance {
+			return point.distance(to: self) < tolerance
+		}
+
 		let eps = CGFloat.ulpOfOne.squareRoot()
 		return point.distance(to: start) + point.distance(to: end) <= length + eps
 	}

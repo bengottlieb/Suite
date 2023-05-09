@@ -30,6 +30,26 @@ public extension CGPoint {
 		hypot(self.x - other.x, self.y - other.y)
 	}
 	
+	func nearestPoint(on line: CGLine) -> CGPoint {
+		let A = x - line.start.x
+		let B = y - line.start.y
+		let C = (line.vector.x)
+		let D = (line.vector.y)
+		let sqLen = C * C + D * D
+		let dot = A * C + B * D
+		let distanceFactor = sqLen == 0 ? -1 : dot / sqLen
+		if distanceFactor < 0 {
+			return line.start
+		} else if distanceFactor > 1 {
+			return line.end
+		}
+		return CGPoint(line.start.x + distanceFactor * line.vector.x, line.start.y + distanceFactor * line.vector.y)
+	}
+	
+	func distance(to line: CGLine) -> CGFloat {
+		return nearestPoint(on: line).distance(to: self)
+	}
+	
 	func offset(x: Double = 0, y: Double = 0) -> CGPoint {
 		CGPoint(x: self.x + x, y: self.y + y)
 	}
