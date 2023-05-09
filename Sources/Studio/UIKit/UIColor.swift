@@ -7,7 +7,7 @@
 
 import Foundation
 
-#if canImport(UIKit) && !os(watchOS)
+#if canImport(UIKit)
 import UIKit
 
 public extension UIColor {
@@ -85,44 +85,62 @@ public extension UIColor {
 	}
 	
 	static var defaultText: UIColor {
-		if #available(iOS 13.0, *) {
-			return UIColor.label
-		} else {
-			return UIColor.black
-		}
+		#if os(watchOS)
+			return .darkGray
+		#else
+			if #available(iOS 13.0, *) {
+				return UIColor.label
+			} else {
+				return UIColor.black
+			}
+		#endif
 	}
 	
 	static var secondaryText: UIColor {
-		if #available(iOS 13.0, *) {
-			return UIColor.secondaryLabel
-		} else {
-			return UIColor.darkGray
-		}
+		#if os(watchOS)
+			return .white
+		#else
+			if #available(iOS 13.0, *) {
+				return UIColor.secondaryLabel
+			} else {
+				return UIColor.darkGray
+			}
+		#endif
 	}
 	
 	static var tertiaryText: UIColor {
-		if #available(iOS 13.0, *) {
-			return UIColor.tertiaryLabel
-		} else {
-			return UIColor.lightGray
-		}
+		#if os(watchOS)
+			return .lightGray
+		#else
+			if #available(iOS 13.0, *) {
+				return UIColor.tertiaryLabel
+			} else {
+				return UIColor.lightGray
+			}
+		#endif
 	}
 	
 	static var defaultBackground: UIColor {
-		if #available(iOS 13.0, *) {
-			return UIColor.systemBackground
-		} else {
-			return UIColor.white
-		}
+		#if os(watchOS)
+			return .white
+		#else
+			if #available(iOS 13.0, *) {
+				return UIColor.systemBackground
+			} else {
+				return UIColor.white
+			}
+		#endif
 	}
 	
-	@available(iOS 10.0, *)
-	func swatch(of size: CGSize = CGSize(width: 100, height: 100)) -> UIImage {
-		UIGraphicsImageRenderer(size: size).image { ctx in
-			self.setFill()
-			UIRectFill(size.rect)
+	#if os(iOS)
+		@available(iOS 10.0, *)
+		func swatch(of size: CGSize = CGSize(width: 100, height: 100)) -> UIImage {
+			UIGraphicsImageRenderer(size: size).image { ctx in
+				self.setFill()
+				UIRectFill(size.rect)
+			}
 		}
-	}
+	#endif
 }
 #else
 #if canImport(Cocoa)

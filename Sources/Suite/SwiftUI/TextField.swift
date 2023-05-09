@@ -9,7 +9,7 @@ import SwiftUI
 
 #if os(iOS)
 	public typealias TextContentType = UITextContentType
-#else
+#elseif os(macOS)
 	public typealias TextContentType = NSTextContentType
 
 	extension NSTextContentType {
@@ -29,6 +29,7 @@ import SwiftUI
 	}
 #endif
 
+#if os(iOS) || os(macOS)
 @available(macOS 11.0, *)
 public extension View {
 	func addTextContentType(_ type: TextContentType) -> some View {
@@ -78,3 +79,4 @@ private extension TextContentType {
 		}
 	}
 }
+#endif

@@ -16,6 +16,10 @@ import Foundation
 	import Cocoa
 #endif
 
+#if os(watchOS)
+	import WatchKit
+#endif
+
 
 public struct Gestalt {
 	public enum Distribution { case development, testflight, appStore }
@@ -62,7 +66,13 @@ public struct Gestalt {
 	
 	public static var isInPreview: Bool { ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" }
 	public static var deviceID: String? {
-		#if os(iOS) || os(watchOS)
+		#if os(watchOS)
+			if #available(watchOS 6.2, *) {
+				return WKInterfaceDevice.current().identifierForVendor?.uuidString
+			} else {
+				return nil
+			}
+		#elseif os(iOS)
 			return UIDevice.current.identifierForVendor?.uuidString
 		#elseif  os(macOS)
 			return serialNumber
@@ -92,6 +102,8 @@ public struct Gestalt {
 	
 	#if os(watchOS)
 		public static var isOnWatch: Bool { true }
+		public static var isOnIPad: Bool { false }
+		public static var isOnIPhone: Bool { false }
 	#else
 		public static var isOnWatch: Bool { false }
 	#endif

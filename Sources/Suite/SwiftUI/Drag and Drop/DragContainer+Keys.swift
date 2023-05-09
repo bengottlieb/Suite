@@ -22,7 +22,7 @@ import SwiftUI
 	extension Image {
 		init(dragImage: DragImage) { self.init(uiImage: dragImage) }
 	}
-	@available(OSX 13, iOS 16, tvOS 13, watchOS 8, *)
+	@available(OSX 13, iOS 16, tvOS 13, watchOS 9, *)
 	extension ImageRenderer {
 		@MainActor var dragImage: UIImage? { uiImage }
 	}

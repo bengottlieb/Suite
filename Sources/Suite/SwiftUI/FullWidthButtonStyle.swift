@@ -26,13 +26,22 @@ public struct FullWidthButtonStyle: ButtonStyle {
 	}
 
 	var resolvedForeground: Color {
-		if !borderOnly { return foregroundColor ?? Color.systemBackground }
+		#if os(iOS) || os(macOS)
+			if !borderOnly { return foregroundColor ?? Color.systemBackground }
+		#else
+			if !borderOnly { return foregroundColor ?? .black }
+		#endif
 		return foregroundColor ?? Color.accentColor
 	}
 	
 	var resolvedBackground: Color {
-		if !borderOnly { return backgroundColor ?? Color.accentColor }
-		return backgroundColor ?? Color.systemBackground
+		#if os(iOS) || os(macOS)
+			if !borderOnly { return backgroundColor ?? Color.accentColor }
+			return backgroundColor ?? Color.systemBackground
+		#else
+			if !borderOnly { return foregroundColor ?? .white }
+			return backgroundColor ?? Color.black
+		#endif
 	}
 	
 	public func makeBody(configuration: FullWidthButtonStyle.Configuration) -> some View {

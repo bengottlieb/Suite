@@ -41,19 +41,21 @@ public extension Color {
 		Color(red: Int.random(in: 0...255), green: Int.random(in: 0...255), blue: Int.random(in: 0...255))
 	}
 
-	static func random(using rng: inout SeededRandomNumberGenerator) -> Color {
-		Color(red: Int.random(in: 0...255, using: &rng), green: Int.random(in: 0...255, using: &rng), blue: Int.random(in: 0...255, using: &rng))
-	}
-
+	#if os(iOS) || os(macOS)
+		static func random(using rng: inout SeededRandomNumberGenerator) -> Color {
+			Color(red: Int.random(in: 0...255, using: &rng), green: Int.random(in: 0...255, using: &rng), blue: Int.random(in: 0...255, using: &rng))
+		}
+	#endif
+	
 	static var randomGray: Color {
 		Color(white: Double.random(in: 0...100.0))
 	}
 	
-	@available(iOS 15.0, macOS 12.0, *)
+	@available(iOS 15.0, macOS 12.0, watchOS 8.0, *)
 	static var rainbow: [Color] = [.red, .orange, .yellow, .green, .blue, .indigo, .purple]
 }
 
-@available(OSX 11, iOS 14.0, tvOS 13, watchOS 6, *)
+@available(OSX 11, iOS 14.0, tvOS 13, watchOS 7, *)
 public extension Color {
 	var brightness: Double {
 		#if os(macOS)
