@@ -14,7 +14,12 @@ public extension Date {
 		public var year: Int
 		
 		public var description: String {
-			"\(day)/\(month.rawValue)/\(year)"
+			
+			if #available(iOS 15.0, *) {
+				return date.formatted(date: .numeric, time: .omitted)
+			} else {
+				return "\(month.rawValue)/\(day)/\(year)"
+			}
 		}
 		
 		public init?(mdy: String) {
