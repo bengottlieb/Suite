@@ -61,6 +61,10 @@ public extension Dictionary where Key == String {
 	func isEqual(to dict: JSONDictionary) -> Bool {
 		dict.diff(relativeTo: self).isEmpty
 	}
+	
+	var title: String? {
+		self["title"] as? String ?? self["name"] as? String ?? self["description"] as? String ?? self["desc"] as? String
+	}
 }
 
 public extension Encodable {
