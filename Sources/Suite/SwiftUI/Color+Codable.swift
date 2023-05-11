@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(iOS 14.0, tvOS 13, watchOS 6, *)
+@available(iOS 14.0, tvOS 13, macOS 11, watchOS 6, *)
 extension Color: Codable {
 	enum ColorDecodeError: Error { case unableToExtractColor }
 	public init(from decoder: Decoder) throws {
