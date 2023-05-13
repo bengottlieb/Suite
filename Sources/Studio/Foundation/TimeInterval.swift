@@ -81,7 +81,9 @@ public extension TimeInterval {
 																								NSNumber (value: milliseconds))].compactMap( { $0 }).joined()
 		}
 		
-		return formatter.string(from: self) ?? ""
+		let result = formatter.string(from: self) ?? ""
+		if style == .seconds, self < 60, result.hasPrefix("00:") { return String(result.dropFirst(3)) }
+		return result
 	}
 	
 	var milliseconds: Double {
