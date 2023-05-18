@@ -202,3 +202,51 @@ public extension String {
 		return nil
 	}
 }
+
+public extension Array where Element == UIColor {
+	var averageColor: UIColor? {
+		guard !isEmpty else { return nil }
+		
+		var r: CGFloat = 0
+		var g: CGFloat = 0
+		var b: CGFloat = 0
+
+		for color in self {
+			var colorR: CGFloat = 0
+			var colorG: CGFloat = 0
+			var colorB: CGFloat = 0
+
+			color.getRed(&colorR, green: &colorG, blue: &colorB, alpha: nil)
+			
+			r += colorR
+			g += colorG
+			b += colorB
+		}
+		
+		return UIColor(red: r / CGFloat(count), green: g / CGFloat(count), blue: b / CGFloat(count), alpha: 1)
+	}
+}
+
+public extension UIColor {
+	typealias PackedColor = UInt32
+	convenience init(unpacked: UIColor.PackedColor, withAlphaStyle imageAlphaStyle: CGImageAlphaInfo) {
+		let full = CGFloat(255.0)
+		
+		if imageAlphaStyle == .premultipliedFirst {
+			let r = UInt8((unpacked >> 24) & 0x000000FF)
+			let g = UInt8((unpacked >> 16) & 0x000000FF)
+			let b = UInt8((unpacked >> 8) & 0x000000FF)
+			let a = UInt8((unpacked >> 0) & 0x000000FF)
+			
+			self.init(red: CGFloat(r) / full, green: CGFloat(g) / full, blue: CGFloat(b) / full, alpha: CGFloat(a) / full)
+		} else {
+			let r = UInt8((unpacked >> 16) & 0x000000FF)
+			let g = UInt8((unpacked >> 8) & 0x000000FF)
+			let b = UInt8((unpacked >> 0) & 0x000000FF)
+			let a = UInt8((unpacked >> 24) & 0x000000FF)
+			
+			self.init(red: CGFloat(r) / full, green: CGFloat(g) / full, blue: CGFloat(b) / full, alpha: CGFloat(a) / full)
+		}
+	}
+
+}
