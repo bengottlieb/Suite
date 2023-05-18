@@ -126,7 +126,7 @@ public extension UIImage {
 
 	func resized(to size: CGSize?, trimmed: Bool = true, changeScaleTo: CGFloat? = nil) -> UIImage? {
 		guard let size = size else { return self }
-		var frame = self.size.rect.within(limit: size.rect, placed: .scaleAspectFit).round()
+		var frame = self.size.rect.within(limit: size.rect, placed: .scaleAspectFit).rounded()
 
 		if frame.origin.x > 0 {
 			frame.origin.x = 0;

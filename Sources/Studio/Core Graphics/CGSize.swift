@@ -35,7 +35,7 @@ public extension CGSize {
     var isSquare: Bool { return self.width > 0 && self.width == self.height }
     var rect: CGRect { return CGRect(x: 0, y: 0, width: self.width, height: self.height) }
 
-    func round() -> CGSize { return CGSize(width: roundcgf(value: self.width), height: roundcgf(value: self.height) )}
+    func rounded() -> CGSize { return CGSize(width: roundcgf(value: self.width), height: roundcgf(value: self.height) )}
 
     var aspectRatio: CGFloat { return self.width / self.height }
     var aspectRatioType: AspectRatioType {

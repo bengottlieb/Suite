@@ -16,15 +16,19 @@ public extension CGPoint {
 	var size: CGSize { CGSize(width: x, height: y )}
 	
 	func centeredRect(size: CGSize) -> CGRect {
-		return CGRect(x: self.x - size.width / 2, y: self.y - size.height / 2, width: size.width, height: size.height)
+		CGRect(x: self.x - size.width / 2, y: self.y - size.height / 2, width: size.width, height: size.height)
 	}
 	
-	func square(side: CGFloat) -> CGRect { return self.centeredRect(size: CGSize(width: side, height: side)) }
+	func centeredRect(size: Double) -> CGRect {
+		centeredRect(size: CGSize(width: size, height: size))
+	}
 	
-	func adjustX(_ deltaX: CGFloat) -> CGPoint {  return CGPoint(x: self.x + deltaX, y: self.y) }
-	func adjustY(_ deltaY: CGFloat) -> CGPoint {  return CGPoint(x: self.x, y: self.y + deltaY) }
+	func square(side: CGFloat) -> CGRect { self.centeredRect(size: CGSize(width: side, height: side)) }
 	
-	func round() -> CGPoint { return CGPoint(x: roundcgf(value: self.x), y: roundcgf(value: self.y) )}
+	func adjustX(_ deltaX: CGFloat) -> CGPoint {  CGPoint(x: self.x + deltaX, y: self.y) }
+	func adjustY(_ deltaY: CGFloat) -> CGPoint {  CGPoint(x: self.x, y: self.y + deltaY) }
+	
+	func rounded() -> CGPoint { CGPoint(x: roundcgf(value: self.x), y: roundcgf(value: self.y) )}
 	
 	func distance(to other: CGPoint) -> CGFloat {
 		hypot(self.x - other.x, self.y - other.y)
@@ -57,7 +61,7 @@ public extension CGPoint {
 	}
 	
 	func distance(to line: CGLine) -> CGFloat {
-		return nearestPoint(on: line).distance(to: self)
+		nearestPoint(on: line).distance(to: self)
 	}
 	
 	func offset(x: Double = 0, y: Double = 0) -> CGPoint {
@@ -65,19 +69,19 @@ public extension CGPoint {
 	}
 	
 	static func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-		return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+		CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
 	}
 	
 	static func -(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-		return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+		CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
 	}
 	
 	static func /(lhs: CGPoint, rhs: Double) -> CGPoint {
-		return CGPoint(x: lhs.x / rhs, y: lhs.y / rhs)
+		CGPoint(x: lhs.x / rhs, y: lhs.y / rhs)
 	}
 	
 	static func *(lhs: CGPoint, rhs: Double) -> CGPoint {
-		return CGPoint(x: lhs.x * rhs, y: lhs.y * rhs)
+		CGPoint(x: lhs.x * rhs, y: lhs.y * rhs)
 	}
 
 	init(_ x: CGFloat, _ y: CGFloat) {

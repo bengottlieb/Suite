@@ -148,7 +148,7 @@ public extension CGRect {
 	}
 	
 	var center: CGPoint { return CGPoint(x: self.midX, y: self.midY) }
-	func round() -> CGRect { return CGRect(x: roundcgf(value: self.origin.x), y: roundcgf(value: self.origin.y), width: roundcgf(value: self.width + (self.origin.x - roundcgf(value: self.origin.x))), height: roundcgf(value: self.height + (self.origin.y - roundcgf(value: self.origin.y)))) }
+	func rounded() -> CGRect { return CGRect(x: roundcgf(value: self.origin.x), y: roundcgf(value: self.origin.y), width: roundcgf(value: self.width + (self.origin.x - roundcgf(value: self.origin.x))), height: roundcgf(value: self.height + (self.origin.y - roundcgf(value: self.origin.y)))) }
 	
 	func scaledRectWithAspectRatio(ratio: CGFloat) -> CGRect {
 		var width = self.width, height = self.height

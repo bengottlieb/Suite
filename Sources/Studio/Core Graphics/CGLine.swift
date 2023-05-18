@@ -21,6 +21,10 @@ public struct CGLine: Codable, Equatable, Hashable, RawRepresentable {
 		self.end = end
 	}
 	
+	public func rounded() -> CGLine {
+		CGLine(start.rounded(), end.rounded())
+	}
+	
 	public init(_ start: CGPoint, _ end: CGPoint) {
 		self.start = start
 		self.end = end
