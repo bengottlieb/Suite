@@ -241,6 +241,16 @@ public extension CGRect {
 	var upperRight: CGPoint { return CGPoint(x: self.maxX, y: self.minY) }
 	var lowerLeft: CGPoint { return CGPoint(x: self.minX, y: self.maxY) }
 	var lowerRight: CGPoint { return CGPoint(x: self.maxX, y: self.maxY) }
+	var allPoints: [CGPoint] {
+		var results: [CGPoint] = []
+		
+		for y in Int(upperLeft.y)..<Int(lowerRight.y) {
+			for x in Int(upperLeft.x)..<Int(lowerRight.x) {
+				results.append(CGPoint(x: x, y: y))
+			}
+		}
+		return results
+	}
 	
 	func flippedVertically(in frame: CGRect) -> CGRect {
 		return CGRect(x: self.origin.x, y: frame.height - (self.origin.y + self.height), size: self.size)
