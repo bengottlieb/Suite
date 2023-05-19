@@ -218,12 +218,12 @@ public extension Array where Element == UIColor {
 
 			color.getRed(&colorR, green: &colorG, blue: &colorB, alpha: nil)
 			
-			r += colorR
-			g += colorG
-			b += colorB
+			r += colorR * colorR
+			g += colorG * colorG
+			b += colorB * colorB
 		}
 		
-		return UIColor(red: r / CGFloat(count), green: g / CGFloat(count), blue: b / CGFloat(count), alpha: 1)
+		return UIColor(red: sqrt(r / CGFloat(count)), green: sqrt(g / CGFloat(count)), blue: sqrt(b / CGFloat(count)), alpha: 1)
 	}
 }
 
@@ -232,11 +232,11 @@ public extension UIColor {
 	convenience init(unpacked: UIColor.PackedColor, withAlphaStyle imageAlphaStyle: CGImageAlphaInfo) {
 		let full = CGFloat(255.0)
 		
-		if imageAlphaStyle == .premultipliedFirst {
-			let r = UInt8((unpacked >> 24) & 0x000000FF)
-			let g = UInt8((unpacked >> 16) & 0x000000FF)
-			let b = UInt8((unpacked >> 8) & 0x000000FF)
-			let a = UInt8((unpacked >> 0) & 0x000000FF)
+		if imageAlphaStyle == .premultipliedLast {
+			let a = UInt8((unpacked >> 24) & 0x000000FF)
+			let b = UInt8((unpacked >> 16) & 0x000000FF)
+			let g = UInt8((unpacked >> 8) & 0x000000FF)
+			let r = UInt8((unpacked >> 0) & 0x000000FF)
 			
 			self.init(red: CGFloat(r) / full, green: CGFloat(g) / full, blue: CGFloat(b) / full, alpha: CGFloat(a) / full)
 		} else {

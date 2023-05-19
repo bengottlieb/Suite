@@ -129,7 +129,9 @@ extension CGPoint: Hashable {
 }
 
 extension CGPoint: CustomStringConvertible {
-	public var description: String { "(\(x.string(decimalPlaces: 1, padded: false)), \(y.string(decimalPlaces: 1, padded: false)))"}
+	public var description: String {
+		"(\(x.string(decimalPlaces: 1, padded: false)), \(y.string(decimalPlaces: 1, padded: false)))"
+	}
 }
 
 

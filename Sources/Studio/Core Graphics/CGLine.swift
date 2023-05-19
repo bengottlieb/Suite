@@ -21,6 +21,11 @@ public struct CGLine: Codable, Equatable, Hashable, RawRepresentable {
 		self.end = end
 	}
 	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(start)
+		hasher.combine(end)
+	}
+	
 	public func rounded() -> CGLine {
 		CGLine(start.rounded(), end.rounded())
 	}
