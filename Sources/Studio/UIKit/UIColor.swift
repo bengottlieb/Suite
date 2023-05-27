@@ -203,6 +203,7 @@ public extension String {
 	}
 }
 
+#if os(iOS)
 public extension Array where Element == UIColor {
 	var averageColor: UIColor? {
 		guard !isEmpty else { return nil }
@@ -250,3 +251,4 @@ public extension UIColor {
 	}
 
 }
+#endif

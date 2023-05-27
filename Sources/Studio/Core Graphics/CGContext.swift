@@ -5,6 +5,9 @@
 //  Created by Ben Gottlieb on 5/18/23.
 //
 
+import CoreGraphics
+
+#if canImport(UIKit)
 import UIKit
 
 public extension UIImage {
@@ -23,7 +26,6 @@ public extension UIImage {
 	}
 
 }
-
 
 public extension CGContext {
 	var CGImage: CGImage? { return self.makeImage() }
@@ -147,3 +149,4 @@ public extension CGContext {
 		  return nil
 	}
 }
+#endif
