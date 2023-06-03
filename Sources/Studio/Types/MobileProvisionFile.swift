@@ -17,15 +17,26 @@ public class MobileProvisionFile {
 	public init?(data: Data?) {
 		guard let data = data else { return nil }
 		
+		let xmlPrefix = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+		let xmlSuffix = "</plist>"
 		guard let file = String(data: data, encoding: .ascii) else { return nil }
-		let scanner = Scanner(string: file)
-		if scanner.scanStringUpTo(string: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>") != nil, let contents = scanner.scanStringUpTo(string: "</plist>") {
-			let raw = contents.appending("</plist>")
-			self.properties = raw.propertyList() as? NSDictionary
+		if let chunk = file.extractSubstring(start: xmlPrefix, end: xmlSuffix) {
+			let full = xmlPrefix + chunk + xmlSuffix
+			self.properties = full.propertyList() as? NSDictionary
 		}
-		
 		if self.properties == nil { return nil }
 	}
+	
+	public var cloudContainers: [String] {
+		guard let entitlements = dictionary(for: "Entitlements") else { return [] }
+		
+		return entitlements["com.apple.developer.icloud-container-development-container-identifiers"] as? [String] ?? []
+	}
+	
+	public func dictionary(for key: String) -> [String: Any]? {
+		self.properties?[key] as? [String: Any]
+	}
+	
 }
 
 extension Scanner {

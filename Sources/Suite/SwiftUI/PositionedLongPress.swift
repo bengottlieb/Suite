@@ -7,12 +7,14 @@
 
 import SwiftUI
 
+#if os(iOS)
+let feedbackEngine = UIImpactFeedbackGenerator(style: .heavy)
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
 public extension View {
-	func positionedLongPressGesture(duration: TimeInterval = 1.0, maxDistance: Double = 0, completion: @escaping (CGPoint) -> Void) -> some View {
+	func positionedLongPressGesture(duration: TimeInterval = 1.0, maxDistance: Double = 0, playFeedback: Bool = true, completion: @escaping (CGPoint) -> Void) -> some View {
 		self
-			.modifier(PositionedLongPressGesture(duration: duration, maxDistance: maxDistance, completion: completion))
+			.modifier(PositionedLongPressGesture(duration: duration, maxDistance: maxDistance, playFeedback: playFeedback, completion: completion))
 	}
 }
 
@@ -22,26 +24,29 @@ struct PositionedLongPressGesture: ViewModifier {
 	@State private var timer: Timer?
 	let longPressDuration: TimeInterval
 	let maxDistance: Double
+	let playFeedback: Bool
 	var completion: (CGPoint) -> Void
 
-	init(duration: TimeInterval = 0.6, maxDistance: Double = 0, completion: @escaping (CGPoint) -> Void) {
+	init(duration: TimeInterval = 0.6, maxDistance: Double = 0, playFeedback: Bool, completion: @escaping (CGPoint) -> Void) {
 		self.longPressDuration = duration
 		self.completion = completion
 		self.maxDistance = maxDistance
+		self.playFeedback = playFeedback
 	}
 	
 	func body(content: Content) -> some View {
-		content.background (
-			Color.clear
+			content
 				.contentShape(Rectangle())
-				.onTapGesture { }
 				.gesture(
 					DragGesture(minimumDistance: maxDistance, coordinateSpace: .global)
 						.onChanged { info in
 							if location == nil {
 								location = info.location
 								timer = Timer.scheduledTimer(withTimeInterval: longPressDuration, repeats: false) { _ in
-									if let location { completion(location) }
+									if let location {
+										feedbackEngine.impactOccurred()
+										if playFeedback { completion(location) }
+									}
 									timer = nil
 								}
 							}
@@ -55,6 +60,7 @@ struct PositionedLongPressGesture: ViewModifier {
 						}
 
 				)
-			)
+			
 	}
 }
+#endif
