@@ -56,7 +56,7 @@ public struct AsyncButton<Label: View>: View {
 			do {
 				try await action()
 			} catch {
-				print("AsyncButton action failed: \(error)")
+				SuiteLogger.instance.log(error: error, "AsyncButton action failed")
 			}
 			await MainActor.run { isPerformingAction = false }
 		}

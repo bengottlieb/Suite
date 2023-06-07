@@ -115,17 +115,17 @@ public extension Encodable {
 		UserDefaults.standard.set(data, forKey: key)
 	}
 	
-	func echo(level: Logger.Level = .mild) {
+	func echo(level: SuiteLogger.Level = .mild) {
 		do {
 			let data = try self.asJSONData()
 			guard let raw = String(data: data, encoding: .utf8) else {
-				Logger.instance.log("Unabled to encode \(self)")
+				SuiteLogger.instance.log("Unabled to encode \(self)")
 				return
 			}
 			
-			Logger.instance.log(raw.cleanedFromJSON, level: level)
+			SuiteLogger.instance.log(raw.cleanedFromJSON, level: level)
 		} catch {
-			Logger.instance.log("Failed to encode \(self): \(error)", level: level)
+			SuiteLogger.instance.log("Failed to encode \(self): \(error)", level: level)
 		}
 	}
 }

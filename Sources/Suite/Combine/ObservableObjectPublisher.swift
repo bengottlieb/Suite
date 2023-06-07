@@ -22,7 +22,7 @@ struct ObserverMonitor<Pub: ObservableObjectPublisher, Content: View>: View {
 		self.target = target
 		self.content = content
 		self.message = message
-		cancellable = target.eraseToAnyPublisher().sink { item in Logger.instance.log("\(item) changed in \(message ?? String(describing: content))")}
+		cancellable = target.eraseToAnyPublisher().sink { item in SuiteLogger.instance.log("\(item) changed in \(message ?? String(describing: content))")}
 	}
 
 	var body: some View {
