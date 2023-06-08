@@ -1,6 +1,6 @@
 //
-//  Observable.swift
-//  
+//  ObservableValue.swift
+//
 //
 //  Created by Ben Gottlieb on 5/14/20.
 //
@@ -10,7 +10,7 @@ import Combine
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 @dynamicMemberLookup
-public final class Observable<Value>: ObservableObject {
+public final class ObservableValue<Value>: ObservableObject {
 	@Published public private(set) var value: Value
 	private var cancellable: AnyCancellable?
 	
