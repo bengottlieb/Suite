@@ -10,7 +10,7 @@ import SwiftUI
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 public struct PartlyRoundedRectangle: Shape {
-	public enum Corner { case topLeading, topTrailing, bottomLeading, bottomTrailing }
+	public enum Corner: Sendable { case topLeading, topTrailing, bottomLeading, bottomTrailing }
 	
 	let corners: [Corner]
 	let radius: CGFloat

@@ -62,7 +62,7 @@ import Combine
 		nonmutating set { storage.value = newValue }
 	}
 	
-	@ObservedObject private var storage: Storage<Item>
+	@ObservedObject private var storage: Storage
 	
 	public func save() {
 		storage.startSave()
@@ -73,7 +73,7 @@ import Combine
 		storage = Storage(url: url, initial: initialValue)
 	}
 	
-	internal class Storage<Item: Codable>: ObservableObject {
+	internal class Storage: ObservableObject {
 		init(url: URL, initial: Item? = nil) {
 			self.url = url
 			self.value = initial
