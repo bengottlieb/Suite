@@ -31,7 +31,7 @@ public extension View {
 }
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
-public struct GuideLines {
+public struct GuideLines: Sendable {
 	var xMarks: [CGFloat] = []
 	var yMarks: [CGFloat] = []
 	var size: CGSize?
