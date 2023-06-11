@@ -124,16 +124,16 @@ public extension UIImage {
 		return self
 	}
 
-	func resized(to size: CGSize?, trimmed: Bool = true, changeScaleTo: CGFloat? = nil) -> UIImage? {
-		guard let size = size else { return self }
-		var frame = self.size.rect.within(limit: size.rect, placed: .scaleAspectFit).rounded()
+	func resized(to limit: CGSize?, trimmed: Bool = true, changeScaleTo: CGFloat? = nil) -> UIImage? {
+		guard let limit = limit else { return self }
+		var frame = self.size.rect.within(limit: limit.rect, placed: .scaleAspectFit).rounded()
 
 		if frame.origin.x > 0 {
 			frame.origin.x = 0;
-			if (!trimmed) { frame.size.width = size.width; }
+			if trimmed { frame.size.width = limit.width; }
 		} else {
 			frame.origin.y = 0;
-			if (!trimmed) { frame.size.height = size.height; }
+			if trimmed { frame.size.height = limit.height; }
 		}
 		
 		#if os(iOS)

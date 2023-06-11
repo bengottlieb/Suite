@@ -11,19 +11,19 @@ import SwiftUI
 import Combine
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
-public struct PublisherView<Kind, Content: View>: View {
-	let content: (Kind?) -> Content
-	let pub: AnyPublisher<Kind?, Never>
+public struct PublisherView<Definition, Content: View>: View {
+	let content: (Definition?) -> Content
+	let pub: AnyPublisher<Definition?, Never>
 	
-	@State var data: Kind?
+	@State var data: Definition?
 	
-	public init(_ pub: AnyPublisher<Kind, Never>, defaultValue: Kind? = nil, content: @escaping (Kind?) -> Content) {
+	public init(_ pub: AnyPublisher<Definition, Never>, defaultValue: Definition? = nil, content: @escaping (Definition?) -> Content) {
 		self.content = content
-		self.pub = pub.map { (input: Kind) -> Kind? in input }.eraseToAnyPublisher()
+		self.pub = pub.map { (input: Definition) -> Definition? in input }.eraseToAnyPublisher()
 		_data = State(initialValue: defaultValue)
 	}
 	
-	public init(_ pub: AnyPublisher<Kind?, Never>, defaultValue: Kind? = nil, content: @escaping (Kind?) -> Content) {
+	public init(_ pub: AnyPublisher<Definition?, Never>, defaultValue: Definition? = nil, content: @escaping (Definition?) -> Content) {
 		self.content = content
 		self.pub = pub.eraseToAnyPublisher()
 		_data = State(initialValue: defaultValue)

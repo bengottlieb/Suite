@@ -64,12 +64,13 @@ public extension WidgetFamily {
 
 			case .systemExtraLarge:
 				switch UIScreen.main.bounds.size.screenSize {
-				case .iPadPro11: return CGSize(width: 378.5, height: 378.5)
-				case .iPadPro10_5: return CGSize(width: 327.5, height: 327.5)
-				case .iPadPro12_9: return CGSize(width: 378.5, height: 378.5)
-				case .iPadAir_4thGen: return CGSize(width: 342, height: 342)
-				case .iPad_7thGen: return CGSize(width: 320.5, height: 320.5)
-				case .iPad: return CGSize(width: 305.5, height: 305.5)
+
+				case .iPadPro11: return CGSize(width: 795, height: 378.5)
+				case .iPadPro10_5: return CGSize(width: 682, height: 327.5)
+				case .iPadPro12_9: return CGSize(width: 795, height: 378.5)
+				case .iPadAir_4thGen: return CGSize(width: 715.5, height: 342)
+				case .iPad_7thGen: return CGSize(width: 669.5, height: 320.5)
+				case .iPad: return CGSize(width: 634.5, height: 305.5)
 
 				default: return CGSize(width: 360, height: 379)
 				}
@@ -86,12 +87,12 @@ public extension WidgetFamily {
 				case .iPhone5: return CGSize(width: 292, height: 311)
 				case .iPhone: return CGSize(width: 292, height: 311)
 
-				case .iPadPro11: return CGSize(width: 795, height: 378.5)
-				case .iPadPro10_5: return CGSize(width: 682, height: 327.5)
-				case .iPadPro12_9: return CGSize(width: 795, height: 378.5)
-				case .iPadAir_4thGen: return CGSize(width: 715.5, height: 342)
-				case .iPad_7thGen: return CGSize(width: 669.5, height: 320.5)
-				case .iPad: return CGSize(width: 634.5, height: 305.5)
+				case .iPadPro11: return CGSize(width: 378.5, height: 378.5)
+				case .iPadPro10_5: return CGSize(width: 327.5, height: 327.5)
+				case .iPadPro12_9: return CGSize(width: 378.5, height: 378.5)
+				case .iPadAir_4thGen: return CGSize(width: 342, height: 342)
+				case .iPad_7thGen: return CGSize(width: 320.5, height: 320.5)
+				case .iPad: return CGSize(width: 305.5, height: 305.5)
 
 				default: return CGSize(width: 795, height: 378.5)
 				}
