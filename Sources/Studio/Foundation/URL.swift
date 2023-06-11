@@ -59,13 +59,28 @@ public extension URL {
 		self = URL(string: "\(string)")!
 	}
 	
-    var filename: String { deletingPathExtension().lastPathComponent }
+	var filename: String { deletingPathExtension().lastPathComponent }
 
 	var relativePathToHome: String? {
 		return self.path.abbreviatingWithTildeInPath
 	}
 
-	var isInBundle: Bool { scheme == "bundle" }
+	static var bundleScheme = "bundle"
+	var isBundleURL: Bool { scheme == Self.bundleScheme }
+	
+	var toFileURL: URL? {
+		guard !isFileURL else { return self }
+		guard isBundleURL else { return nil }
+		
+		var bundle = Bundle.main
+		if #available(iOS 16.0, *) {
+			if let host = host(percentEncoded: false), let new = Bundle(identifier: host) { bundle = new }
+		} else {
+			if let host, let new = Bundle(identifier: host) { bundle = new }
+		}
+		
+		return bundle.url(forResource: lastPathComponent, withExtension: nil)
+	}
 
 	static let blank: URL = URL(string: "about:blank")!
 	

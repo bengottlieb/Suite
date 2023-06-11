@@ -47,7 +47,7 @@ public struct URLImage: View {
 		if let url = url {
 			if let image = ImageCache.instance.cachedValue(for: url) {
 				_frameworkImage = State(wrappedValue: image)
-			} else if url.isInBundle, let name = url.host?.removingPercentEncoding, let image = frameworkImage(named: name) {
+			} else if let fileURL = url.toFileURL, let image = FrameworkImage(contentsOf: fileURL) {
 				_frameworkImage = State(wrappedValue: image)
 			}
 		}
