@@ -104,7 +104,8 @@ public extension Color {
 			}
 		}
 
-#elseif canImport(UIKit) && os(iOS)
+#elseif canImport(UIKit)
+#if os(iOS)
 	import UIKit
 
 	@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
@@ -113,8 +114,10 @@ public extension Color {
 		static var systemLabel: Color { Color(UIColor.label) }
 		static var tertiaryText: Color { Color(UIColor.tertiaryLabel) }
 	}
+#endif
 
-	@available(iOS 14.0, tvOS 13, watchOS 6, *)
+#if os(iOS) || os(watchOS)
+	@available(iOS 14.0, tvOS 13, watchOS 7, *)
 	public extension Color {
 		var hex: String? {
 			let uic = UIColor(self)
@@ -137,6 +140,7 @@ public extension Color {
 			}
 		}
 	}
+#endif
 #endif
 
 

@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import Studio
 
-@available(iOS 14.0, tvOS 13, macOS 11, watchOS 6, *)
+@available(iOS 14.0, tvOS 13, macOS 11, watchOS 7, *)
 extension Color: Codable {
 	enum ColorDecodeError: Error { case unableToExtractColor }
 	public init(from decoder: Decoder) throws {
@@ -24,7 +25,7 @@ extension Color: Codable {
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.singleValueContainer()
 		
-		if let hex {
+		if let hex = self.hex {
 			try container.encode(hex)
 		}
 	}

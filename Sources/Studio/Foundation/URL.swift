@@ -73,7 +73,7 @@ public extension URL {
 		guard isBundleURL else { return nil }
 		
 		var bundle = Bundle.main
-		if #available(iOS 16.0, *) {
+		if #available(iOS 16.0, watchOS 9.0, *) {
 			if let host = host(percentEncoded: false), let new = Bundle(identifier: host) { bundle = new }
 		} else {
 			if let host, let new = Bundle(identifier: host) { bundle = new }

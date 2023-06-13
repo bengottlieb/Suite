@@ -9,7 +9,7 @@
 
 import WidgetKit
 
-@available(iOS 14.0, *)
+@available(iOS 14.0, watchOS 9.0, *)
 public extension WidgetFamily {
 	#if os(macOS)
 		var size: CGSize {

@@ -15,7 +15,7 @@ public extension Date {
 		
 		public var description: String {
 			
-			if #available(iOS 15.0, macOS 12, *) {
+			if #available(iOS 15.0, macOS 12, watchOS 8, *) {
 				return date.formatted(date: .numeric, time: .omitted)
 			} else {
 				return "\(month.rawValue)/\(day)/\(year)"
