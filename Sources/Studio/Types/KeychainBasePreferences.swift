@@ -38,9 +38,9 @@ import Foundation
 			for child in mirror.children {
 				guard let label = child.label, let key = key(from: child.label) else { continue }
 				
-				if let value: String = Keychain.instance.get(key) {
+				if let value = Keychain.instance.string(forKey: key) {
 					self.setValue(value, forKey: label)
-				} else if let value: Data = Keychain.instance.get(key) {
+				} else if let value = Keychain.instance.data(forKey: key) {
 					self.setValue(value, forKey: label)
 				}
 

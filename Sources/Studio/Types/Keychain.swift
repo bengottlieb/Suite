@@ -116,7 +116,7 @@ open class Keychain {
 	- returns: The text value from the keychain. Returns nil if unable to read the item.
 	
 	*/
-	open func get(_ key: String) -> String? {
+	open func string(forKey key: String) -> String? {
 		if let data = getData(key) {
 			
 			if let currentString = String(data: data, encoding: .utf8) {
@@ -129,11 +129,11 @@ open class Keychain {
 		return nil
 	}
 	
-	open func get(_ key: String) -> Data? {
+	open func data(forKey key: String) -> Data? {
 		return getData(key)
 	}
 	
-	open func get(_ key: String) -> Double? {
+	open func double(forKey key: String) -> Double? {
 		if let data = getData(key) {
 			
 			if let currentString = String(data: data, encoding: .utf8) {
