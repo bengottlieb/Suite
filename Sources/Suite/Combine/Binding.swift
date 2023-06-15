@@ -110,6 +110,10 @@ public extension Binding {
 public extension Binding where Value == Bool {
 	var inverted: Binding<Bool> { Binding<Bool>(get: { !self.wrappedValue }, set: { newValue in self.wrappedValue = !newValue
 	}) }
+	
+	init(_ boolProvider: @autoclosure @escaping () -> Bool) {
+		self.init(get: boolProvider, set: { _ in })
+	}
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
