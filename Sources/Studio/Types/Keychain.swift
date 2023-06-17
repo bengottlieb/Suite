@@ -23,8 +23,7 @@ open class Keychain {
 	open var synchronizable: Bool = false
 	open var keyPrefix: String?
 	
-	private let readLock = DispatchSemaphore(value: 1)
-	
+	private let queue = DispatchQueue(label: "keychain", qos: .userInteractive)
 	private init() { }
 	
 	/**
@@ -157,31 +156,30 @@ open class Keychain {
 	open func getData(_ key: String) -> Data? {
 		// The lock prevents the code to be run simlultaneously
 		// from multiple threads which may result in crashing
-		readLock.wait()
-		defer { readLock.signal() }
-		
-		let prefixedKey = keyWithPrefix(key)
-		
-		var query: [String: Any] = [
-			Constants.keychainClass: kSecClassGenericPassword,
-			Constants.attrAccount: prefixedKey,
-			Constants.returnData: true,
-			Constants.matchLimit: kSecMatchLimitOne
-		]
-		
-		query = self.addAccessGroupWhenPresent(query)
-		query = self.addSynchronizableIfRequired(query, addingItems: false)
-		lastQueryParameters = query
-		
-		var result: AnyObject?
-		
-		lastResultCode = withUnsafeMutablePointer(to: &result) {
-			SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
+		return queue.sync {
+			let prefixedKey = keyWithPrefix(key)
+			
+			var query: [String: Any] = [
+				Constants.keychainClass: kSecClassGenericPassword,
+				Constants.attrAccount: prefixedKey,
+				Constants.returnData: true,
+				Constants.matchLimit: kSecMatchLimitOne
+			]
+			
+			query = self.addAccessGroupWhenPresent(query)
+			query = self.addSynchronizableIfRequired(query, addingItems: false)
+			lastQueryParameters = query
+			
+			var result: AnyObject?
+			
+			lastResultCode = withUnsafeMutablePointer(to: &result) {
+				SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
+			}
+			
+			if lastResultCode == noErr { return result as? Data }
+			
+			return nil
 		}
-		
-		if lastResultCode == noErr { return result as? Data }
-		
-		return nil
 	}
 	
 	/**
