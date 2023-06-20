@@ -9,6 +9,7 @@ import Foundation
 
 #if !canImport(UIKit)
 	import Cocoa
+	import AppKit
 
 	extension Error {
 		public func display(in window: NSWindow? = nil, title: String? = nil, message: String? = nil, buttons: [String]? = nil, completion: ((Int) -> Void)? = nil) {

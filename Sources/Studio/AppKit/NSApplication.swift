@@ -10,6 +10,7 @@ import Foundation
 import IOKit
 import IOKit.pwr_mgt
 import Cocoa
+import AppKit
 
 extension NSApplication {
 	public var sleepDisabled: Bool {

@@ -8,6 +8,7 @@
 #if os(macOS)
 
 import Cocoa
+import AppKit
 
 public extension NSView {
 	@discardableResult

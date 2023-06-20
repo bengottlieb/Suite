@@ -8,6 +8,7 @@
 
 #if canImport(Cocoa) && !targetEnvironment(macCatalyst)
 import Cocoa
+import AppKit
 
 public extension NSImage {
 	func scaledImage(newSize: CGSize) -> NSImage? {

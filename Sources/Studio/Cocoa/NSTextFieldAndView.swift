@@ -7,6 +7,7 @@
 
 #if os(macOS)
 import Cocoa
+import AppKit
 
 public extension NSTextView {
 	@discardableResult func attributedString(_ string: NSAttributedString) -> Self {
