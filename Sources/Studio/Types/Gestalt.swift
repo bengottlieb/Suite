@@ -227,6 +227,16 @@ public struct Gestalt {
 			case "iPhone13,3":								return "iPhone 12 Pro"
 			case "iPhone13,4":								return "iPhone 12 Pro max"
 
+			case "iPhone14,2":								return "iPhone 13 Pro"
+			case "iPhone14,3":								return "iPhone 13 Pro Max"
+			case "iPhone14,4":								return "iPhone 13 Mini"
+			case "iPhone14,5":								return "iPhone 13"
+			case "iPhone14,6":								return "iPhone SE 3rd Gen"
+			case "iPhone14,7":								return "iPhone 14"
+			case "iPhone14,8":								return "iPhone 14 Plus"
+			case "iPhone15,2":								return "iPhone 14 Pro"
+			case "iPhone15,3":								return "iPhone 14 Pro max"
+
 			case "iPad2,5", "iPad2,6", "iPad2,7":     return "iPad Mini"
 			case "iPad4,4", "iPad4,5", "iPad4,6":     return "iPad Mini 2"
 			case "iPad4,7", "iPad4,8", "iPad4,9":     return "iPad Mini 3"
