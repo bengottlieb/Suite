@@ -169,6 +169,7 @@ public struct Gestalt {
 	#endif
 	
 	#if os(iOS) || os(watchOS)
+		public static var simulatedRawDeviceType: String { ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"] ?? rawDeviceType }
 		public static var rawDeviceType: String {
 			var			systemInfo = utsname()
 			uname(&systemInfo)
