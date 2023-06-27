@@ -23,7 +23,7 @@ public struct Spinning<Thing: View>: View {
 	public var body: some View {
 		spinee
 			.rotationEffect(self.rotation)
-			.animation(Animation.linear(duration: self.period).repeatForever(autoreverses: false))
+			.animation(Animation.linear(duration: self.period).repeatForever(autoreverses: false), value: rotation)
 			.onAppear { self.rotation = .radians(2 * .pi) }
 	}
 }

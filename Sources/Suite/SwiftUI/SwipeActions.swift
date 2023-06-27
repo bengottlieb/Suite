@@ -128,7 +128,7 @@ struct SwipeActions<Content: View, LeadingViews: View, TrailingViews: View>: Vie
                 .sizeReporting($trailingSize)
         }
         .opacity(contentOffset == 0 ? 0 : 1.0)
-        .animation(.none)
+		  .animation(.none, value: contentOffset)
     }
 }
 
