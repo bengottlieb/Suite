@@ -188,7 +188,11 @@ public struct Gestalt {
 		}
 	
 		public static var modelName: String {
-			convertRawDeviceTypeToModelName(rawDeviceType) ?? "unknown"
+			#if targetEnvironment(simulator)
+				convertRawDeviceTypeToModelName(simulatedRawDeviceType ?? rawDeviceType) ?? "unknown"
+			#else
+				convertRawDeviceTypeToModelName(rawDeviceType) ?? "unknown"
+			#endif
 		}
 	
 		public static func convertRawDeviceTypeToModelName(_ raw: String) -> String? {
@@ -288,7 +292,8 @@ public struct Gestalt {
 			case "AppleTV3,2": 								return "Apple TV 3rd gen"
 			case "AppleTV5,3": 								return "Apple TV HD 4th gen"
 			case "AppleTV6,2": 								return "Apple TV 4K"
-				
+
+			case "RealityDevice14,1": 						return "Apple Vision Pro"
 			default: return nil
 			}
 		}
