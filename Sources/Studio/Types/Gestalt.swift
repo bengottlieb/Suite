@@ -299,7 +299,7 @@ public struct Gestalt {
 //			case "i386", "x86_64":
 //				let screenSize = UIScreen.main.bounds.size
 //				let size = (Int(screenSize.width), Int(screenSize.height))
-//				let scale = Int(UIScreen.main.scale)
+//				let scale = Int(UIView.screenScale)
 //
 //				switch size {
 //				case (320, 480): return "Simulator, iPhone 4"

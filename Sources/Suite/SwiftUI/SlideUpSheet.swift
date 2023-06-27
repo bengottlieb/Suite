@@ -6,6 +6,7 @@
 //  Copyright © 2020 Stand Alone, Inc. All rights reserved.
 //
 
+#if !os(xrOS)
 #if canImport(Combine)
 import SwiftUI
 import Combine
@@ -182,4 +183,5 @@ struct SlideUpSheet_Previews: PreviewProvider {
 		}
 	}
 }
+#endif
 #endif

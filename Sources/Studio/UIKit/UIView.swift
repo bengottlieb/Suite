@@ -9,6 +9,13 @@
 import UIKit
 
 public extension UIView {
+	static var screenScale: CGFloat {
+		#if os(xrOS)
+			return 1
+		#else
+			return UIScreen.main.scale
+		#endif
+	}
 	@available(iOSApplicationExtension, unavailable)
     static func resignAllFirstResponders() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
@@ -16,7 +23,7 @@ public extension UIView {
 
 	func toImage() -> UIImage? {
 		let rect = self.bounds
-        UIGraphicsBeginImageContextWithOptions(rect.size, false, UIScreen.main.scale)
+		UIGraphicsBeginImageContextWithOptions(rect.size, false, UIView.screenScale)
 		guard let context = UIGraphicsGetCurrentContext() else { return nil }
 		self.layer.render(in: context)
 
@@ -25,14 +32,16 @@ public extension UIView {
 		return capturedImage
 	}
 	
-	@available(iOSApplicationExtension, unavailable)
-	static var frontSafeAreaInsets: UIEdgeInsets {
-		if #available(iOS 13.0, *) {
-			return UIApplication.shared.currentScene?.frontWindow?.rootViewController?.view.safeAreaInsets ?? .zero
-		} else {
-			return UIApplication.shared.keyWindow?.rootViewController?.view.safeAreaInsets ?? .zero
+	#if !os(xrOS)
+		@available(iOSApplicationExtension, unavailable)
+		static var frontSafeAreaInsets: UIEdgeInsets {
+			if #available(iOS 13.0, *) {
+				return UIApplication.shared.currentScene?.frontWindow?.rootViewController?.view.safeAreaInsets ?? .zero
+			} else {
+				return UIApplication.shared.keyWindow?.rootViewController?.view.safeAreaInsets ?? .zero
+			}
 		}
-	}
+	#endif
 
 	var viewController: UIViewController? {
 		var responder = self.next
@@ -57,43 +66,44 @@ public extension UIView {
 	
 	static let activityIndicatorTag = 10246
 	
-	@discardableResult
-	func addActivityView(color: UIColor = .white) -> UIActivityIndicatorView {
-		if let spinner = self.viewWithTag(UIView.activityIndicatorTag) as? UIActivityIndicatorView {
+	#if !os(xrOS)
+		@discardableResult
+		func addActivityView(color: UIColor = .white) -> UIActivityIndicatorView {
+			if let spinner = self.viewWithTag(UIView.activityIndicatorTag) as? UIActivityIndicatorView {
+				spinner.color = color
+				return spinner
+			}
+			
+			let spinner: UIActivityIndicatorView
+			if #available(iOS 13.0, *) {
+				spinner = UIActivityIndicatorView(style: .medium)
+			} else {
+				spinner = UIActivityIndicatorView(style: .white)
+			}
 			spinner.color = color
+			spinner.tag = UIView.activityIndicatorTag
+			spinner.translatesAutoresizingMaskIntoConstraints = false
+			self.addSubview(spinner)
+			self.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
+			self.centerYAnchor.constraint(equalTo: spinner.centerYAnchor).isActive = true
+			spinner.startAnimating()
+			
+			if let button = self as? UIButton {
+				button.titleLabel?.alpha = 0.2
+			}
+			
 			return spinner
 		}
 		
-		let spinner: UIActivityIndicatorView
-		if #available(iOS 13.0, *) {
-			spinner = UIActivityIndicatorView(style: .medium)
-		} else {
-			spinner = UIActivityIndicatorView(style: .white)
-		}
-		spinner.color = color
-		spinner.tag = UIView.activityIndicatorTag
-		spinner.translatesAutoresizingMaskIntoConstraints = false
-		self.addSubview(spinner)
-		self.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-		self.centerYAnchor.constraint(equalTo: spinner.centerYAnchor).isActive = true
-		spinner.startAnimating()
-		
-		if let button = self as? UIButton {
-			button.titleLabel?.alpha = 0.2
+		func removeActivityView() {
+			(self.viewWithTag(UIView.activityIndicatorTag) as? UIActivityIndicatorView)?.removeFromSuperview()
+			if let button = self as? UIButton {
+				button.titleLabel?.alpha = 1
+			}
 		}
 		
-		return spinner
-	}
-	
-	func removeActivityView() {
-		(self.viewWithTag(UIView.activityIndicatorTag) as? UIActivityIndicatorView)?.removeFromSuperview()
-		if let button = self as? UIButton {
-			button.titleLabel?.alpha = 1
-		}
-	}
-	
-	var isShowingActivityView: Bool { return self.viewWithTag(UIView.activityIndicatorTag) is UIActivityIndicatorView }
-	
+		var isShowingActivityView: Bool { return self.viewWithTag(UIView.activityIndicatorTag) is UIActivityIndicatorView }
+	#endif
 	func removeAllSubviews() {
 		for view in self.subviews { view.removeFromSuperview() }
 	}

@@ -6,7 +6,7 @@
 //
 
 #if canImport(Combine)
-#if os(iOS)
+#if os(iOS) && !os(xrOS)
 import SwiftUI
 import Studio
 

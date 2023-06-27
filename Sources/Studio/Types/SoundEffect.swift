@@ -14,7 +14,9 @@ import AVFoundation
 	import AudioToolbox
 #elseif os(iOS)
 	import UIKit
-	import OpenAL
+	#if canImport(OpenAL)
+		import OpenAL
+	#endif
 	import AudioToolbox
 #elseif os(watchOS)
 	import UIKit
