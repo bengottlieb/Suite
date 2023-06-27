@@ -36,6 +36,16 @@ struct DraggableView<Content: View>: View {
 				.highPriorityGesture(dragGesture)
 				.opacity(isDragging ? dragAlpha : 1)
 				.reportGeometry(frame: $frame, in: .dragAndDropSpace)
+			#if os(xrOS)
+				.onChange(of: isScrolling) {
+					if isScrolling, isDragging {
+						isDragging = false
+						dragCoordinator.currentPosition = nil
+						dragCoordinator.cancelledDrop = true
+						dragCoordinator.drop(at: nil)
+					}
+				}
+			#else
 				.onChange(of: isScrolling) { isScrolling in
 					if isScrolling, isDragging {
 						isDragging = false
@@ -44,6 +54,7 @@ struct DraggableView<Content: View>: View {
 						dragCoordinator.drop(at: nil)
 					}
 				}
+			#endif
 		} else {
 			content
 		}

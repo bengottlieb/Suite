@@ -5,11 +5,10 @@
 //  Created by Ben Gottlieb on 12/25/20.
 //
 
-#if canImport(SwiftUI)
-#if canImport(Combine)
-
 import SwiftUI
 import Combine
+
+#if !os(xrOS)
 
 @available(OSX 11, iOS 13.0, watchOS 6.0, *)
 public struct OptionalNavigationLink<Check, Content: View, Dest: View>: View {
@@ -89,5 +88,4 @@ struct ContainedContentNavigationLink<Root: View, Content: Equatable, Destinatio
     }
 }
 
-#endif
 #endif

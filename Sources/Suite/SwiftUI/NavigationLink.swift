@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+#if !os(xrOS)
 public struct BoundNavigationLink<Bound, DestinationView: View>: View {
 	@Binding var bound: Bound?
 	@ViewBuilder var destination: (Bound) -> DestinationView
@@ -31,3 +32,4 @@ public struct BoundNavigationLink<Bound, DestinationView: View>: View {
 		}
 	}
 }
+#endif

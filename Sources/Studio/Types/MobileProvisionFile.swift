@@ -39,10 +39,9 @@ public class MobileProvisionFile {
 	
 }
 
-#if !os(xrOS)
 extension Scanner {
     func scanStringUpTo(string: String) -> String? {
-		if #available(iOS 13.0, iOSApplicationExtension 13.0, watchOS 6.0, OSX 10.15, OSXApplicationExtension 10.15, *) {
+		 if #available(iOS 13.0, iOSApplicationExtension 13.0, watchOS 6.0, OSX 10.15, xrOS 1.0, OSXApplicationExtension 10.15, *) {
             return self.scanString(string)
         } else {
             var result: NSString?
@@ -51,4 +50,3 @@ extension Scanner {
         }
     }
 }
-#endif
