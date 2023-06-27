@@ -62,7 +62,7 @@ public struct KeyboardSpacer: View {
 			.fill(Color.clear)
 			.edgesIgnoringSafeArea(.bottom)
 			.frame(height: max(keyboard.visibleHeight - offset, 0))
-			.animation(Animation.easeOut(duration: keyboard.animationDuration))
+			.animation(Animation.easeOut(duration: keyboard.animationDuration), value: keyboard.visibleHeight)
 	}
 }
 
