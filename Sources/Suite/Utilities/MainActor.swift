@@ -7,17 +7,19 @@
 
 import SwiftUI
 
+extension MainActor {
+	public static func run(_ block: @escaping () -> Void) {
+		Task { await MainActor.run { block() }}
+	}
+}
+
 
 @available(iOS 17.0, *)
 public func withAnimationOnMain<Result>(_ animation: Animation? = .default, completionCriteria: AnimationCompletionCriteria = .logicallyComplete, _ body: @escaping () -> Result, completion: @escaping () -> Void) {
 	if Thread.isMainThread {
 		_ = withAnimation(animation, completionCriteria: completionCriteria, body, completion: completion)
 	} else {
-		Task {
-			await MainActor.run {
-				withAnimation(animation, completionCriteria: completionCriteria, body, completion: completion)
-			}
-		}
+		MainActor.run { _ = withAnimation(animation, completionCriteria: completionCriteria, body, completion: completion) }
 	}
 }
 
@@ -25,10 +27,6 @@ public func withAnimationOnMain<Result>(_ animation: Animation? = .default, _ bo
 	if Thread.isMainThread {
 		_ = withAnimation(animation, body)
 	} else {
-		Task {
-			await MainActor.run {
-				withAnimation(animation, body)
-			}
-		}
+		MainActor.run { _ = withAnimation(animation, body) }
 	}
 }
