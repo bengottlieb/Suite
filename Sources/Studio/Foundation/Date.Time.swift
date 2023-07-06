@@ -178,7 +178,7 @@ public extension Date {
 		}
 		
 		public init?(string: String) {
-			let chunks = string.components(separatedBy: " ")
+			let chunks = string.components(separatedBy: .whitespaces)
 			guard let hourMinuteChunk = chunks.first else { return nil }
 			let components = hourMinuteChunk.components(separatedBy: ":")
 			guard components.count >= 2, let hour = Int(components[0]), let minute = Int(components[1]) else { return nil }
