@@ -7,10 +7,14 @@
 
 import SwiftUI
 
-@available(OSX 13, iOS 16, tvOS 13, watchOS 9, *)
+@available(OSX 13, iOS 15, tvOS 13, watchOS 9, *)
 public extension View {
-	func makeDraggable(type: String, object: Any, hideWhenDragging: Bool = true, draggedOpacity: Double = 1.0) -> some View {
-		DraggableView(content: self, type: type, object: object, hideWhenDragging: hideWhenDragging, draggedOpacity: draggedOpacity)
+	@ViewBuilder func makeDraggable(type: String, object: Any, hideWhenDragging: Bool = true, draggedOpacity: Double = 1.0) -> some View {
+		if #available(iOS 16, *) {
+			DraggableView(content: self, type: type, object: object, hideWhenDragging: hideWhenDragging, draggedOpacity: draggedOpacity)
+		} else {
+			self
+		}
 	}
 }
 
