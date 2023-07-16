@@ -137,7 +137,15 @@ public extension URL {
 	}
 
 	var modifiedAt: Date? {
-		fileAttributes?[.modificationDate] as? Date
+		get { fileAttributes?[.modificationDate] as? Date }
+		nonmutating set {
+			guard let newValue else { return }
+			do {
+				try FileManager.default.setAttributes([.modificationDate: newValue], ofItemAtPath: path)
+			} catch {
+				print("Failed to set modification date: \(error)")
+			}
+		}
 	}
 	
 	var normalizedString: String {
