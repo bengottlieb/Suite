@@ -61,7 +61,7 @@ extension OverlayModifer where Item == Int {
 
 @available(OSX 11, iOS 14.0, tvOS 13, watchOS 6, *)
 public extension View {
-	func presentDimmedOverlay<Content: View, Item>(item: Binding<Item?>, tapToDismiss: Bool = true, @ViewBuilder overlayBuilder: @escaping (Item) -> Content) -> some View {
+	func presentDimmedOverlay<Content: View, Item>(item: Binding<Item?>, tapToDismiss: Bool = true, animation: Animation = .linear, @ViewBuilder overlayBuilder: @escaping (Item) -> Content) -> some View {
 		self
 			.overlay(
 				ZStack() {
@@ -75,12 +75,12 @@ public extension View {
 							.transition(.opacity)
 					}
 				}
-				.animation(.linear)
+				.animation(animation)
 			)
 			.modifier(OverlayModifer(item: item, overlay: overlayBuilder))
 	}
 	
-	func presentDimmedOverlay<Content: View>(isPresented: Binding<Bool>, tapToDismiss: Bool = true, @ViewBuilder overlayBuilder: @escaping () -> Content) -> some View {
+	func presentDimmedOverlay<Content: View>(isPresented: Binding<Bool>, tapToDismiss: Bool = true, animation: Animation = .linear, @ViewBuilder overlayBuilder: @escaping () -> Content) -> some View {
 		self
 			.overlay(
 				ZStack() {
@@ -94,25 +94,25 @@ public extension View {
 							.transition(.opacity)
 					}
 				}
-				.animation(.linear)
+				.animation(animation)
 			)
 			.modifier(OverlayModifer(isPresented: isPresented, overlay: overlayBuilder))
 	}
 	
-	func presentBottomSheet<Content: View, Item>(item: Binding<Item?>, background: Color = .systemBackground, tapToDismiss: Bool = true, @ViewBuilder content: @escaping (Item) -> Content) -> some View {
-		presentDimmedOverlay(item: item, tapToDismiss: tapToDismiss) { item in
-			BottomSheet(background) { content(item) }
+	func presentBottomSheet<Content: View, Item>(item: Binding<Item?>, background: Color = .systemBackground, tapToDismiss: Bool = true, animation: Animation = .easeOut, @ViewBuilder content: @escaping (Item) -> Content) -> some View {
+		presentDimmedOverlay(item: item, tapToDismiss: tapToDismiss, animation: animation) { item in
+			BottomSheet(animation: animation, background) { content(item) }
 		}
 	}
 
-	func presentBottomSheet<Content: View, Item, Background: View>(item: Binding<Item?>, background: Background, @ViewBuilder content: @escaping (Item) -> Content) -> some View {
-		presentDimmedOverlay(item: item) { item in
-			BottomSheet(background) { content(item) }
+	func presentBottomSheet<Content: View, Item, Background: View>(item: Binding<Item?>, animation: Animation = .easeOut, background: Background, @ViewBuilder content: @escaping (Item) -> Content) -> some View {
+		presentDimmedOverlay(item: item, animation: animation) { item in
+			BottomSheet(animation: animation, background) { content(item) }
 		}
 	}
 
-	func presentBottomSheet<Content: View>(isPresented: Binding<Bool>, background: Color = .systemBackground, @ViewBuilder content: @escaping () -> Content) -> some View {
-		presentDimmedOverlay(isPresented: isPresented) {
+	func presentBottomSheet<Content: View>(isPresented: Binding<Bool>, animation: Animation = .easeOut, background: Color = .systemBackground, @ViewBuilder content: @escaping () -> Content) -> some View {
+		presentDimmedOverlay(isPresented: isPresented, animation: animation) {
 			BottomSheet(background) { content() }
 		}
 	}
@@ -122,10 +122,12 @@ public extension View {
 public struct BottomSheet<Content: View, Background: View>: View {
 	var backgroundView: Background
 	var content: () -> Content
+	var animation: Animation
 	
-	public init(_ background: Background, @ViewBuilder _ content: @escaping () -> Content) {
+	public init(animation: Animation = .easeOut, _ background: Background, @ViewBuilder _ content: @escaping () -> Content) {
 		self.backgroundView = background
 		self.content = content
+		self.animation = animation
 	}
 
 	public var body: some View {
@@ -139,16 +141,17 @@ public struct BottomSheet<Content: View, Background: View>: View {
 			}
 			.edgesIgnoringSafeArea(.bottom)
 		}
-		.animation(.easeOut)
+		.animation(animation)
 		.transition(.move(edge: .bottom))
 	}
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
 extension BottomSheet where Background == Color {
-	public init(_ background: Color = .systemBackground, _ content: @escaping () -> Content) {
+	public init(animation: Animation = .easeOut, _ background: Color = .systemBackground, _ content: @escaping () -> Content) {
 		self.backgroundView = background
 		self.content = content
+		self.animation = animation
 	}
 }
 
