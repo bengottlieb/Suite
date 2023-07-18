@@ -59,7 +59,7 @@ extension OverlayModifer where Item == Int {
 	}
 }
 
-@available(OSX 10.15, iOS 13.0, tvOS 13, watchOS 6, *)
+@available(OSX 11, iOS 14.0, tvOS 13, watchOS 6, *)
 public extension View {
 	func presentDimmedOverlay<Content: View, Item>(item: Binding<Item?>, tapToDismiss: Bool = true, @ViewBuilder overlayBuilder: @escaping (Item) -> Content) -> some View {
 		self
@@ -68,6 +68,7 @@ public extension View {
 					if item.wrappedValue != nil {
 						Rectangle()
 							.fill(Color.black.opacity(0.5))
+							.ignoresSafeArea(.all)
 							.onTapGesture {
 								if tapToDismiss { withAnimation() { item.wrappedValue = nil } }
 							}
@@ -84,7 +85,9 @@ public extension View {
 			.overlay(
 				ZStack() {
 					if isPresented.wrappedValue {
-						Rectangle().fill(Color.black.opacity(0.5))
+						Rectangle()
+							.fill(Color.black.opacity(0.5))
+							.ignoresSafeArea(.all)
 							.onTapGesture {
 								if tapToDismiss { withAnimation() { isPresented.wrappedValue = false } }
 							}
