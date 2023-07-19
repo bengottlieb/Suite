@@ -66,10 +66,12 @@ public struct AsyncButton<Label: View>: View {
 		ZStack {
 			if isPerformingAction {
 				label().opacity(0)
-				if #available(OSX 11, iOS 14.0, watchOS 7, *) {
+				if #available(OSX 13, iOS 16, watchOS 9, *) {
+					ProgressView()
+						.tint(spinnerColor)
+				} else if #available(OSX 11, iOS 14.0, watchOS 7, *) {
 					ProgressView()
 						.colorInvert()
-						.scaleEffect(0.5)
 				} else {
 					label().opacity(0.2)
 				}
