@@ -1,13 +1,13 @@
 //
 //  JSON+PrettyPrinted.swift
-//  EyeFull
+//  Suite
 //
 //  Created by Ben Gottlieb on 7/28/23.
 //
 
 import Foundation
 
-@available(iOS 15.0, macOS 11, watchOS 8, *)
+@available(iOS 15.0, macOS 12, watchOS 8, *)
 public extension Dictionary where Key == String {
 	var prettyPrinted: String {
 		prettyPrinted(prefix: "")
@@ -45,7 +45,7 @@ public extension Dictionary where Key == String {
 	}
 }
 
-@available(iOS 15.0, macOS 11, watchOS 8, *)
+@available(iOS 15.0, macOS 12, watchOS 8, *)
 extension Array {
 	func prettyPrinted(prefix: String) -> String {
 		if isEmpty { return "[]"}
