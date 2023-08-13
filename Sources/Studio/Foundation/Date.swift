@@ -304,8 +304,7 @@ public extension Date {
 	}
 	
 	var secondsSinceMidnight: TimeInterval {
-		let components = Calendar.current.dateComponents(in: TimeZone.current, from: self)
-		return TimeInterval(components.hour ?? 0) * 3600 + TimeInterval(components.minute ?? 0) * 60 + TimeInterval(components.second ?? 0) + TimeInterval(components.nanosecond ?? 0)
+		abs(midnight.timeIntervalSince(self))
 	}
 	
 	func bySettingSecondsSinceMidnight(_ seconds: TimeInterval) -> Date {
