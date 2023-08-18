@@ -97,9 +97,9 @@ public extension Date {
 	}
 
 	struct Time: Codable, Comparable, Equatable, CustomStringConvertible, Hashable {
-		public let hour: Int
-		public let minute: Int
-		public let second: TimeInterval
+		public var hour: Int
+		public var minute: Int
+		public var second: TimeInterval
 		
 		public static let midnight = Date.Time(hour: 0, minute: 0, second: 0)
 		public static let lastSecond = Date.Time(hour: 23, minute: 59, second: 59 )
@@ -250,14 +250,21 @@ public extension Date {
 		}
 		
 		public var date: Date {
-			var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
-			
-			components.hour = hour
-			components.minute = minute
-			components.second = Int(second)
-			
-			
-			return Calendar.current.date(from: components) ?? Date()
+			get {
+				var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+				
+				components.hour = hour
+				components.minute = minute
+				components.second = Int(second)
+				
+				return Calendar.current.date(from: components) ?? Date()
+			}
+			set {
+				let components = Calendar.current.dateComponents([.hour, .minute, .second], from: newValue)
+				hour = components.hour ?? 0
+				minute = components.minute ?? 0
+				second = Double(components.second ?? 0)
+			}
 		}
 		
 		public var hourMinuteString: String {
