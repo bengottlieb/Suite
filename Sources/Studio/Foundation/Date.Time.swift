@@ -45,7 +45,7 @@ public extension Date {
 		return next
 	}
 	
-	struct TimeRange: Equatable, CustomStringConvertible {
+	struct TimeRange: Equatable, CustomStringConvertible, Codable, Hashable {
 		public var start: Date.Time
 		public var end: Date.Time
 		
@@ -96,7 +96,7 @@ public extension Date {
 		}
 	}
 
-	struct Time: Codable, Comparable, Equatable, CustomStringConvertible {
+	struct Time: Codable, Comparable, Equatable, CustomStringConvertible, Hashable {
 		public let hour: Int
 		public let minute: Int
 		public let second: TimeInterval
