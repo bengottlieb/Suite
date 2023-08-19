@@ -85,6 +85,11 @@ public extension Date {
 			return "\(start) - \(end)"
 		}
 
+		public var abbreviatedDescription: String {
+			if start == end { return "\(start.abbreviatedDescription)" }
+			return "\(start.abbreviatedDescription) - \(end.abbreviatedDescription)"
+		}
+
 		public init(startMinute minutes: Int, duration: TimeInterval) {
 			let startHour = minutes / 60
 			let startMinute = minutes % 60
@@ -201,10 +206,23 @@ public extension Date {
 		
 		public var description: String {
 			if second == 0 {
-				return String(format: "%d:%02d", hour, minute)
+				return String(format: "%d:%02d", visibleHour, minute)
 			} else {
-				return String(format: "%d:%02d:%02d", hour, minute, Int(second))
+				return String(format: "%d:%02d:%02d", visibleHour, minute, Int(second))
 			}
+		}
+		
+		public var visibleHour: Int {
+			if Date.isIn24HourTimeMode { return hour }
+			if hour == 0 || hour == 12 { return 12 }
+			return hour % 12
+		}
+		
+		public var abbreviatedDescription: String {
+			let suffix = Date.isIn24HourTimeMode ? "" : (hour < 12 ? "a" : "p")
+			if minute == 0 { return "\(visibleHour)\(suffix)" }
+			
+			return String(format: "%d:%02d\(suffix)", visibleHour, minute)
 		}
 		
 		public var timeIntervalSinceNow: TimeInterval {

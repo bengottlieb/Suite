@@ -264,7 +264,7 @@ public extension Date {
 	}
 	
 	var hourString: String {
-		let isIn24HourTimeMode = self.isIn24HourTimeMode
+		let isIn24HourTimeMode = Self.isIn24HourTimeMode
 		var hour = isIn24HourTimeMode ? self.hour : self.hour % 12
 		if !isIn24HourTimeMode, hour == 0 { hour = 12 }
 		
@@ -273,7 +273,7 @@ public extension Date {
 		return "\(hour)" + (self.hour < 12 ? DateFormatter().amSymbol : DateFormatter().pmSymbol)
 	}
 	
-	var isIn24HourTimeMode: Bool {
+	static var isIn24HourTimeMode: Bool {
 		guard let format = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: .current) else { return false }
 		
 		return format.range(of: "a") == nil
