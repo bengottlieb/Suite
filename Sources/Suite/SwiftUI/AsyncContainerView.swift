@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(OSX 12, iOS 14.0, tvOS 13, watchOS 7, *)
+@available(OSX 12, iOS 15.0, tvOS 13, watchOS 7, *)
 public struct AsyncContainerView<Content: View, Blocker: View, ErrorView: View>: View {
 	var function: () async throws -> Void
 	var blocker: () -> Blocker
@@ -45,7 +45,7 @@ public struct AsyncContainerView<Content: View, Blocker: View, ErrorView: View>:
 	}
 }
 
-@available(OSX 12, iOS 14.0, tvOS 13, watchOS 7, *)
+@available(OSX 12, iOS 15.0, tvOS 13, watchOS 7, *)
 extension AsyncContainerView where ErrorView == ErrorDisplayingView {
 	public init(waitFor: @escaping () async throws -> Void, @ViewBuilder content: @escaping () -> Content, @ViewBuilder blocker: @escaping () -> Blocker) {
 		self.init(waitFor: waitFor, content: content, blocker: blocker) { error in
