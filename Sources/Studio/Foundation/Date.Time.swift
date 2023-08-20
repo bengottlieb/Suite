@@ -59,6 +59,11 @@ public extension Date {
 			self.end = start.byAdding(timeInterval: duration)
 		}
 		
+		public func dateInterval(on date: Date) -> DateInterval {
+			let start = date.bySetting(time: start)
+			return DateInterval(start: start, duration: duration)
+		}
+		
 		public func shortened(by interval: TimeInterval) -> TimeRange? {
 			if interval < self.duration { return nil }
 			return TimeRange(start: start, duration: duration - interval)
