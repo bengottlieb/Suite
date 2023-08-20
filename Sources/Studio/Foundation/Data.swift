@@ -51,6 +51,10 @@ public extension Data {
 	var jsonDictionary: JSONDictionary? {
 		try? JSONSerialization.jsonObject(with: self, options: []) as? JSONDictionary
 	}
+	
+	func jsonObject<ObjectType: Codable>(decoder: JSONDecoder = JSONDecoder.default) throws -> ObjectType {
+		try ObjectType.loadJSON(data: self, using: decoder)
+	}
 
 	@discardableResult
 	func debug_save(to name: String) -> URL! {
