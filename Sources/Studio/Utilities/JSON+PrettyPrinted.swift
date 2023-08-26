@@ -7,7 +7,7 @@
 
 import Foundation
 
-@available(iOS 15.0, macOS 12, watchOS 8, *)
+@available(iOS 14.0, macOS 12, watchOS 8, *)
 public extension Dictionary where Key == String {
 	var prettyPrinted: String {
 		prettyPrinted(prefix: "")
@@ -29,7 +29,7 @@ public extension Dictionary where Key == String {
 			} else if let double = value as? Double {
 				result += "\(double)"
 			} else if let date = value as? Date {
-				result += "\(date.formatted())"
+				result += "\(date.localTimeString())"
 			} else if let data = value as? Data {
 				result += "\(data.hexString)"
 			} else if let dict = value as? [String: Any] {
@@ -45,7 +45,7 @@ public extension Dictionary where Key == String {
 	}
 }
 
-@available(iOS 15.0, macOS 12, watchOS 8, *)
+@available(iOS 14.0, macOS 12, watchOS 8, *)
 extension Array {
 	func prettyPrinted(prefix: String) -> String {
 		if isEmpty { return "[]"}
@@ -64,7 +64,7 @@ extension Array {
 			} else if let double = value as? Double {
 				result += "\(double)"
 			} else if let date = value as? Date {
-				result += "\(date.formatted())"
+				result += "\(date.localTimeString())"
 			} else if let data = value as? Data {
 				result += "\(data.hexString)"
 			} else if let dict = value as? [String: Any] {
