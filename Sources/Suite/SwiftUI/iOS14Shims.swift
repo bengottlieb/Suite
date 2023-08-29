@@ -9,7 +9,7 @@ import SwiftUI
 
 
 
-@available(OSX 10.15, iOS 13.0, watchOS 6.0, *)
+@available(OSX 12, iOS 13.0, watchOS 6.0, *)
 public extension View {
 	@ViewBuilder func monospacedDigit14() -> some View {
 		if #available(iOS 15.0, *) {
