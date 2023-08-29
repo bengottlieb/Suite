@@ -1,0 +1,92 @@
+//
+//  LongPressButton.swift
+//
+//
+//  Created by Ben Gottlieb on 8/29/23.
+//
+
+import SwiftUI
+
+public struct LongPressButton<Label: View>: View {
+	let action: () async throws -> Void
+	let longPress: () async throws -> Void
+	let delay: TimeInterval
+	
+	let label: () -> Label
+	
+	@State private var longPressStartedAt: Date!
+	@State private var longPressInvalidated = false
+	@State private var longPressTriggered = false
+	@State private var timeOutTask: Task<Void, Never>?
+	
+	public init(delay: TimeInterval = 0.5, action: @escaping () async throws -> Void, longPress: @escaping () async throws -> Void = { }, label: @escaping () -> Label) {
+		self.action = action
+		self.longPress = longPress
+		self.label = label
+		self.delay = delay
+	}
+	
+	func pressed() {
+		if longPressTriggered {
+			longPressTriggered = false
+			return
+		}
+		Task {
+			do {
+				try await action()
+			} catch {
+				print("Button press failed: \(error)")
+			}
+		}
+	}
+	
+	func longPressed() {
+		timeOutTask?.cancel()
+		timeOutTask = nil
+		longPressTriggered = true
+		Task {
+			do {
+				try await longPress()
+			} catch {
+				print("Button long press failed: \(error)")
+			}
+		}
+		longPressInvalidated = true
+	}
+	
+	public var body: some View {
+		Button(action: { pressed() }) {
+			label()
+		}
+		.simultaneousGesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
+			.onChanged { value in
+				if longPressStartedAt == nil {
+					longPressStartedAt = Date()
+					longPressInvalidated = false
+					timeOutTask = Task {
+						do {
+							try await Task.sleep(nanoseconds: UInt64(1_000_000_000 * delay))
+							longPressed()
+						} catch { }
+					}
+				}
+				
+				if !longPressInvalidated, abs(longPressStartedAt.timeIntervalSinceNow) > delay {
+					longPressed()
+				} else if !longPressInvalidated {
+					let distance = sqrt(pow(value.translation.width, 2) + pow(value.translation.height, 2))
+					
+					if distance > 10 {
+						longPressInvalidated = true
+					}
+				}
+			}
+			.onEnded{ value in
+				timeOutTask?.cancel()
+				timeOutTask = nil
+				longPressStartedAt = nil
+			}
+		)
+	}
+}
+
