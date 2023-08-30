@@ -26,7 +26,7 @@ extension Date: Identifiable {
 public extension Date {
 	enum StringLength: Int { case normal, short, veryShort }
 	
-	enum DayOfWeek: Int, CaseIterable, Codable, Comparable { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
+	enum DayOfWeek: Int, CaseIterable, Codable, Comparable, CustomStringConvertible { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 		public var nextDay: DayOfWeek { increment(count: 1) }
 		public var previousDay: DayOfWeek { increment(count: 6) }
 		public func increment(count: Int) -> DayOfWeek { return DayOfWeek(rawValue: (self.rawValue + count - 1) % 7 + 1)! }
@@ -52,6 +52,7 @@ public extension Date {
 		}
 		public static func <(lhs: DayOfWeek, rhs: DayOfWeek) -> Bool { return lhs.rawValue < rhs.rawValue }
 		
+		public var description: String { shortName }
 		public func days(since day: DayOfWeek) -> Int {
 			if day == self { return 0 }
 			let weekdays = Self.weekdays
