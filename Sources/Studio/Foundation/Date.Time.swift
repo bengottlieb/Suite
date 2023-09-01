@@ -65,7 +65,7 @@ public extension Date {
 		}
 		
 		public func shortened(by interval: TimeInterval) -> TimeRange? {
-			if interval < self.duration { return nil }
+			if interval > self.duration { return nil }
 			return TimeRange(start: start, duration: duration - interval)
 		}
 
