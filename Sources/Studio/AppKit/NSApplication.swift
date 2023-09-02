@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  NSApplication.swift
 //  
 //
 //  Created by Ben Gottlieb on 11/28/22.
