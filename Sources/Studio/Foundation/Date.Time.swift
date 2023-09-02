@@ -175,7 +175,7 @@ public extension Date {
 			if minute < 0 {
 				hour -= 1
 				minute += 60
-			} else if minute > 60 {
+			} else if minute >= 60 {
 				hour += 1
 				minute -= 60
 			}
