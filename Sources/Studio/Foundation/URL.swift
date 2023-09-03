@@ -36,8 +36,14 @@ public extension URL {
 	
 	var isDirectory: Bool {
 		var isDirectory: ObjCBool = false
-		FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory)
+		if !FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) { return false }
 		return isDirectory.boolValue
+	}
+
+	var isFile: Bool {
+		var isDirectory: ObjCBool = false
+		if !FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) { return false }
+		return !isDirectory.boolValue
 	}
 
 	var existingDirectory: URL? {
@@ -127,7 +133,7 @@ public extension URL {
 		}
 	}
 	
-	var fileSize: UInt64 { FileManager.default.fileSize(at: self) }
+	var fileSize: Int64 { FileManager.default.fileSize(at: self) }
 	
 	func replacingPathExtension(with ext: String) -> URL {
 		deletingPathExtension().appendingPathExtension(ext)
