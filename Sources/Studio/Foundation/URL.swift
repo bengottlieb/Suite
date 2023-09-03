@@ -33,6 +33,12 @@ public extension URL {
 	var isAppStoreURL: Bool {
 		host?.contains("apps.apple.com") == true
 	}
+	
+	var isDirectory: Bool {
+		var isDirectory: ObjCBool = false
+		FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory)
+		return isDirectory.boolValue
+	}
 
 	var existingDirectory: URL? {
 		if !isFileURL { return nil }
