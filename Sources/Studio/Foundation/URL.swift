@@ -76,6 +76,22 @@ public extension URL {
 	var relativePathToHome: String? {
 		return self.path.abbreviatingWithTildeInPath
 	}
+	
+	func isSubdirectory(of url: URL) -> Bool {
+		path.hasPrefix(url.path)
+	}
+	
+	var componentDirectoryURLs: [URL]? {
+		guard isFileURL else { return nil }
+		let components = path.components(separatedBy: "/")
+		var builtUp = URL(fileURLWithPath: "/")
+		
+		return [builtUp] + components.map { component in
+			builtUp = builtUp.appendingPathComponent(component)
+			return builtUp
+		}
+		
+	}
 
 	static var bundleScheme = "bundle"
 	var isBundleURL: Bool { scheme == Self.bundleScheme }
