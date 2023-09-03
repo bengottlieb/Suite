@@ -7,6 +7,30 @@
 
 import Foundation
 
+#if os(iOS)
+import UIKit
+
+extension URL {
+	static var application: UIApplication?
+	
+	public static func setApplication(_ app: UIApplication) { application = app }
+	
+	public func open() {
+		Self.application?.open(self)
+	}
+}
+#endif
+
+#if os(macOS)
+import AppKit
+
+extension URL {
+	public func open() {
+		NSWorkspace.shared.open(self)
+	}
+}
+#endif
+
 public protocol URLLocatable {
 	var url: URL { get }
 }
