@@ -42,6 +42,8 @@ public extension Array {
 		}
 	}
 	
+	subscript(indexSet: IndexSet) -> [Element] { objects(at: indexSet) }
+	
 	func indicesMatching(where check: (Element) -> Bool) -> [Int] {
 		indices.filter { check(self[$0]) }
 	}
