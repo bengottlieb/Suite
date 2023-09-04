@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UniformTypeIdentifiers
 
 #if os(iOS)
 import UIKit
@@ -224,6 +225,14 @@ public extension URL {
 		let newAbs = fileURL.absoluteString
 		
 		return newAbs.hasPrefix(myAbs)
+	}
+	
+	@available(iOS 14.0, *)
+	var fileType: UTType? {
+		let nsURL = self as NSURL
+		var object: AnyObject?
+		try? nsURL.getResourceValue(&object, forKey: .contentTypeKey)
+		return object as? UTType
 	}
 }
 

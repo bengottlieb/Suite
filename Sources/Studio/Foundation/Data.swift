@@ -49,7 +49,12 @@ public extension Data {
 	}
 
 	var jsonDictionary: JSONDictionary? {
-		try? JSONSerialization.jsonObject(with: self, options: []) as? JSONDictionary
+		if let json = try? JSONSerialization.jsonObject(with: self, options: []) as? JSONDictionary { return json }
+		
+		var format: PropertyListSerialization.PropertyListFormat = .binary
+		guard let result = try? PropertyListSerialization.propertyList(from: self, format: &format) else { return nil }
+		
+		return result as? JSONDictionary
 	}
 	
 	func jsonObject<ObjectType: Codable>(decoder: JSONDecoder = JSONDecoder.default) throws -> ObjectType {
