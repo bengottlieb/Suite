@@ -35,6 +35,8 @@ import UIKit
 			FileManager.default.createFile(atPath: url.path, contents: video.data, attributes: nil)
 			self.init(url: url)
 		}
+		
+		var isPlaying: Bool { rate != 0 && error == nil }
 	}
 
 @available(watchOS 6.0, *)

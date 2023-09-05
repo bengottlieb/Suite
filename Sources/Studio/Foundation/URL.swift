@@ -227,7 +227,7 @@ public extension URL {
 		return newAbs.hasPrefix(myAbs)
 	}
 	
-	@available(iOS 14.0, *)
+	@available(iOS 14.0, macOS 11.0, *)
 	var fileType: UTType? {
 		let nsURL = self as NSURL
 		var object: AnyObject?
