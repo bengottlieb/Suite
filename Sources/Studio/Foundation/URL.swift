@@ -234,6 +234,10 @@ public extension URL {
 		try? nsURL.getResourceValue(&object, forKey: .contentTypeKey)
 		return object as? UTType
 	}
+	
+	func isSameFile(as url: URL) -> Bool {
+		url.standardizedFileURL == standardizedFileURL
+	}
 }
 
 extension URLQueryItem: Comparable {
