@@ -75,4 +75,40 @@ public extension Data {
 	
 	
 	var hexString: String { map { String(format: "%02.2hhx", $0) }.joined() }
+	
 }
+
+public extension Data {
+	enum DataReadError: Error { case tooShort }
+	func peek<DataStructure>(type: DataStructure.Type) throws -> DataStructure {
+		let size = MemoryLayout<DataStructure>.size
+		if count < size { throw DataReadError.tooShort }
+		
+		return withUnsafeBytes { bytes in
+			return bytes.load(as: DataStructure.self)
+		}
+	}
+	
+	mutating func consume<DataStructure>(type: DataStructure.Type) throws -> DataStructure {
+		let size = MemoryLayout<DataStructure>.size
+		let stride = MemoryLayout<DataStructure>.stride
+		if count < size { throw DataReadError.tooShort }
+
+		let result = withUnsafeBytes { bytes in
+			return bytes.load(as: DataStructure.self)
+		}
+		
+		self = self.dropFirst(stride)
+		
+		return result
+	}
+	
+	mutating func consume(bytes size: Int) throws -> Data {
+		if count < size { throw DataReadError.tooShort }
+		let result = prefix(size)
+		self = self.dropFirst(size)
+		
+		return result
+	}
+}
+
