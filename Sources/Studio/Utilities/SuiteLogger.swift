@@ -75,7 +75,7 @@ public class SuiteLogger {
 			redirect(string)
 			return
 		}
-		SuiteLogger.instance.log(self.prefix + string)
+		print(self.prefix + string)
 		
 		if let url = fileURL, let data = string.data(using: .utf8) {
 			write(data, to: url)
