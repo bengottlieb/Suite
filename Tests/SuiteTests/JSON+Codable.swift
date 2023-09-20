@@ -34,8 +34,8 @@ final class JSON_Codable: XCTestCase {
 		 let string = String(data: data, encoding: .utf8)!
 		 let decoded = try JSONDecoder().decode(TestCodable.self, from: data)
 		 
-		 print(string)
-		 print(decoded)
+		 dlogg(string)
+		 dlogg(decoded)
 		 
 		 XCTAssert(!data.isEmpty, "Shouldn't encode empty data")
         // This is an example of a functional test case.

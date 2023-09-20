@@ -8,6 +8,8 @@
 import Foundation
 import CoreData
 
+
+
 public func logg(_ msg: @escaping @autoclosure () -> String, _ level: SuiteLogger.Level = .mild) { SuiteLogger.instance.log(msg(), level: level) }
 public func logg<What: AnyObject>(raw: What, _ level: SuiteLogger.Level = .mild) { SuiteLogger.instance.log(raw: raw, level) }
 public func logg(_ special: SuiteLogger.Special, _ level: SuiteLogger.Level = .mild) { SuiteLogger.instance.log(special, level: level) }

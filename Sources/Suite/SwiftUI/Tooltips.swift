@@ -12,7 +12,7 @@ import SwiftUI
 #if os(iOS)
 public extension View {
 	func tooltip(_ tip: String) -> some View {
-		print("Tooltips not supported on iOS")
+		logg("Tooltips not supported on iOS")
 		return self
 	}
 }

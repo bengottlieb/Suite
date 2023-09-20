@@ -42,7 +42,7 @@ public struct LongPressButton<Label: View>: View {
 			do {
 				try await action()
 			} catch {
-				print("Button press failed: \(error)")
+				logg("Button press failed: \(error)")
 			}
 		}
 	}
@@ -54,7 +54,7 @@ public struct LongPressButton<Label: View>: View {
 			do {
 				try await longPress()
 			} catch {
-				print("Button long press failed: \(error)")
+				logg("Button long press failed: \(error)")
 			}
 		}
 		longPressInvalidated = true

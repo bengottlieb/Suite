@@ -196,7 +196,7 @@ public extension URL {
 			do {
 				try FileManager.default.setAttributes([.modificationDate: newValue], ofItemAtPath: path)
 			} catch {
-				print("Failed to set modification date: \(error)")
+				logg("Failed to set modification date: \(error)")
 			}
 		}
 	}
