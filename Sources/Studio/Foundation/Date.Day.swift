@@ -14,11 +14,10 @@ public extension Date {
 		public var year: Int
 		
 		public var description: String {
-			
 			if #available(iOS 15.0, macOS 12, watchOS 8, *) {
 				return date.formatted(date: .numeric, time: .omitted)
 			} else {
-				return "\(month.rawValue)/\(day)/\(year)"
+				return "\(year)-\(month.rawValue)-\(day)"
 			}
 		}
 		
@@ -34,6 +33,12 @@ public extension Date {
 			self.init(day: components[0], month: components[1], year: components[2])
 		}
 		
+		public init?(ymd: String) {
+			guard let components = ymd.dateComponents else { return nil }
+			
+			self.init(day: components[2], month: components[1], year: components[0])
+		}
+		
 		public init(day: Int, month: Month, year: Int) {
 			self.day = day
 			self.month = month
@@ -47,11 +52,20 @@ public extension Date {
 			self.year = year < 1000 ? year + 2000 : year
 		}
 		
+		public init(_ date: Date) {
+			self.day = date.dayOfMonth
+			self.month = date.month
+			self.year = date.year
+		}
+		
 		public var date: Date {
 			Date(calendar: .current, timeZone: .current, year: year, month: month.rawValue, day: day) ?? Date()
 		}
 		
 		public var dmyString: String { "\(day)/\(month.rawValue)/\(year)" }
+		public var ymdString: String { "\(year)/\(month.rawValue)/\(day)" }
+		
+		public static var now: Date.Day { Date.Day(Date()) }
 	}
 	
 	var day: Day {
@@ -66,7 +80,7 @@ public extension Date {
 extension String {
 	fileprivate var dateComponents: [Int]? {
 		var comp = self.components(separatedBy: "/")
-		if comp.count < 3 { comp = self.components(separatedBy: "/") }
+		if comp.count < 3 { comp = self.components(separatedBy: "-") }
 		if comp.count < 3 { return nil }
 		
 		let ints = comp.compactMap { Int($0) }
