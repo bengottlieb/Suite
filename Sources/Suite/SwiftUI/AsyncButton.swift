@@ -92,6 +92,16 @@ extension AsyncButton where Label == Text, Busy == AsyncButtonBusyLabel {
 	}
 }
 
+@available(macOS 12, iOS 15.0, tvOS 13, watchOS 8, *)
+extension AsyncButton where Busy == AsyncButtonBusyLabel {
+	public init(role: ButtonRole? = nil, action: @escaping () async throws -> Void, spinnerScale: Double = 1.0, label: @escaping () -> Label) {
+		self.action = action
+		self.role = role
+		self.label = label
+		self.busy = { AsyncButtonBusyLabel(title: "", spinnerScale: spinnerScale) }
+	}
+}
+
 public struct AsyncButtonBusyLabel: View {
 	let title: String
 	var spinnerColor = Color.white
