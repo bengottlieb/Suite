@@ -79,6 +79,17 @@ public extension String {
 		return emailTest.evaluate(with: self)
 	}
 	
+	var isValidPhoneNumber: Bool {
+		 let types: NSTextCheckingResult.CheckingType = [.phoneNumber]
+		 guard let detector = try? NSDataDetector(types: types.rawValue) else { return false }
+		 if let match = detector.matches(in: self, options: [], range: NSMakeRange(0, self.count)).first?.phoneNumber {
+			  return match == self
+		 } else {
+			  return false
+		 }
+	}
+
+	
 	func stringByRemovingCharactersInSet(set: CharacterSet) -> String {
 		var result = ""
 		var count = 0
