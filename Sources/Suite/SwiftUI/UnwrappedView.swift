@@ -21,7 +21,7 @@ public struct UnwrappedView<Target, Body: View>: View {
 	}
 	
 	public var body: some View {
-		Group {
+		VStack {
 			if let potential {
 				buildBody(potential)
 			} else if showError {
