@@ -71,7 +71,7 @@ public extension Encodable {
 	var stringValue: String? {
 		stringValue(from: JSONEncoder.default)
 	}
-
+	
 	var prettyJSON: String? {
 		do {
 			let json = try asJSON()
@@ -83,7 +83,7 @@ public extension Encodable {
 			return "\(error)"
 		}
 	}
-
+	
 	func logJSON() {
 		if let json = prettyJSON {
 			logg(json)
@@ -95,12 +95,12 @@ public extension Encodable {
 		
 		return String(data: data, encoding: .utf8)
 	}
-
+	
 	func asJSON(using encoder: JSONEncoder = .default) throws -> JSONDictionary {
 		let data = try asJSONData(using: encoder)
 		return try JSONSerialization.jsonObject(with: data, options: []) as? JSONDictionary ?? [:]
 	}
-
+	
 	func asJSONData(using encoder: JSONEncoder = .default) throws -> Data {
 		try encoder.encode(self)
 	}
@@ -137,7 +137,7 @@ extension Decodable {
 	}
 	
 	public static func loadJSON(dictionary: [String: Any], using decoder: JSONDecoder = .default) throws -> Self {
- 		let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+		let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
 		return try decoder.decode(Self.self, from: data)
 	}
 	
@@ -186,7 +186,7 @@ public extension JSONEncoder {
 
 public extension JSONDecoder {
 	static var `default` = JSONDecoder()
-
+	
 	enum DecodingError: Error { case unknownKey(String), badString, jsonDecodeFailed, fileNotFound }
 }
 
@@ -216,5 +216,20 @@ public extension Decodable where Self: Encodable {
 		(result as? PostDecodeAwakable)?.awakeFromDecoder()
 		
 		return result
+	}
+}
+
+extension RawRepresentable where RawValue == String, Self: Codable {
+	public init(from decoder: Decoder) throws {
+		var container = try decoder.unkeyedContainer()
+		let rawValue = try container.decode(String.self)
+		do {
+			self.init(rawValue: rawValue)!
+		}
+	}
+	
+	public func encode(to encoder: Encoder) throws {
+		var container = encoder.unkeyedContainer()
+		try container.encode(rawValue)
 	}
 }

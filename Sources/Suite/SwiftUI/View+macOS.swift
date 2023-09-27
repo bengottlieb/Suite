@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  View+macOS.swift
 //  
 //
 //  Created by Ben Gottlieb on 3/12/23.

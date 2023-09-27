@@ -137,7 +137,7 @@ public extension UIImage {
 		}
 		
 		#if os(iOS)
-			let scale = changeScaleTo ?? UIScreen.main.scale
+			let scale = changeScaleTo ?? UIView.screenScale
 		#else
 			let scale = changeScaleTo ?? 2
 		#endif

@@ -33,7 +33,11 @@ public extension UIApplication {
 		}
 		
 		if let window = self.delegate?.window { return window }
-		return self.windows.first
+		 #if os(xrOS)
+			return nil
+		 #else
+			return self.windows.first
+		 #endif
     }
 
 }

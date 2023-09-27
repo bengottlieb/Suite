@@ -49,7 +49,16 @@ public extension Data {
 	}
 
 	var jsonDictionary: JSONDictionary? {
-		try? JSONSerialization.jsonObject(with: self, options: []) as? JSONDictionary
+		if let json = try? JSONSerialization.jsonObject(with: self, options: []) as? JSONDictionary { return json }
+		
+		var format: PropertyListSerialization.PropertyListFormat = .binary
+		guard let result = try? PropertyListSerialization.propertyList(from: self, format: &format) else { return nil }
+		
+		return result as? JSONDictionary
+	}
+	
+	func jsonObject<ObjectType: Codable>(decoder: JSONDecoder = JSONDecoder.default) throws -> ObjectType {
+		try ObjectType.loadJSON(data: self, using: decoder)
 	}
 
 	@discardableResult
@@ -66,4 +75,40 @@ public extension Data {
 	
 	
 	var hexString: String { map { String(format: "%02.2hhx", $0) }.joined() }
+	
 }
+
+public extension Data {
+	enum DataReadError: Error { case tooShort }
+	func peek<DataStructure>(type: DataStructure.Type) throws -> DataStructure {
+		let size = MemoryLayout<DataStructure>.size
+		if count < size { throw DataReadError.tooShort }
+		
+		return withUnsafeBytes { bytes in
+			return bytes.load(as: DataStructure.self)
+		}
+	}
+	
+	mutating func consume<DataStructure>(type: DataStructure.Type) throws -> DataStructure {
+		let size = MemoryLayout<DataStructure>.size
+		let stride = MemoryLayout<DataStructure>.stride
+		if count < size { throw DataReadError.tooShort }
+
+		let result = withUnsafeBytes { bytes in
+			return bytes.load(as: DataStructure.self)
+		}
+		
+		self = self.dropFirst(stride)
+		
+		return result
+	}
+	
+	mutating func consume(bytes size: Int) throws -> Data {
+		if count < size { throw DataReadError.tooShort }
+		let result = prefix(size)
+		self = self.dropFirst(size)
+		
+		return result
+	}
+}
+

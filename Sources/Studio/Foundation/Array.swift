@@ -36,6 +36,14 @@ extension Array: RawRepresentable where Element: RawRepresentable, Element.RawVa
 }
 
 public extension Array {
+	func objects(at indexSet: IndexSet) -> [Element] {
+		indexSet.compactMap { index in
+			index < count ? self[index] : nil
+		}
+	}
+	
+	subscript(indexSet: IndexSet) -> [Element] { objects(at: indexSet) }
+	
 	func indicesMatching(where check: (Element) -> Bool) -> [Int] {
 		indices.filter { check(self[$0]) }
 	}

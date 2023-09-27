@@ -168,7 +168,7 @@ public struct Gestalt {
 
 	#endif
 	
-	#if os(iOS) || os(watchOS)
+	#if os(iOS) || os(watchOS) || os(xrOS)
 		public static var simulatedRawDeviceType: String? {
 			#if targetEnvironment(simulator)
 					return ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"]
@@ -304,7 +304,7 @@ public struct Gestalt {
 //			case "i386", "x86_64":
 //				let screenSize = UIScreen.main.bounds.size
 //				let size = (Int(screenSize.width), Int(screenSize.height))
-//				let scale = Int(UIScreen.main.scale)
+//				let scale = Int(UIView.screenScale)
 //
 //				switch size {
 //				case (320, 480): return "Simulator, iPhone 4"
@@ -349,34 +349,62 @@ public struct Gestalt {
 		return NSClassFromString("XCTest") != nil
 	}()
 	
-	public static var IPAddress: String? {
-		 var address: String?
-		 var ifaddr: UnsafeMutablePointer<ifaddrs>?
-		 if getifaddrs(&ifaddr) == 0 {
-			  var ptr = ifaddr
-			  while ptr != nil {
-					defer { ptr = ptr?.pointee.ifa_next }
-					let interface = ptr?.pointee
-					let addrFamily = interface?.ifa_addr.pointee.sa_family
-					if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6),
-						 let cString = interface?.ifa_name,
-						 String(cString: cString) == "en0",
-						 let saLen = (interface?.ifa_addr.pointee.sa_len) {
-						 var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
-						 let ifaAddr = interface?.ifa_addr
-						 getnameinfo(ifaAddr,
-										 socklen_t(saLen),
-										 &hostname,
-										 socklen_t(hostname.count),
-										 nil,
-										 socklen_t(0),
-										 NI_NUMERICHOST)
-						 address = String(cString: hostname)
+	public static var ipv4Address: String? { ipAddress(family: AF_INET) }
+	public static var ipv6Address: String? { ipAddress(family: AF_INET6) }
+
+	
+	static func ipAddress(family: Int32) -> String? {
+		let interfaces = allInterfaces
+
+		if let en0 = interfaces.first(where: { $0.name == "en0" && $0.family == UInt8(family) }) {
+			return en0.address
+		}
+
+		if let en1 = interfaces.first(where: { $0.name == "en1" && $0.family == UInt8(family) }) {
+			return en1.address
+		}
+		return nil
+	}
+	
+	public static var IPAddress: String? { ipv4Address ?? ipv6Address }
+	
+	struct NetworkInterface: CustomStringConvertible {
+		let address: String
+		let name: String
+		let family: UInt8
+		
+		var description: String {
+			"\(name): \(family) \(address)"
+		}
+	}
+	
+	static var allInterfaces: [NetworkInterface] {
+		var results: [NetworkInterface] = []
+		
+		var ifaddr: UnsafeMutablePointer<ifaddrs>?
+		if getifaddrs(&ifaddr) == 0 {
+			var ptr = ifaddr
+			while ptr != nil {
+				defer { ptr = ptr?.pointee.ifa_next }
+				let interface = ptr?.pointee
+				
+				guard let addrFamily = interface?.ifa_addr.pointee.sa_family else { continue }
+				guard let cString = interface?.ifa_name else { continue }
+				
+				if let saLen = (interface?.ifa_addr.pointee.sa_len) {
+					var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+					let ifaAddr = interface?.ifa_addr
+					getnameinfo(ifaAddr, socklen_t(saLen), &hostname, socklen_t(hostname.count), nil, socklen_t(0), NI_NUMERICHOST)
+					
+					let address = String(cString: hostname)
+					if !address.isEmpty {
+						results.append(.init(address: address, name: String(cString: cString), family: addrFamily))
 					}
-			  }
-			  freeifaddrs(ifaddr)
-		 }
-		 return address
+				}
+			}
+			freeifaddrs(ifaddr)
+		}
+		return results
 	}
 	
 	public static var buildDate: Date? { Bundle.main.executableURL?.createdAt }

@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Enums.swift
 //  
 //
 //  Created by Ben Gottlieb on 4/16/20.

@@ -8,6 +8,7 @@
 #if canImport(UIKit) && !os(watchOS)
 import UIKit
 
+#if !os(xrOS)
 public extension UIViewController {
 	class func fromStoryboard(_ name: String? = nil, bundle: Bundle? = nil) -> Self {
 		let storyboardName = name ?? NSStringFromClass(self).components(separatedBy: ".").last!
@@ -38,7 +39,10 @@ public extension UIViewController {
 		if Bundle(for: self).url(forResource: filename, withExtension: "nib") !=  nil { return filename }
 		return nil
 	}
+}
+#endif
 
+public extension UIViewController {
 	var isInDarkMode: Bool { return self.traitCollection.isInDarkMode }
 	
 	@discardableResult

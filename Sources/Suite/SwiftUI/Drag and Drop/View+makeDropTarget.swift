@@ -66,38 +66,47 @@ struct DropTargetView<Content: View>: View {
 					GeometryReader { geo in
 						Color.clear
 							.onAppear { frame = geo.frame(in: .dragAndDropSpace) }
-							.onChange(of: dragCoordinator.currentPosition) { newPosition in
-								guard let dragPosition = convert(point: newPosition, using: geo), let type = dragCoordinator.dragType, let object = dragCoordinator.draggedObject else {
-									dropPoint = nil
-									return
-								}
-
-								if dragCoordinator.cancelledDrop {
-									_ = hover(type, object, nil)
-								} else if let point = dropPosition(at: dragPosition) {
-									if showDropPoint { dropPoint = point }
-									isDropTarget = true
-									indicateIsDropTarget = hover(type, object, point)
-								} else if isDropTarget || dropPoint != nil {
-									_ = hover(type, object, nil)
-									isDropTarget = false
-									indicateIsDropTarget = false
-									dropPoint = nil
-								}
-							}
-							.onChange(of: dragCoordinator.dropPosition) { dropPoint in
-								guard let dropPoint = convert(point: dropPoint, using: geo) else { return }
-								if let point = dropPosition(at: dropPoint), let type = dragCoordinator.dragType, let object = dragCoordinator.draggedObject {
-									if dropped(type, object, point) {
-										dragCoordinator.acceptedDrop = true
-									}
-								}
-							}
+						#if os(xrOS)
+							.onChange(of: dragCoordinator.currentPosition) { currentPositionChanged(to: dragCoordinator.currentPosition, using: geo) }
+							.onChange(of: dragCoordinator.dropPosition) { dropPositionChanged(to: dragCoordinator.dropPosition, using: geo) }
+						#else
+							.onChange(of: dragCoordinator.currentPosition) { newPosition in currentPositionChanged(to: newPosition, using: geo) }
+							.onChange(of: dragCoordinator.dropPosition) { dropPoint in dropPositionChanged(to: dropPoint, using: geo) }
+						#endif
 					}
 					.border(Color.red, width: indicateIsDropTarget ? 4 : 0)
 				}
 		} else {
 			content
+		}
+	}
+	
+	func dropPositionChanged(to dropPoint: CGPoint?, using geo: GeometryProxy) {
+		guard let dropPoint = convert(point: dropPoint, using: geo) else { return }
+		if let point = dropPosition(at: dropPoint), let type = dragCoordinator.dragType, let object = dragCoordinator.draggedObject {
+			if dropped(type, object, point) {
+				dragCoordinator.acceptedDrop = true
+			}
+		}
+	}
+	
+	func currentPositionChanged(to newPosition: CGPoint?, using geo: GeometryProxy) {
+		guard let dragPosition = convert(point: newPosition, using: geo), let type = dragCoordinator.dragType, let object = dragCoordinator.draggedObject else {
+			dropPoint = nil
+			return
+		}
+
+		if dragCoordinator.cancelledDrop {
+			_ = hover(type, object, nil)
+		} else if let point = dropPosition(at: dragPosition) {
+			if showDropPoint { dropPoint = point }
+			isDropTarget = true
+			indicateIsDropTarget = hover(type, object, point)
+		} else if isDropTarget || dropPoint != nil {
+			_ = hover(type, object, nil)
+			isDropTarget = false
+			indicateIsDropTarget = false
+			dropPoint = nil
 		}
 	}
 

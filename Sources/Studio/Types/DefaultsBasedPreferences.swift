@@ -8,6 +8,10 @@
 
 import Foundation
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 public protocol PreferencesKeyProvider: AnyObject {
 	var keys: [String: String] { get }
 }
@@ -27,8 +31,14 @@ public protocol PreferencesKeyProvider: AnyObject {
 		super.init()
 		
 		load()
+		#if canImport(UIKit)
+			addAsObserver(of: UIApplication.willEnterForegroundNotification, selector: #selector(willEnterForeground))
+		#endif
 	}
 
+	@objc func willEnterForeground(note: Notification) {
+		load()
+	}
 	
 	public func refresh() {
 		load()

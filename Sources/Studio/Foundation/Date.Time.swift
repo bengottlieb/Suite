@@ -45,7 +45,7 @@ public extension Date {
 		return next
 	}
 	
-	struct TimeRange: Equatable, CustomStringConvertible {
+	struct TimeRange: Equatable, CustomStringConvertible, Codable, Hashable {
 		public var start: Date.Time
 		public var end: Date.Time
 		
@@ -57,6 +57,16 @@ public extension Date {
 		public init(start: Date.Time, duration: TimeInterval) {
 			self.start = start
 			self.end = start.byAdding(timeInterval: duration)
+		}
+		
+		public func dateInterval(on date: Date) -> DateInterval {
+			let start = date.bySetting(time: start)
+			return DateInterval(start: start, duration: duration)
+		}
+		
+		public func shortened(by interval: TimeInterval) -> TimeRange? {
+			if interval > self.duration { return nil }
+			return TimeRange(start: start, duration: duration - interval)
 		}
 
 		public var duration: TimeInterval {
@@ -85,6 +95,11 @@ public extension Date {
 			return "\(start) - \(end)"
 		}
 
+		public var abbreviatedDescription: String {
+			if start == end { return "\(start.abbreviatedDescription)" }
+			return "\(start.abbreviatedDescription) - \(end.abbreviatedDescription)"
+		}
+
 		public init(startMinute minutes: Int, duration: TimeInterval) {
 			let startHour = minutes / 60
 			let startMinute = minutes % 60
@@ -96,10 +111,10 @@ public extension Date {
 		}
 	}
 
-	struct Time: Codable, Comparable, Equatable, CustomStringConvertible {
-		public let hour: Int
-		public let minute: Int
-		public let second: TimeInterval
+	struct Time: Codable, Comparable, Equatable, CustomStringConvertible, Hashable {
+		public var hour: Int
+		public var minute: Int
+		public var second: TimeInterval
 		
 		public static let midnight = Date.Time(hour: 0, minute: 0, second: 0)
 		public static let lastSecond = Date.Time(hour: 23, minute: 59, second: 59 )
@@ -160,7 +175,7 @@ public extension Date {
 			if minute < 0 {
 				hour -= 1
 				minute += 60
-			} else if minute > 60 {
+			} else if minute >= 60 {
 				hour += 1
 				minute -= 60
 			}
@@ -178,7 +193,7 @@ public extension Date {
 		}
 		
 		public init?(string: String) {
-			let chunks = string.components(separatedBy: " ")
+			let chunks = string.components(separatedBy: .whitespaces)
 			guard let hourMinuteChunk = chunks.first else { return nil }
 			let components = hourMinuteChunk.components(separatedBy: ":")
 			guard components.count >= 2, let hour = Int(components[0]), let minute = Int(components[1]) else { return nil }
@@ -201,10 +216,23 @@ public extension Date {
 		
 		public var description: String {
 			if second == 0 {
-				return String(format: "%d:%02d", hour, minute)
+				return String(format: "%d:%02d", visibleHour, minute)
 			} else {
-				return String(format: "%d:%02d:%02d", hour, minute, Int(second))
+				return String(format: "%d:%02d:%02d", visibleHour, minute, Int(second))
 			}
+		}
+		
+		public var visibleHour: Int {
+			if Date.isIn24HourTimeMode { return hour }
+			if hour == 0 || hour == 12 { return 12 }
+			return hour % 12
+		}
+		
+		public var abbreviatedDescription: String {
+			let suffix = Date.isIn24HourTimeMode ? "" : (hour < 12 ? "a" : "p")
+			if minute == 0 { return "\(visibleHour)\(suffix)" }
+			
+			return String(format: "%d:%02d\(suffix)", visibleHour, minute)
 		}
 		
 		public var timeIntervalSinceNow: TimeInterval {
@@ -250,14 +278,21 @@ public extension Date {
 		}
 		
 		public var date: Date {
-			var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
-			
-			components.hour = hour
-			components.minute = minute
-			components.second = Int(second)
-			
-			
-			return Calendar.current.date(from: components) ?? Date()
+			get {
+				var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+				
+				components.hour = hour
+				components.minute = minute
+				components.second = Int(second)
+				
+				return Calendar.current.date(from: components) ?? Date()
+			}
+			set {
+				let components = Calendar.current.dateComponents([.hour, .minute, .second], from: newValue)
+				hour = components.hour ?? 0
+				minute = components.minute ?? 0
+				second = Double(components.second ?? 0)
+			}
 		}
 		
 		public var hourMinuteString: String {

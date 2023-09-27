@@ -6,6 +6,31 @@
 //
 
 import Foundation
+import UniformTypeIdentifiers
+
+#if os(iOS)
+import UIKit
+
+extension URL {
+	static var application: UIApplication?
+	
+	public static func setApplication(_ app: UIApplication) { application = app }
+	
+	public func open() {
+		Self.application?.open(self)
+	}
+}
+#endif
+
+#if os(macOS)
+import AppKit
+
+extension URL {
+	public func open() {
+		NSWorkspace.shared.open(self)
+	}
+}
+#endif
 
 public protocol URLLocatable {
 	var url: URL { get }
@@ -32,6 +57,18 @@ public extension URL {
 
 	var isAppStoreURL: Bool {
 		host?.contains("apps.apple.com") == true
+	}
+	
+	var isDirectory: Bool {
+		var isDirectory: ObjCBool = false
+		if !FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) { return false }
+		return isDirectory.boolValue
+	}
+
+	var isFile: Bool {
+		var isDirectory: ObjCBool = false
+		if !FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) { return false }
+		return !isDirectory.boolValue
 	}
 
 	var existingDirectory: URL? {
@@ -63,6 +100,22 @@ public extension URL {
 
 	var relativePathToHome: String? {
 		return self.path.abbreviatingWithTildeInPath
+	}
+	
+	func isSubdirectory(of url: URL) -> Bool {
+		path.hasPrefix(url.path)
+	}
+	
+	var componentDirectoryURLs: [URL]? {
+		guard isFileURL else { return nil }
+		let components = path.components(separatedBy: "/")
+		var builtUp = URL(fileURLWithPath: "/")
+		
+		return [builtUp] + components.map { component in
+			builtUp = builtUp.appendingPathComponent(component)
+			return builtUp
+		}
+		
 	}
 
 	static var bundleScheme = "bundle"
@@ -121,7 +174,7 @@ public extension URL {
 		}
 	}
 	
-	var fileSize: UInt64 { FileManager.default.fileSize(at: self) }
+	var fileSize: Int64 { FileManager.default.fileSize(at: self) }
 	
 	func replacingPathExtension(with ext: String) -> URL {
 		deletingPathExtension().appendingPathExtension(ext)
@@ -137,7 +190,15 @@ public extension URL {
 	}
 
 	var modifiedAt: Date? {
-		fileAttributes?[.modificationDate] as? Date
+		get { fileAttributes?[.modificationDate] as? Date }
+		nonmutating set {
+			guard let newValue else { return }
+			do {
+				try FileManager.default.setAttributes([.modificationDate: newValue], ofItemAtPath: path)
+			} catch {
+				logg("Failed to set modification date: \(error)")
+			}
+		}
 	}
 	
 	var normalizedString: String {
@@ -164,6 +225,18 @@ public extension URL {
 		let newAbs = fileURL.absoluteString
 		
 		return newAbs.hasPrefix(myAbs)
+	}
+	
+	@available(iOS 14.0, macOS 11.0, *)
+	var fileType: UTType? {
+		let nsURL = self as NSURL
+		var object: AnyObject?
+		try? nsURL.getResourceValue(&object, forKey: .contentTypeKey)
+		return object as? UTType
+	}
+	
+	func isSameFile(as url: URL) -> Bool {
+		url.standardizedFileURL == standardizedFileURL
 	}
 }
 

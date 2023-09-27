@@ -14,11 +14,11 @@ public extension FileManager {
 		return self.fileExists(atPath: url.path)
 	}
 	
-	func fileSize(at url: URL?) -> UInt64 {
+	func fileSize(at url: URL?) -> Int64 {
 		guard let url = url, url.isFileURL else { return 0 }
 		let attr = (try? attributesOfItem(atPath: url.path)) ?? [:]
 		
-		return attr[.size] as? UInt64 ?? 0
+		return attr[.size] as? Int64 ?? 0
 	}
 	
 	func copy(itemsAt source: URL, into destination: URL, replacingOld: Bool = true, ignoringErrors: Bool = false) throws {

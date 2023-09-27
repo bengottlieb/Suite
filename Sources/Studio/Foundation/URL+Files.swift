@@ -6,6 +6,16 @@
 //
 
 import Foundation
+import AVFoundation
+
+public extension URL {
+	var audioDuration: TimeInterval? {
+		let asset = AVURLAsset(url: self)
+		
+		guard let reader = try? AVAssetReader(asset: asset) else { return nil }
+		return reader.asset.duration.seconds
+	}
+}
 
 public extension URL {
 	static func systemDirectoryURL(which: FileManager.SearchPathDirectory) -> URL? {

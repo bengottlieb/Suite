@@ -26,7 +26,7 @@ extension Date: Identifiable {
 public extension Date {
 	enum StringLength: Int { case normal, short, veryShort }
 	
-	enum DayOfWeek: Int, CaseIterable, Codable, Comparable { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
+	enum DayOfWeek: Int, CaseIterable, Codable, Comparable, CustomStringConvertible { case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 		public var nextDay: DayOfWeek { increment(count: 1) }
 		public var previousDay: DayOfWeek { increment(count: 6) }
 		public func increment(count: Int) -> DayOfWeek { return DayOfWeek(rawValue: (self.rawValue + count - 1) % 7 + 1)! }
@@ -52,6 +52,7 @@ public extension Date {
 		}
 		public static func <(lhs: DayOfWeek, rhs: DayOfWeek) -> Bool { return lhs.rawValue < rhs.rawValue }
 		
+		public var description: String { shortName }
 		public func days(since day: DayOfWeek) -> Int {
 			if day == self { return 0 }
 			let weekdays = Self.weekdays
@@ -264,7 +265,7 @@ public extension Date {
 	}
 	
 	var hourString: String {
-		let isIn24HourTimeMode = self.isIn24HourTimeMode
+		let isIn24HourTimeMode = Self.isIn24HourTimeMode
 		var hour = isIn24HourTimeMode ? self.hour : self.hour % 12
 		if !isIn24HourTimeMode, hour == 0 { hour = 12 }
 		
@@ -273,7 +274,7 @@ public extension Date {
 		return "\(hour)" + (self.hour < 12 ? DateFormatter().amSymbol : DateFormatter().pmSymbol)
 	}
 	
-	var isIn24HourTimeMode: Bool {
+	static var isIn24HourTimeMode: Bool {
 		guard let format = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: .current) else { return false }
 		
 		return format.range(of: "a") == nil
@@ -304,8 +305,7 @@ public extension Date {
 	}
 	
 	var secondsSinceMidnight: TimeInterval {
-		let components = Calendar.current.dateComponents(in: TimeZone.current, from: self)
-		return TimeInterval(components.hour ?? 0) * 3600 + TimeInterval(components.minute ?? 0) * 60 + TimeInterval(components.second ?? 0) + TimeInterval(components.nanosecond ?? 0)
+		abs(midnight.timeIntervalSince(self))
 	}
 	
 	func bySettingSecondsSinceMidnight(_ seconds: TimeInterval) -> Date {

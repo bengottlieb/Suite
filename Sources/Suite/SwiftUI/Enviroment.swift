@@ -15,7 +15,16 @@ public struct IsScrollingEnvironmentKey: EnvironmentKey {
 	public static var defaultValue = false
 }
 
+public struct DismissParentEnvironmentKey: EnvironmentKey {
+	public static var defaultValue = { }
+}
+
 public extension EnvironmentValues {
+	var dismissParent: () -> Void {
+		get { self[DismissParentEnvironmentKey.self] }
+		set { self[DismissParentEnvironmentKey.self] = newValue }
+	}
+	
 	var isEditing: Bool {
 		get { self[IsEditingEnvironmentKey.self] }
 		set { self[IsEditingEnvironmentKey.self] = newValue }

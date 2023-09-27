@@ -7,10 +7,14 @@
 
 import SwiftUI
 
-@available(OSX 13, iOS 16, tvOS 13, watchOS 9, *)
+@available(OSX 13, iOS 15, tvOS 13, watchOS 9, *)
 public extension View {
-	func makeDraggable(type: String, object: Any, hideWhenDragging: Bool = true, draggedOpacity: Double = 1.0) -> some View {
-		DraggableView(content: self, type: type, object: object, hideWhenDragging: hideWhenDragging, draggedOpacity: draggedOpacity)
+	@ViewBuilder func makeDraggable(type: String, object: Any, hideWhenDragging: Bool = true, draggedOpacity: Double = 1.0) -> some View {
+		if #available(iOS 16, *) {
+			DraggableView(content: self, type: type, object: object, hideWhenDragging: hideWhenDragging, draggedOpacity: draggedOpacity)
+		} else {
+			self
+		}
 	}
 }
 
@@ -36,6 +40,16 @@ struct DraggableView<Content: View>: View {
 				.highPriorityGesture(dragGesture)
 				.opacity(isDragging ? dragAlpha : 1)
 				.reportGeometry(frame: $frame, in: .dragAndDropSpace)
+			#if os(xrOS)
+				.onChange(of: isScrolling) {
+					if isScrolling, isDragging {
+						isDragging = false
+						dragCoordinator.currentPosition = nil
+						dragCoordinator.cancelledDrop = true
+						dragCoordinator.drop(at: nil)
+					}
+				}
+			#else
 				.onChange(of: isScrolling) { isScrolling in
 					if isScrolling, isDragging {
 						isDragging = false
@@ -44,6 +58,7 @@ struct DraggableView<Content: View>: View {
 						dragCoordinator.drop(at: nil)
 					}
 				}
+			#endif
 		} else {
 			content
 		}
