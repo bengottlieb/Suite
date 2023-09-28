@@ -221,7 +221,7 @@ public extension Decodable where Self: Encodable {
 
 extension RawRepresentable where RawValue == String, Self: Codable {
 	public init(from decoder: Decoder) throws {
-		var container = try decoder.unkeyedContainer()
+		let container = try decoder.singleValueContainer()
 		let rawValue = try container.decode(String.self)
 		do {
 			self.init(rawValue: rawValue)!
@@ -229,7 +229,22 @@ extension RawRepresentable where RawValue == String, Self: Codable {
 	}
 	
 	public func encode(to encoder: Encoder) throws {
-		var container = encoder.unkeyedContainer()
+		var container = encoder.singleValueContainer()
+		try container.encode(rawValue)
+	}
+}
+
+extension RawRepresentable where RawValue == Int, Self: Codable {
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.singleValueContainer()
+		let rawValue = try container.decode(Int.self)
+		do {
+			self.init(rawValue: rawValue)!
+		}
+	}
+	
+	public func encode(to encoder: Encoder) throws {
+		var container = encoder.singleValueContainer()
 		try container.encode(rawValue)
 	}
 }
