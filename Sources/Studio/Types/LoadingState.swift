@@ -7,19 +7,22 @@
 
 import Foundation
 
-public enum LoadingState<Value>: Equatable { case idle, loading, failed(Error), loaded(Value)
+public enum LoadingState<Value> { case idle, loading, empty, failed(Error), loaded(Value)
 	public static func ==(lhs: LoadingState, rhs: LoadingState) -> Bool {
 		switch (lhs, rhs) {
 		case (.idle, .idle): return true
 		case (.loading, .loading): return true
 		case (.failed, .failed): return true
+		case (.empty, .empty): return true
 		default: return false
 		}
 	}
 	
 	public var isLoaded: Bool {
-		if case .loaded = self { return true }
-		return false
+		switch self {
+		case .loaded, .empty: return true
+		default: return false
+		}
 	}
 	
 	public var error: Error? {
