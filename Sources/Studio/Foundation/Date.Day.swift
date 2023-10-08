@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Date {
-	struct Day: Codable, CustomStringConvertible {
+	struct Day: Codable, CustomStringConvertible, Equatable, Comparable {
 		public var day: Int
 		public var month: Foundation.Date.Month
 		public var year: Int
@@ -19,6 +19,13 @@ public extension Date {
 			} else {
 				return "\(year)-\(month.rawValue)-\(day)"
 			}
+		}
+		
+		public static func <(lhs: Self, rhs: Self) -> Bool {
+			if lhs.year != rhs.year { return lhs.year < rhs.year }
+			if lhs.month != rhs.month { return lhs.month < rhs.month }
+			if lhs.day != rhs.day { return lhs.day < rhs.day }
+			return false
 		}
 		
 		public init?(mdy: String) {

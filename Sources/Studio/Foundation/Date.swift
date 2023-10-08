@@ -63,12 +63,14 @@ public extension Date {
 		}
 	}
 	
-	enum Month: Int, CaseIterable, Codable { case jan = 1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
+	enum Month: Int, CaseIterable, Codable, Comparable { case jan = 1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
 		public var nextMonth: Month { return self.increment(by: 1) }
 		public func increment(by: Int) -> Month { return Month(rawValue: (self.rawValue + by - 1) % 12 + 1)! }
 		public var abbrev: String { return Calendar.current.veryShortMonthSymbols[self.rawValue] }
 		public var shortName: String { return Calendar.current.shortMonthSymbols[self.rawValue - 1] }
 		public var name: String { return Calendar.current.monthSymbols[self.rawValue - 1] }
+		
+		public static func <(lhs: Self, rhs: Self) -> Bool { lhs.rawValue < rhs.rawValue }
 	}
 	
 	func durationStringUntilNow(style: TimeInterval.DurationStyle = .seconds, showLeadingZero: Bool = true, roundUp: Bool = true) -> String { (-1 * timeIntervalSinceNow).durationString(style: style, showLeadingZero: showLeadingZero, roundUp: roundUp) }
