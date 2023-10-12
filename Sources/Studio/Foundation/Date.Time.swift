@@ -146,6 +146,10 @@ public extension Date {
 			return times
 		}
 		
+		public func isSameMinute(as time: Date.Time) -> Bool {
+			hour == time.hour && minute == time.minute
+		}
+		
 		public func roundedToNearest(minute: Int) -> Date.Time {
 			if (minute + self.minute) >= 60 { return Date.Time(hour: (hour + 1) % 24, minute: 0) }
 			return Date.Time(hour: hour, minute: minute * Int(round(Double(self.minute) / Double(minute))))
