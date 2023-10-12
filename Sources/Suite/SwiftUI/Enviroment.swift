@@ -11,7 +11,7 @@ public struct IsEditingEnvironmentKey: EnvironmentKey {
 	public static var defaultValue = false
 }
 
-@available(iOS 16.0, *)
+@available(iOS 16.0, macOS 13, watchOS 9, *)
 public struct NavigationPathEnvironmentKey: EnvironmentKey {
 	public static var defaultValue = Binding.constant(NavigationPath())
 }
@@ -25,7 +25,7 @@ public struct DismissParentEnvironmentKey: EnvironmentKey {
 }
 
 
-@available(iOS 16.0, *)
+@available(iOS 16.0, macOS 13, watchOS 9, *)
 public extension EnvironmentValues {
 	var navigationPath: Binding<NavigationPath> {
 		get { self[NavigationPathEnvironmentKey.self] }
