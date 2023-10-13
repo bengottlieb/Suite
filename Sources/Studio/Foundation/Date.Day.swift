@@ -71,6 +71,12 @@ public extension Date {
 		
 		public var dmyString: String { "\(day)/\(month.rawValue)/\(year)" }
 		public var ymdString: String { "\(year)/\(month.rawValue)/\(day)" }
+		public var mdyString: String { "\(month.rawValue)/\(day)/\(year)" }
+
+		public var dmString: String { "\(day)/\(month.rawValue)" }
+		public var mdString: String { "\(month.rawValue)/\(day)" }
+
+		public var daysAgo: Int { Date().interval(ofComponent: .day, from: date) }
 		
 		public static var now: Date.Day { Date.Day(Date()) }
 	}

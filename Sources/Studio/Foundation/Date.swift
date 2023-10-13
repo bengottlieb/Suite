@@ -369,6 +369,15 @@ public extension Date {
 	}
 	
 	private func components(which: Calendar.Component) -> DateComponents { return Calendar.current.dateComponents([which], from: self) }
+	
+	func interval(ofComponent comp: Calendar.Component, from date: Date) -> Int {
+		 let currentCalendar = Calendar.current
+
+		 guard let start = currentCalendar.ordinality(of: comp, in: .era, for: date) else { return 0 }
+		 guard let end = currentCalendar.ordinality(of: comp, in: .era, for: self) else { return 0 }
+
+		 return end - start
+	}
 }
 
 public extension Date {
