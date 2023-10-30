@@ -19,7 +19,7 @@ public struct UnitSize: Hashable, Sendable, Equatable, CustomStringConvertible {
 	public static var full = UnitSize(width: 1.0, height: 1.0)
 	public static var zero = UnitSize(width: 0, height: 0)
 	
-	public var description: String { "\(width) x \(height)"}
+	public var description: String { "\(width.short) x \(height.short)"}
 }
 
 public struct UnitRect: Hashable, Sendable, Equatable, CustomStringConvertible {
@@ -34,5 +34,11 @@ public struct UnitRect: Hashable, Sendable, Equatable, CustomStringConvertible {
 	public static var full = UnitRect(origin: .zero, size: .full)
 	public static var zero = UnitRect(origin: .zero, size: .zero)
 	
-	public var description: String { "(\(origin.x), \(origin.y)), (\(size))"}
+	public var description: String { "(\(origin.x.short), \(origin.y.short)), (\(size))"}
+}
+
+fileprivate extension CGFloat {
+	var short: String {
+		String(format: "%.02f", self)
+	}
 }
