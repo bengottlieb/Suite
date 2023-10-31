@@ -29,6 +29,29 @@ extension Float: DecimalFormattable {
 	public var doubleValue: Double { Double(self) }
 }
 
+extension CGFloat {
+	public func pretty(_ limit: Int? = 3, includeDecimal: Bool = true) -> String {
+		Double(self).pretty(limit, includeDecimal: includeDecimal)
+	}
+}
+
+extension Double {
+	public func pretty(_ limit: Int? = 3, includeDecimal: Bool = true) -> String {
+		var result = "\(self)"
+		guard let decPos = result.position(of: ".") else { return result }
+		
+		if let limit, (result.count - decPos) > limit {
+			return result[0...(decPos + limit)]
+		}
+		while result.hasSuffix("0") { result = String(result.dropLast()) }
+		if result.hasSuffix(".") {
+			if includeDecimal { return result + "0" }
+			return String(result.dropLast())
+		}
+		return result
+	}
+}
+
 private let formatter: NumberFormatter = {
 	let formatter = NumberFormatter()
 	formatter.numberStyle = .decimal

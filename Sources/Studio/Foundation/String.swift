@@ -52,6 +52,15 @@ public extension String {
 	func index(_ index: Int) -> String.Index { return self.index(self.startIndex, offsetBy: min(index, self.count)) }
 	var fullRange: Range<String.Index> { return self.range(NSRange(location: 0, length: self.count)) }
 	
+	func index<S: StringProtocol>(of string: S, options: String.CompareOptions = []) -> Index? {
+		 range(of: string, options: options)?.lowerBound
+	}
+
+	func position(of sub: String) -> Int? {
+		if let index = index(of: sub) { return prefix(upTo: index).count }
+		return nil
+	}
+	
 	var numbersOnly: String {
 		self.reduce("") { result, chr in
 			"0123456789".contains(chr) ? result + String(chr) : result
