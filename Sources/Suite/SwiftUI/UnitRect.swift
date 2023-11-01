@@ -63,4 +63,13 @@ public struct UnitRect: Hashable, Sendable, Equatable, CustomStringConvertible {
 	public static var zero = UnitRect(origin: .zero, size: .zero)
 	
 	public var description: String { "(\(origin.x.pretty()), \(origin.y.pretty())), (\(size))"}
+	public func union(with rect: UnitRect) -> UnitRect {
+		.init(origin: .init(x: min(rect.x, x), y: min(rect.y, y)), bottomRight: .init(x: max(rect.right, right), y: max(rect.bottom, bottom)))
+	}
+}
+
+fileprivate extension CGFloat {
+	var short: String {
+		String(format: "%.02f", self)
+	}
 }
