@@ -8,6 +8,27 @@
 import SwiftUI
 
 #if !os(xrOS)
+
+
+@available(iOS 16.0, macOS 13, *)
+public extension View {
+	func backingNavigationLink<Value: Hashable>(for value: Value) -> some View {
+		self
+			.background {
+				NavigationLink(value: value) { EmptyView() }
+					.opacity(0)
+			}
+	}
+	
+	func backingNavigationLink<Destination: View>(destination: () -> Destination) -> some View {
+		self
+			.background {
+				NavigationLink(destination: destination) { EmptyView() }
+					.opacity(0)
+			}
+	}
+}
+
 public struct BoundNavigationLink<Bound, DestinationView: View>: View {
 	@Binding var bound: Bound?
 	@ViewBuilder var destination: (Bound) -> DestinationView
