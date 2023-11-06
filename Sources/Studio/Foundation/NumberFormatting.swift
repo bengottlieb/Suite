@@ -41,7 +41,9 @@ extension Double {
 		guard let decPos = result.position(of: ".") else { return result }
 		
 		if let limit, (result.count - decPos) > limit {
-			return result[0...(decPos + limit)]
+			result = result[0...(decPos + limit)]
+			if !includeDecimal, result.hasSuffix(".") { result = String(result.dropLast()) }
+			return result
 		}
 		while result.hasSuffix("0") { result = String(result.dropLast()) }
 		if result.hasSuffix(".") {
