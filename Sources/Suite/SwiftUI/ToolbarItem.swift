@@ -10,8 +10,8 @@ import SwiftUI
 @available(iOS 14.0, macOS 13.0, *)
 public extension ToolbarItemPlacement {
 	#if os(iOS)
-		static var `default`: ToolbarItemPlacement = .bottomBar
+		static let `default`: ToolbarItemPlacement = .bottomBar
 	#else
-		static var `default`: ToolbarItemPlacement = .automatic
+		static let `default`: ToolbarItemPlacement = .automatic
 	#endif
 }
