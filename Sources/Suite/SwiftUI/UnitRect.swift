@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct UnitSize: Hashable, Sendable, Equatable, CustomStringConvertible {
+public struct UnitSize: Hashable, Sendable, Equatable, CustomStringConvertible, Codable {
 	public var width: CGFloat
 	public var height: CGFloat
 	
@@ -22,7 +22,7 @@ public struct UnitSize: Hashable, Sendable, Equatable, CustomStringConvertible {
 	public var description: String { "\(width.pretty()) x \(height.pretty())"}
 }
 
-public struct UnitRect: Hashable, Sendable, Equatable, CustomStringConvertible {
+public struct UnitRect: Hashable, Sendable, Equatable, CustomStringConvertible, Codable {
 	public var origin: UnitPoint
 	public var size: UnitSize
 	
@@ -46,10 +46,14 @@ public struct UnitRect: Hashable, Sendable, Equatable, CustomStringConvertible {
 		self.size = .init(width: bottomRight.x - origin.x, height: bottomRight.y - origin.y)
 	}
 	
-	public func contains(_ other: UnitRect) -> Bool {
-		x <= other.x && y <= other.y && bottom >= other.bottom && right >= other.right
-	}
-	
+    public func contains(_ other: UnitRect) -> Bool {
+        x <= other.x && y <= other.y && bottom >= other.bottom && right >= other.right
+    }
+    
+    public func contains(_ point: UnitPoint) -> Bool {
+        x <= point.x && y <= point.y && bottom >= point.y && right >= point.x
+    }
+    
 	public func overlap(with other: UnitRect) -> UnitRect? {
 		if right < other.x || x > other.right || bottom < other.y || y > other.bottom { return nil }
 		
@@ -73,3 +77,22 @@ fileprivate extension CGFloat {
 		String(format: "%.02f", self)
 	}
 }
+
+extension UnitPoint: Codable {
+    enum CodingKeys: String, CodingKey { case x, y }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(x, forKey: .x)
+        try container.encode(y, forKey: .y)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        let x = try container.decode(Double.self, forKey: .x)
+        let y = try container.decode(Double.self, forKey: .y)
+        self.init(x: x, y: y)
+    }
+}
+
