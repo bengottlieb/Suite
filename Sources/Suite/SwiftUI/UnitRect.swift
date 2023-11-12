@@ -45,6 +45,17 @@ public struct UnitRect: Hashable, Sendable, Equatable, CustomStringConvertible, 
 		self.origin = origin
 		self.size = .init(width: bottomRight.x - origin.x, height: bottomRight.y - origin.y)
 	}
+    
+    public init(_ child: CGRect, in parent: CGRect) {
+        if !parent.contains(child) { 
+            self = .full
+        } else {
+            self = .init(
+                origin: .init(x: (child.x - parent.x) / parent.width, y: (child.y - parent.y) / parent.height),
+                size: .init(width: child.width / parent.width, height: child.height / parent.height)
+            )
+        }
+    }
 	
     public func contains(_ other: UnitRect) -> Bool {
         x <= other.x && y <= other.y && bottom >= other.bottom && right >= other.right
@@ -62,6 +73,13 @@ public struct UnitRect: Hashable, Sendable, Equatable, CustomStringConvertible, 
 		
 		return UnitRect(origin: origin, bottomRight: bottomRight)
 	}
+    
+    public func placed(in rect: CGRect) -> CGRect {
+        CGRect(
+            origin: .init(x: rect.minX + rect.width * x, y: rect.minY + rect.height * y),
+            size: .init(width: width * rect.width, height: height * rect.height)
+        )
+    }
 	
 	public static var full = UnitRect(origin: .zero, size: .full)
 	public static var zero = UnitRect(origin: .zero, size: .zero)
