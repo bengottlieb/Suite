@@ -96,6 +96,19 @@ fileprivate extension CGFloat {
 	}
 }
 
+public extension UnitPoint {
+	init(from cgPoint: CGPoint, in frame: CGRect) {
+		self.init(
+			x: (cgPoint.x - frame.minX) / frame.width,
+			y: (cgPoint.y - frame.minY) / frame.height
+		)
+	}
+	
+	func placed(in rect: CGRect) -> CGPoint {
+		CGPoint(x: rect.minX + rect.width * x, y: rect.minY + rect.height * y)
+	}
+}
+
 extension UnitPoint: Codable {
     enum CodingKeys: String, CodingKey { case x, y }
     public func encode(to encoder: Encoder) throws {
