@@ -69,12 +69,16 @@ public extension Date {
 			Date(calendar: .current, timeZone: .current, year: year, month: month.rawValue, day: day) ?? Date()
 		}
 		
-		public var dmyString: String { "\(day)/\(month.rawValue)/\(year)" }
-		public var ymdString: String { "\(year)/\(month.rawValue)/\(day)" }
-		public var mdyString: String { "\(month.rawValue)/\(day)/\(year)" }
+		public var dmyString: String { dmyString() }
+		public var ymdString: String { ymdString() }
+		public var mdyString: String { mdyString() }
 
-		public var dmString: String { "\(day)/\(month.rawValue)" }
-		public var mdString: String { "\(month.rawValue)/\(day)" }
+		public func dmyString(_ delim: String = "/") -> String { "\(day)\(delim)\(month.rawValue)\(delim)\(year)" }
+		public func ymdString(_ delim: String = "/") -> String { "\(year)\(delim)\(month.rawValue)\(delim)\(day)" }
+		public func mdyString(_ delim: String = "/") -> String { "\(month.rawValue)\(delim)\(day)\(delim)\(year)" }
+
+		public func dmString(_ delim: String = "/") -> String { "\(day)\(delim)\(month.rawValue)" }
+		public func mdString(_ delim: String = "/") -> String { "\(month.rawValue)\(delim)\(day)" }
 
 		public var daysAgo: Int { Date().interval(ofComponent: .day, from: date) }
 		
