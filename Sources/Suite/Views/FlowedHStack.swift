@@ -1,6 +1,6 @@
 //
 //  SwiftUIView.swift
-//  
+//
 //
 //  Created by Ben Gottlieb on 10/15/23.
 //
@@ -16,40 +16,42 @@ extension String: FlowedHStackElement {
 public protocol FlowedHStackElement: View {
 	var isNewLine: Bool { get }
 	var offset: CGSize { get }
-
+	
 }
 public protocol FlowedHStackImageElement: Identifiable { }
 
 public struct FlowedHStackImage: View, FlowedHStackImageElement {
-	 public let id = UUID()
-	 public let image: Image
-	 public var body: some View {
+	public let id = UUID()
+	public let image: Image
+	public var body: some View {
 		image.renderingMode(.template)
 			.offset(y: -0.5)
 	}
 }
 
 public struct FlowSizeKey: PreferenceKey {
-	 public static var defaultValue: [CGSize] = []
-	 public static func reduce(value: inout [CGSize], nextValue: () -> [CGSize]) {
+	public static var defaultValue: [CGSize] = []
+	public static func reduce(value: inout [CGSize], nextValue: () -> [CGSize]) {
 		value.append(contentsOf: nextValue())
 	}
 }
 
 public struct FlowedHStackNewLineView: View {
-	 public var body: some View { Color.clear.frame(width: 0, height: 12) }
+	public var body: some View { Color.clear.frame(width: 0, height: 12) }
 }
 
-public struct FlowedHStack<Element: FlowedHStackElement>: View {
-	 public init(_ elements: [Element], hSpacing: Double = 2, vSpacing: Double = 2) {
+public struct FlowedHStack<Element: FlowedHStackElement, ElementView: View>: View {
+	public init(_ elements: [Element], hSpacing: Double = 2, vSpacing: Double = 2, content: @escaping (Element) -> ElementView) {
 		self.elements = elements
 		horizontalSpacing = hSpacing
 		verticalSpacing = vSpacing
+		elementViews = elements.map { content($0) }
 	}
 	
 	let elements: [Element]
 	let horizontalSpacing: Double
 	let verticalSpacing: Double
+	let elementViews: [ElementView]
 	
 	@State private var availableWidth: CGFloat = 0.0
 	@State private var elementSizes: [CGSize] = []
@@ -68,7 +70,7 @@ public struct FlowedHStack<Element: FlowedHStackElement>: View {
 				rows.append(currentRow)
 				currentRow = []
 			}
-
+			
 			currentRow.append(size)
 			currentSize.width += (size.width + spacing.width)
 			currentSize.height = max(currentSize.height, size.height)
@@ -91,7 +93,7 @@ public struct FlowedHStack<Element: FlowedHStackElement>: View {
 		return origins
 	}
 	
-	 public var body: some View {
+	public var body: some View {
 		let offsets = layout(sizes: elementSizes)
 		
 		VStack(spacing: 0) {
@@ -100,10 +102,10 @@ public struct FlowedHStack<Element: FlowedHStackElement>: View {
 			}
 			.frame(height: 0)
 			.onPreferenceChange(FlowSizeKey.self) { sizes in availableWidth = sizes.first?.width ?? 0.0 }
-
+			
 			ZStack(alignment: .topLeading) {
 				ForEach(Array(zip(elements, elements.indices)), id: \.1) { element, index in
-					element.body
+					elementViews[index]
 						.fixedSize()
 						.background(GeometryReader { proxy in
 							Color.clear.preference(key: FlowSizeKey.self, value: [proxy.size])
@@ -116,7 +118,7 @@ public struct FlowedHStack<Element: FlowedHStackElement>: View {
 							guard index < offsets.count else { return 0 }
 							return -offsets[index].y
 						})
-						//.border(Color.gray, width: 0.5)
+					//.border(Color.gray, width: 0.5)
 				}
 			}
 			.onPreferenceChange(FlowSizeKey.self) { sizes in elementSizes = sizes }
@@ -124,4 +126,14 @@ public struct FlowedHStack<Element: FlowedHStackElement>: View {
 		}
 		//.border(Color.red)
 	}
+}
+
+public extension FlowedHStack where Element == String, ElementView == Text {
+	init(_ elements: [Element], hSpacing: Double = 2, vSpacing: Double = 2) {
+		self.elements = elements
+		horizontalSpacing = hSpacing
+		verticalSpacing = vSpacing
+		elementViews = elements.map { item in Text(item) }
+	}
+
 }
