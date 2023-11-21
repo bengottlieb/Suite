@@ -44,4 +44,13 @@ public extension View {
 		ImageRenderer(content: self.frame(width: letterPageSize.width, height: letterPageSize.height)).nsImage
 	}
 }
+
+fileprivate extension NSImage {
+	func pngData() -> Data? {
+		guard let cgImage = self.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
+		let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
+		let pngData = bitmapRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:])
+		return pngData
+	}
+}
 #endif
