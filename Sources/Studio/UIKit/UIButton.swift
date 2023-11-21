@@ -52,7 +52,7 @@ public extension UIButton {
 	}
 	
 	@discardableResult func showsTouchWhenHighlighted(_ shows: Bool) -> Self {
-		#if !os(xrOS)
+		#if !os(visionOS)
 			self.showsTouchWhenHighlighted = shows
 		#endif
 		return self

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-#if os(iOS) && !os(xrOS)
+#if os(iOS) && !os(visionOS)
 let feedbackEngine = UIImpactFeedbackGenerator(style: .heavy)
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, *)

@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-#if !os(xrOS)
+#if !os(visionOS)
 
 @available(OSX 11, iOS 13.0, watchOS 6.0, *)
 public struct OptionalNavigationLink<Check, Content: View, Dest: View>: View {

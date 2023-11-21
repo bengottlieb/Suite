@@ -40,7 +40,7 @@ struct DraggableView<Content: View>: View {
 				.highPriorityGesture(dragGesture)
 				.opacity(isDragging ? dragAlpha : 1)
 				.reportGeometry(frame: $frame, in: .dragAndDropSpace)
-			#if os(xrOS)
+			#if os(visionOS)
 				.onChange(of: isScrolling) {
 					if isScrolling, isDragging {
 						isDragging = false

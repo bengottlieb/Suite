@@ -6,7 +6,7 @@
 //  Copyright © 2020 Stand Alone, Inc. All rights reserved.
 //
 
-#if !os(xrOS)
+#if !os(visionOS)
 #if canImport(Combine)
 import SwiftUI
 import Combine

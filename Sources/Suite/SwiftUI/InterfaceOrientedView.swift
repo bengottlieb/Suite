@@ -6,7 +6,7 @@
 //
 
 #if canImport(Combine)
-#if canImport(UIKit) && !os(watchOS) && !os(xrOS)
+#if canImport(UIKit) && !os(watchOS) && !os(visionOS)
 import SwiftUI
 import Combine
 import UIKit

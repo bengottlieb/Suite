@@ -5,7 +5,7 @@
 //  Created by Ben Gottlieb on 2/22/20.
 //
 
-#if canImport(UIKit) && !os(watchOS) && !os(xrOS)
+#if canImport(UIKit) && !os(watchOS) && !os(visionOS)
 
 import UIKit
 

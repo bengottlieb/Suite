@@ -10,7 +10,7 @@ import UIKit
 
 public extension UIView {
 	static var screenScale: CGFloat {
-		#if os(xrOS)
+		#if os(visionOS)
 			return 1
 		#else
 			return UIScreen.main.scale
@@ -32,7 +32,7 @@ public extension UIView {
 		return capturedImage
 	}
 	
-	#if !os(xrOS)
+	#if !os(visionOS)
 		@available(iOSApplicationExtension, unavailable)
 		static var frontSafeAreaInsets: UIEdgeInsets {
 			if #available(iOS 13.0, *) {
@@ -66,7 +66,7 @@ public extension UIView {
 	
 	static let activityIndicatorTag = 10246
 	
-	#if !os(xrOS)
+	#if !os(visionOS)
 		@discardableResult
 		func addActivityView(color: UIColor = .white) -> UIActivityIndicatorView {
 			if let spinner = self.viewWithTag(UIView.activityIndicatorTag) as? UIActivityIndicatorView {

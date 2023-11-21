@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-#if !os(xrOS)
+#if !os(visionOS)
 
 
 @available(iOS 16.0, macOS 13, *)

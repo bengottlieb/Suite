@@ -159,7 +159,7 @@ public extension String {
 		
 		if hex.hasPrefix("#") { hex = String(hex.dropFirst()) }
 		
-		if #available(macOS 10.15, iOS 13.0, watchOS 6.0, xrOS 1.0, *) {
+		if #available(macOS 10.15, iOS 13.0, watchOS 6.0, visionOS 1.0, *) {
 			let rgbInt = Scanner(string: hex).scanInt(representation: .hexadecimal) ?? 0
 			rgbValue = UInt32(rgbInt)
 		} else {

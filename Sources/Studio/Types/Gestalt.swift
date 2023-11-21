@@ -168,7 +168,7 @@ public struct Gestalt {
 
 	#endif
 	
-	#if os(iOS) || os(watchOS) || os(xrOS)
+	#if os(iOS) || os(watchOS) || os(visionOS)
 		public static var simulatedRawDeviceType: String? {
 			#if targetEnvironment(simulator)
 					return ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"]

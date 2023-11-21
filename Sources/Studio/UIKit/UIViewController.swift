@@ -8,7 +8,7 @@
 #if canImport(UIKit) && !os(watchOS)
 import UIKit
 
-#if !os(xrOS)
+#if !os(visionOS)
 public extension UIViewController {
 	class func fromStoryboard(_ name: String? = nil, bundle: Bundle? = nil) -> Self {
 		let storyboardName = name ?? NSStringFromClass(self).components(separatedBy: ".").last!

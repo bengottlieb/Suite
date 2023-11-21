@@ -66,7 +66,7 @@ struct DropTargetView<Content: View>: View {
 					GeometryReader { geo in
 						Color.clear
 							.onAppear { frame = geo.frame(in: .dragAndDropSpace) }
-						#if os(xrOS)
+						#if os(visionOS)
 							.onChange(of: dragCoordinator.currentPosition) { currentPositionChanged(to: dragCoordinator.currentPosition, using: geo) }
 							.onChange(of: dragCoordinator.dropPosition) { dropPositionChanged(to: dragCoordinator.dropPosition, using: geo) }
 						#else

@@ -7,7 +7,7 @@
 
 // https://developer.apple.com/design/human-interface-guidelines/widgets/overview/design/
 
-#if !os(xrOS)
+#if !os(visionOS)
 import WidgetKit
 
 @available(iOS 14.0, macOS 11.0, watchOS 9.0, *)
