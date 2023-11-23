@@ -8,13 +8,23 @@ public class Reachability: ObservableObject {
 	private let pathMonitor = NWPathMonitor()
 	private var queue: DispatchQueue
 	private var isMonitoring = false
-	private var isStartingUp = false
+	private var isStartingUp = true
+	private var startupContinuation: CheckedContinuation<Bool, Never>?
+	
 	init(queue: DispatchQueue = .main) {
 		self.queue = queue
 		start()
 	}
 
 	public func setup() { }
+	
+	@discardableResult public func setupAndCheckForOnline() async -> Bool {
+		if !isStartingUp { return !isOffline }
+		
+		return await withCheckedContinuation { continuation in
+			self.startupContinuation = continuation
+		}
+	}
 	
 	func start() {
 		if isMonitoring { return }
@@ -23,11 +33,12 @@ public class Reachability: ObservableObject {
 			Notifications.reachabilityChanged.notify()
 		}
 		isMonitoring = true
-		isStartingUp = true
 		objectWillChange.sendOnMain()
-		DispatchQueue.main.async(after: 1.0) {
+		DispatchQueue.main.async(after: 0.25) {
 			self.objectWillChange.send()
 			self.isStartingUp = false
+			self.startupContinuation?.resume(returning: !self.isOffline)
+			self.startupContinuation = nil
 		}
 		pathMonitor.start(queue: queue)
 	}
