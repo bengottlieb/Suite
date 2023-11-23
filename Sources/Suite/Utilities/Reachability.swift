@@ -9,7 +9,7 @@ public class Reachability: ObservableObject {
 	private var queue: DispatchQueue
 	private var isMonitoring = false
 	private var isStartingUp = true
-	private var startupContinuation: CheckedContinuation<Bool, Never>?
+	private var startupContinuation: UnsafeContinuation<Bool, Never>?
 	
 	init(queue: DispatchQueue = .main) {
 		self.queue = queue
@@ -21,7 +21,7 @@ public class Reachability: ObservableObject {
 	@discardableResult public func setupAndCheckForOnline() async -> Bool {
 		if !isStartingUp { return !isOffline }
 		
-		return await withCheckedContinuation { continuation in
+		return await withUnsafeContinuation { continuation in
 			self.startupContinuation = continuation
 		}
 	}
