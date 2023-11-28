@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Date {
-	struct Day: Codable, CustomStringConvertible, Equatable, Comparable {
+	struct Day: Codable, CustomStringConvertible, Equatable, Comparable, Hashable {
 		public var day: Int
 		public var month: Foundation.Date.Month
 		public var year: Int
