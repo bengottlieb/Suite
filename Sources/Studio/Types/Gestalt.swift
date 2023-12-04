@@ -48,12 +48,12 @@ public struct Gestalt {
 	public static var debugLevel = Gestalt.isAttachedToDebugger ? DebugLevel.debugging : DebugLevel.none
 	
 	#if targetEnvironment(simulator)
-		public static var isOnSimulator: Bool { return true }
+		public static let isOnSimulator: Bool = true
 	#else
-		public static var isOnSimulator: Bool { return false }
+		public static let isOnSimulator: Bool = false
 	#endif
 	
-	public static var isAttachedToDebugger: Bool = { return isatty(STDERR_FILENO) != 0 }()
+	public static let isAttachedToDebugger: Bool = { return isatty(STDERR_FILENO) != 0 }()
 	
 	public static func ensureMainThread(message: String? = nil) {
 		assert(Thread.isMainThread, "must run on main thread \(message ?? "--")!")
