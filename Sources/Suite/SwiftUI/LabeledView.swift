@@ -20,7 +20,7 @@ public extension EnvironmentValues {
 
 public extension View {
 	@ViewBuilder func debugLabel(_ label: String? = nil) -> some View {
-		if #available(iOS 15.0, *) {
+		if #available(iOS 15.0, macOS 12.0, *) {
 			DebugLabeledView(view: self, label: label ?? String(describing: self))
 		} else {
 			self
@@ -28,7 +28,7 @@ public extension View {
 	}
 }
 
-@available(iOS 15.0, *)
+@available(iOS 15.0, macOS 12.0, *)
 struct DebugLabeledView<Content: View>: View {
 	let view: Content
 	let label: String
@@ -40,7 +40,7 @@ struct DebugLabeledView<Content: View>: View {
 				.overlay(alignment: .topLeading) {
 					Text(label)
 						.font(.system(size: 9, weight: .semibold, design: .rounded))
-						.foregroundStyle(.yellow)
+						.foregroundColor(.yellow)
 						.padding(2)
 						.background(.red)
 				}

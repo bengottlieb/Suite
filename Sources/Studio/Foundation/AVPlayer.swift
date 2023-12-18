@@ -10,8 +10,9 @@ import AVKit
 import AVFoundation
 
 #if canImport(UIKit)
-
 import UIKit
+#endif
+
 	public extension AVPlayer {
 		static var cachedMoviesDirectory: URL = {
 			let directory = FileManager.cachesDirectory.appendingPathComponent("cached_movies")
@@ -50,4 +51,4 @@ public extension AVAudioPlayer {
 		self.seekTo(seconds: time)
 	}
 }
-#endif
+//#endif
