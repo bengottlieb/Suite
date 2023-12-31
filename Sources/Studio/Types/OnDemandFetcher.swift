@@ -7,6 +7,7 @@
 
 import Foundation
 
+#if os(iOS)
 public struct OnDemandFetcher {
 	struct StoredDictionary: Codable {
 		let version: Int
@@ -35,3 +36,4 @@ public struct OnDemandFetcher {
 		return json
 	}
 }
+#endif
