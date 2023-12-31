@@ -44,6 +44,13 @@ public extension Data {
 		self.init(bytes: byteArray, count: count)
 	}
 	
+	func base64URLEncodedClean() -> String {
+		 return base64EncodedString()
+			  .replacingOccurrences(of: "=", with: "")
+			  .replacingOccurrences(of: "+", with: "-")
+			  .replacingOccurrences(of: "/", with: "_")
+	}
+
 	var json: Any? {
 		try? JSONSerialization.jsonObject(with: self, options: [])
 	}
